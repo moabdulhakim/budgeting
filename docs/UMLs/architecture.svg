@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="320px" preserveAspectRatio="none" style="width:443px;height:320px;background:#000000;" version="1.1" viewBox="0 0 443 320" width="443px" zoomAndPan="magnify"><defs/><g><rect fill="#04000B" height="1" style="stroke: #04000B; stroke-width: 1.0;" width="1" x="0" y="0"/><rect fill="#33FF02" height="21.2969" style="stroke: #33FF02; stroke-width: 1.0;" width="436" x="5" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="301" x="6" y="20">[From architecture.plantuml (line 19) ]</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="40.2969"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="79" x="5" y="56.5938">@startuml</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="436" x="5" y="72.8906">title Layered Architecture - Personal Budgeting System</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="89.1875"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="282" x="5" y="105.4844">package "Presentation Layer (UI)" {</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="121.7813"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="409" x="15" y="138.0781">component "Mobile App (Android / iOS)" as MobileUI</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="313" x="15" y="154.375">component "Web Application" as WebUI</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="170.6719"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="213" x="15" y="186.9688">component "Dashboard UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="230" x="15" y="203.2656">component "Transactions UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="184" x="15" y="219.5625">component "Budget UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="190" x="15" y="235.8594">component "Reports UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="172" x="15" y="252.1563">component "Goals UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="226" x="15" y="268.4531">component "Notifications UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="284.75"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="219" x="15" y="301.0469">MobileUI --&gt; "Dashboard UI"</text><text fill="#FF0000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="10" y="317.3438">Syntax Error?</text><!--MD5=[e931bf2fb73c4f6ab28e3d99c10e764b]
+@startuml
+title Layered Architecture - Personal Budgeting System
+
+package "Presentation Layer (UI)" {
+
+  component "Mobile App (Android / iOS)" as MobileUI
+  component "Web Application" as WebUI
+
+  component "Dashboard UI"
+  component "Transactions UI"
+  component "Budget UI"
+  component "Reports UI"
+  component "Goals UI"
+  component "Notifications UI"
+
+  MobileUI - -> "Dashboard UI"
+  MobileUI - -> "Transactions UI"
+  MobileUI - -> "Budget UI"
+  MobileUI - -> "Reports UI"
+  MobileUI - -> "Goals UI"
+  MobileUI - -> "Notifications UI"
+
+  WebUI - -> "Dashboard UI"
+  WebUI - -> "Transactions UI"
+  WebUI - -> "Budget UI"
+  WebUI - -> "Reports UI"
+  WebUI - -> "Goals UI"
+  WebUI - -> "Notifications UI"
+}
+
+package "Application Layer (Business Logic)" {
+
+  component "Authentication Module"
+  component "User Management Module"
+  component "Transaction Management Module"
+  component "Budget Management Module"
+  component "Category Management Module"
+  component "Goal Management Module"
+  component "Report Module"
+  component "Notification Module"
+}
+
+package "Data Layer" {
+
+  database "Main Database\n(AES-256 Encrypted)" as DB
+
+  component "User Repository"
+  component "Transaction Repository"
+  component "Budget Repository"
+  component "Category Repository"
+  component "Goal Repository"
+  component "Notification Repository"
+}
+
+package "External Systems" {
+  component "Bank API (OAuth2)" as BankAPI
+  component "E-Wallet API" as WalletAPI
+}
+
+
+MobileUI - -> "Authentication Module"
+WebUI - -> "Authentication Module"
+
+"Dashboard UI" - -> "Transaction Management Module"
+"Transactions UI" - -> "Transaction Management Module"
+"Budget UI" - -> "Budget Management Module"
+"Reports UI" - -> "Report Module"
+"Goals UI" - -> "Goal Management Module"
+"Notifications UI" - -> "Notification Module"
+
+"User Management Module" - -> "User Repository"
+"Transaction Management Module" - -> "Transaction Repository"
+"Budget Management Module" - -> "Budget Repository"
+"Category Management Module" - -> "Category Repository"
+"Goal Management Module" - -> "Goal Repository"
+"Notification Module" - -> "Notification Repository"
+
+"User Repository" - -> DB
+"Transaction Repository" - -> DB
+"Budget Repository" - -> DB
+"Category Repository" - -> DB
+"Goal Repository" - -> DB
+"Notification Repository" - -> DB
+
+"Transaction Management Module" - -> BankAPI
+"Transaction Management Module" - -> WalletAPI
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 17.0.18+8
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>
