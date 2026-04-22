@@ -1,226 +1,233 @@
 @startuml
 title Personal Budgeting System - Class Diagram
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam linetype ortho
 
-'======================
-' USERS
-'======================
-
-class User {
-  - userId: int
-  - name: String
-  - email: String
-  - password: String
-  - balance: double
-
-  + signUp()
-  + login()
-  + updateProfile()
+' Layout hints to force packages into a vertical stack
+package "View (UI Layer)" as LayerUI {
+    class UI {
+      + showSignUp()
+      + showLogin()
+      + showDashboard()
+      + showAddIncomeForm()
+      + showAddExpenseForm()
+      + showBudgetScreen()
+      + showCategoryScreen()
+      + submit()
+      + login()
+    }
 }
 
-class Admin {
-  + createDefaultCategory()
-  + manageUserAccount()
-  + generateSystemReport()
+package "Controllers (Service Layer)" as LayerService {
+    class AuthService {
+      + signUp(name, email, password)
+      + login(email, password)
+      + validateCredentials()
+    }
+    
+    class TransactionService {
+      + addIncome()
+      + addExpense()
+      + getTransactions()
+    }
+    
+    class CategoryService {
+      + createCategory()
+      + editCategory()
+      + deleteCategory()
+    }
+    
+    class BudgetService {
+      + createBudget()
+      + calculateRemainingBudget()
+      + checkBudgetLimit()
+      + trackBudgetUsage()
+    }
+    
+    interface IReportStrategy <<Interface>> {
+        + generate()
+    }
+    
+    class ReportService {
+        - reportStrategy: IReportStrategy
+        + ReportService(reportStrategy: IReportStrategy)
+        + generateMonthlyReport()
+    }
+    
+    class PDFReportStrategy {
+        + generate()
+    }
+    class ScreenReportStrategy {
+        + generate()
+    }
+    
+    class NotificationService {
+      + sendBudgetAlert()
+    }
+    
+    interface IObserver {
+        + update(data: Object)
+    }
 }
 
-User <|-- Admin
-
-
-'======================
-' TRANSACTIONS
-'======================
-
-abstract class Transaction {
-  - transactionId: int
-  - amount: double
-  - date: Date
-  - note: String
-
-  + getDetails()
+package "Database Layer" as LayerDB {
+    interface IDatabase <<Interface>> {
+      + save()
+      + update()
+      + delete()
+      + fetch()
+    }
+    
+    class Database <<Singleton>> {
+      - instance: Database
+      - Database()
+      + getInstance(): Database 
+      + save()
+      + update()
+      + delete()
+      + fetch()
+    }
 }
 
-class Income {
-  - source: String
-
-  + addIncome()
+package "Models (Entity Layer)" as LayerModel {
+    class User {
+      - userId: int
+      - name: String
+      - email: String
+      - password: String
+      - balance: BigDecimal
+      + signUp()
+      + login()
+      + updateProfile()
+    }
+    
+    class Admin {
+      + createDefaultCategory()
+      + manageUserAccount()
+      + generateSystemReport()
+    }
+    
+    abstract class Transaction {
+      - transactionId: int
+      - amount: BigDecimal
+      - date: Date
+      - note: String
+      + getDetails()
+    }
+    
+    class Income {
+      - source: String
+      + addIncome()
+    }
+    
+    class Expense {
+      - categoryId: int
+      + addExpense()
+    }
+    
+    class Category {
+      - categoryId: int
+      - name: String
+      - type: String
+      + createCategory()
+      + editCategory()
+      + deleteCategory()
+    }
+    
+    class Budget {
+      - budgetId: int
+      - month: String
+      - totalLimit: BigDecimal
+      + createBudget()
+      + updateBudget()
+      + calculateRemaining()
+      + checkBudgetStatus()
+    }
+    
+    class Goal {
+      - goalId: int
+      - targetAmount: BigDecimal
+      - currentAmount: BigDecimal
+      - progress: double
+      + setGoal()
+      + updateProgress()
+    }
+    
+    class Report {
+      - reportId: int
+      - month: String
+      + generateReport()
+      + showSummary()
+    }
+    
+    class Dashboard {
+      + viewTotalIncome()
+      + viewTotalExpense()
+      + viewBalance()
+      + viewRecentTransactions()
+    }
 }
 
-class Expense {
-  - categoryId: int
+' Forcing the vertical layout of layers (Hidden lines)
+LayerUI -[hidden]down-> LayerService
+LayerService -[hidden]down-> LayerModel
+LayerService -[hidden]down-> LayerDB
 
-  + addExpense()
-}
+' ================= Relationships =================
 
-Transaction <|-- Income
-Transaction <|-- Expense
-
-User "1" o-- "0..*" Transaction : records
-
-
-'======================
-' CATEGORY
-'======================
-
-class Category {
-  - categoryId: int
-  - name: String
-  - type: String
-
-  + createCategory()
-  + editCategory()
-  + deleteCategory()
-}
-
-User "1" o-- "0..*" Category : defines
-Category "1" <-- "0..*" Expense : used in
-
-
-'======================
-' BUDGET
-'======================
-
-class Budget {
-  - budgetId: int
-  - month: String
-  - totalLimit: double
-
-  + createBudget()
-  + updateBudget()
-  + calculateRemaining()
-  + checkBudgetStatus()
-}
-
-User "1" o-- "0..*" Budget
-Budget "1" o-- "1..*" Category : limits per category
-
-
-'======================
-' GOALS
-'======================
-
-class Goal {
-  - goalId: int
-  - targetAmount: double
-  - currentAmount: double
-  - progress: double
-
-  + setGoal()
-  + updateProgress()
-}
-
-User "1" o-- "0..*" Goal
-
-
-'======================
-' REPORTS & DASHBOARD
-'======================
-
-class Report {
-  - reportId: int
-  - month: String
-
-  + generateReport()
-  + showSummary()
-}
-
-class Dashboard {
-  + viewTotalIncome()
-  + viewTotalExpense()
-  + viewBalance()
-  + viewRecentTransactions()
-}
-
-User ..> Dashboard
-User ..> Report
-
-
-'======================
-' SERVICES (BUSINESS LOGIC LAYER)
-'======================
-
-class AuthService {
-  + signUp(name, email, password)
-  + login(email, password)
-  + validateCredentials()
-}
-
-class TransactionService {
-  + addIncome()
-  + addExpense()
-  + getTransactions()
-}
-
-class CategoryService {
-  + createCategory()
-  + editCategory()
-  + deleteCategory()
-}
-
-class BudgetService {
-  + createBudget()
-  + calculateRemainingBudget()
-  + checkBudgetLimit()
-  + trackBudgetUsage()
-}
-
-class ReportService {
-  + generateMonthlyReport()
-}
-
-class NotificationService {
-  + sendBudgetAlert()
-}
-
-
-'======================
-' DATABASE
-'======================
-
-class Database {
-  + save()
-  + update()
-  + delete()
-  + fetch()
-}
-
-AuthService --> Database
-TransactionService --> Database
-CategoryService --> Database
-BudgetService --> Database
-ReportService --> Database
-
-
-'======================
-' UI LAYER
-'======================
-
-class UI {
-  + showSignUp()
-  + showLogin()
-  + showDashboard()
-  + showAddIncomeForm()
-  + showAddExpenseForm()
-  + showBudgetScreen()
-  + showCategoryScreen()  
-  + submit()             
-  + login()              
-}
-
+' UI to Services
 UI --> AuthService
 UI --> TransactionService
 UI --> BudgetService
 UI --> CategoryService
 UI --> ReportService
 
+' Services to Database
+AuthService ..> IDatabase
+TransactionService ..> IDatabase
+CategoryService ..> IDatabase
+BudgetService ..> IDatabase
+ReportService ..> IDatabase
+Database ..|> IDatabase : implements
 
-'======================
-' RELATIONSHIPS (KEY LOGIC LINKS)
-'======================
+' Design Patterns Connections (Observer & Strategy)
+BudgetService o--> IObserver
+NotificationService ..|> IObserver : implements
+ReportService ..> IReportStrategy
+PDFReportStrategy ..|> IReportStrategy : implements
+ScreenReportStrategy ..|> IReportStrategy : implements
 
-BudgetService --> Budget
+' Services to Models Dependencies (Uses)
+TransactionService ..> Transaction
+CategoryService ..> Category
+BudgetService ..> Budget
+AuthService ..> User
 BudgetService --> Expense
 TransactionService --> Income
 TransactionService --> Expense
-BudgetService --> NotificationService
+
+' Models Inheritance
+User <|-- Admin
+Transaction <|-- Income
+Transaction <|-- Expense
+
+' Models Composition & Associations
+User "1" o-- "0..*" Transaction : records
+User "1" o-- "0..*" Category : defines
+Category "1" <-- "0..*" Expense : used in
+User "1" o-- "0..*" Budget
+Budget "1" o-- "1..*" Category : limits per category
+User "1" o-- "0..*" Goal
+User ..> Dashboard
+User ..> Report
+
+' - Separate all classes into three categories Model, View, Controllers, and Database to indicate MVC Design Pattern.
+' - Apply Observer pattern by make NotificationService implements IObserver interface.
+' - Let BudgetService (the observalble) to be owner of IObserver to notify it on updates.
+' - Apply Singleton Pattern on Database to ensure Dependency Inversion Princible.
+' - Apply Strategy Pattern by adding IReportStrategy interface that is implemented by two strategies (PDFReport, ScreenReport) and is used by ReportService.
+' - Change money types from double to BigDecimal to avoid floating-point precision problems
 
 @enduml

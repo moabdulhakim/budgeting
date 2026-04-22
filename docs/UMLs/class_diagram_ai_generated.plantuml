@@ -1,0 +1,193 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+' Layout hints to force packages into a vertical stack
+package "View (UI Layer)" as LayerUI {
+    class UI {
+        + showSignUp()
+        + showLogin()
+        + showDashboard()
+        + showAddIncomeForm()
+        + showAddExpenseForm()
+        + showBudgetScreen()
+        + showCategoryScreen()
+        + submitTransactionForm()
+        + login(email: String, password: String)
+    }
+}
+
+package "Controllers (Service Layer)" as LayerService {
+    class TransactionService {
+        + addIncome(amount: Decimal, source: String)
+        + addExpense(amount: Decimal, categoryId: int)
+        + getTransactions(startDate: Date, endDate: Date)
+    }
+    class ReportService {
+        + generateMonthlyReport(month: String)
+    }
+    class CategoryService {
+        + createCategory(name: String, type: String)
+        + editCategory(categoryId: int, newName: String)
+        + deleteCategory(categoryId: int)
+    }
+    class AuthService {
+        + signUp(name: String, email: String, password: String)
+        + login(email: String, password: String)
+        + validateCredentials()
+    }
+    class BudgetService {
+        - observers: List<IObserver>
+        + createBudget(limit: Decimal, month: String)
+        + calculateRemainingBudget()
+        + checkBudgetLimit()
+        + trackBudgetUsage()
+        + addObserver(obs: IObserver)
+        + notifyObservers()
+    }
+    interface IObserver <<Interface>> {
+        + update(data: Object)
+    }
+    class NotificationService {
+        + update(data: Object)
+        + sendBudgetAlert(userId: int, message: String)
+    }
+}
+
+package "Database Layer" as LayerDB {
+    interface IDatabase <<Interface>> {
+        + save(entity: Object)
+        + update(entity: Object)
+        + delete(entityId: int)
+        + fetch(query: String)
+    }
+    class Database <<Singleton>> {
+        - instance: Database
+        - Database()
+        + getInstance(): Database
+        + save(entity: Object)
+        + update(entity: Object)
+        + delete(entityId: int)
+        + fetch(query: String)
+    }
+}
+
+package "Models (Entity Layer)" as LayerModel {
+    class User {
+        - userId: int
+        - name: String
+        - email: String
+        - password: String
+        - balance: Decimal
+        + signUp()
+        + login()
+        + updateProfile()
+    }
+    class Admin {
+        + createDefaultCategory()
+        + manageUserAccount()
+        + generateSystemReport()
+    }
+    abstract class Transaction {
+        - transactionId: int
+        - amount: Decimal
+        - date: Date
+        - note: String
+        + getDetails()
+    }
+    class Income {
+        - source: String
+        + addIncome()
+    }
+    class Expense {
+        - categoryId: int
+        + addExpense()
+    }
+    class Goal {
+        - goalId: int
+        - targetAmount: Decimal
+        - currentAmount: Decimal
+        - progress: Decimal
+        + setGoal()
+        + updateProgress()
+    }
+    class Budget {
+        - budgetId: int
+        - month: String
+        - totalLimit: Decimal
+        + createBudget()
+        + updateBudget()
+        + calculateRemaining()
+        + checkBudgetStatus()
+    }
+    class Category {
+        - categoryId: int
+        - name: String
+        - type: String
+        + createCategory()
+        + editCategory()
+        + deleteCategory()
+    }
+    class Report {
+        - reportId: int
+        - month: String
+        + generateReport()
+        + showSummary()
+    }
+    class Dashboard {
+        + viewTotalIncome()
+        + viewTotalExpense()
+        + viewBalance()
+        + viewRecentTransactions()
+    }
+}
+
+' Forcing the vertical layout of layers (Hidden lines)
+LayerUI -[hidden]down-> LayerService
+LayerService -[hidden]down-> LayerModel
+LayerService -[hidden]down-> LayerDB
+
+' ================= Relationships =================
+
+' UI to Services
+UI --> TransactionService
+UI --> ReportService
+UI --> CategoryService
+UI --> AuthService
+UI --> BudgetService
+
+' Services to Database
+TransactionService ..> IDatabase
+ReportService ..> IDatabase
+CategoryService ..> IDatabase
+AuthService ..> IDatabase
+BudgetService ..> IDatabase
+Database ..|> IDatabase : implements
+
+' Observer Pattern Connections
+BudgetService o-> IObserver
+NotificationService ..|> IObserver : implements
+
+' Services to Models Dependencies (Uses)
+TransactionService ...> Transaction
+CategoryService ...> Category
+BudgetService ...> Budget
+AuthService ...> User
+
+' Models Inheritance
+Admin -up-|> User
+Income -up-|> Transaction
+Expense -up-|> Transaction
+
+' Models Composition & Associations
+User *--> "0..*" Transaction : records
+User *--> "0..*" Goal : sets
+User *--> "0..*" Budget : defines
+Budget --> "1..*" Category : limits per category
+Category <-- "0..*" Expense : used in
+User ..> Report : views
+User ..> Dashboard : views
+
+@enduml
