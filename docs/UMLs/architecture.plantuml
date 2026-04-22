@@ -9,26 +9,26 @@ package "Presentation Layer (UI)" {
   component "Mobile App (Android / iOS)" as MobileUI
   component "Web Application" as WebUI
 
-  component "Dashboard UI"
-  component "Transactions UI"
-  component "Budget UI"
-  component "Reports UI"
-  component "Goals UI"
-  component "Notifications UI"
+  component "Dashboard UI" as DashUI
+  component "Transactions UI" as TransUI
+  component "Budget UI" as BudgUI
+  component "Reports UI" as RepUI
+  component "Goals UI" as GoalUI
+  component "Notifications UI" as NotifUI
 
-  MobileUI --> "Dashboard UI"
-  MobileUI --> "Transactions UI"
-  MobileUI --> "Budget UI"
-  MobileUI --> "Reports UI"
-  MobileUI --> "Goals UI"
-  MobileUI --> "Notifications UI"
+  MobileUI --> DashUI
+  MobileUI --> TransUI
+  MobileUI --> BudgUI
+  MobileUI --> RepUI
+  MobileUI --> GoalUI
+  MobileUI --> NotifUI
 
-  WebUI --> "Dashboard UI"
-  WebUI --> "Transactions UI"
-  WebUI --> "Budget UI"
-  WebUI --> "Reports UI"
-  WebUI --> "Goals UI"
-  WebUI --> "Notifications UI"
+  WebUI --> DashUI
+  WebUI --> TransUI
+  WebUI --> BudgUI
+  WebUI --> RepUI
+  WebUI --> GoalUI
+  WebUI --> NotifUI
 }
 
 ' =========================
@@ -36,14 +36,14 @@ package "Presentation Layer (UI)" {
 ' =========================
 package "Application Layer (Business Logic)" {
 
-  component "Authentication Module"
-  component "User Management Module"
-  component "Transaction Management Module"
-  component "Budget Management Module"
-  component "Category Management Module"
-  component "Goal Management Module"
-  component "Report Module"
-  component "Notification Module"
+  component "Authentication Module" as AuthMod
+  component "User Management Module" as UserMod
+  component "Transaction Management Module" as TransMod
+  component "Budget Management Module" as BudgMod
+  component "Category Management Module" as CatMod
+  component "Goal Management Module" as GoalMod
+  component "Report Module" as RepMod
+  component "Notification Module" as NotifMod
 }
 
 ' =========================
@@ -53,12 +53,12 @@ package "Data Layer" {
 
   database "Main Database\n(AES-256 Encrypted)" as DB
 
-  component "User Repository"
-  component "Transaction Repository"
-  component "Budget Repository"
-  component "Category Repository"
-  component "Goal Repository"
-  component "Notification Repository"
+  component "User Repository" as UserRepo
+  component "Transaction Repository" as TransRepo
+  component "Budget Repository" as BudgRepo
+  component "Category Repository" as CatRepo
+  component "Goal Repository" as GoalRepo
+  component "Notification Repository" as NotifRepo
 }
 
 ' =========================
@@ -74,33 +74,34 @@ package "External Systems" {
 ' =========================
 
 ' UI -> Business
-MobileUI --> "Authentication Module"
-WebUI --> "Authentication Module"
+MobileUI --> AuthMod
+WebUI --> AuthMod
 
-"Dashboard UI" --> "Transaction Management Module"
-"Transactions UI" --> "Transaction Management Module"
-"Budget UI" --> "Budget Management Module"
-"Reports UI" --> "Report Module"
-"Goals UI" --> "Goal Management Module"
-"Notifications UI" --> "Notification Module"
+DashUI --> TransMod
+TransUI --> TransMod
+BudgUI --> BudgMod
+RepUI --> RepMod
+GoalUI --> GoalMod
+NotifUI --> NotifMod
 
 ' Business -> Data
-"User Management Module" --> "User Repository"
-"Transaction Management Module" --> "Transaction Repository"
-"Budget Management Module" --> "Budget Repository"
-"Category Management Module" --> "Category Repository"
-"Goal Management Module" --> "Goal Repository"
-"Notification Module" --> "Notification Repository"
+UserMod --> UserRepo
+TransMod --> TransRepo
+BudgMod --> BudgRepo
+CatMod --> CatRepo
+GoalMod --> GoalRepo
+NotifMod --> NotifRepo
 
-"User Repository" --> DB
-"Transaction Repository" --> DB
-"Budget Repository" --> DB
-"Category Repository" --> DB
-"Goal Repository" --> DB
-"Notification Repository" --> DB
+' Repositories -> Database
+UserRepo --> DB
+TransRepo --> DB
+BudgRepo --> DB
+CatRepo --> DB
+GoalRepo --> DB
+NotifRepo --> DB
 
 ' External Integration
-"Transaction Management Module" --> BankAPI
-"Transaction Management Module" --> WalletAPI
+TransMod --> BankAPI
+TransMod --> WalletAPI
 
 @enduml
