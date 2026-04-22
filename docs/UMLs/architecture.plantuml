@@ -1,0 +1,106 @@
+@startuml
+title Layered Architecture - Personal Budgeting System
+
+' =========================
+' PRESENTATION LAYER
+' =========================
+package "Presentation Layer (UI)" {
+
+  component "Mobile App (Android / iOS)" as MobileUI
+  component "Web Application" as WebUI
+
+  component "Dashboard UI"
+  component "Transactions UI"
+  component "Budget UI"
+  component "Reports UI"
+  component "Goals UI"
+  component "Notifications UI"
+
+  MobileUI --> "Dashboard UI"
+  MobileUI --> "Transactions UI"
+  MobileUI --> "Budget UI"
+  MobileUI --> "Reports UI"
+  MobileUI --> "Goals UI"
+  MobileUI --> "Notifications UI"
+
+  WebUI --> "Dashboard UI"
+  WebUI --> "Transactions UI"
+  WebUI --> "Budget UI"
+  WebUI --> "Reports UI"
+  WebUI --> "Goals UI"
+  WebUI --> "Notifications UI"
+}
+
+' =========================
+' APPLICATION / BUSINESS LAYER
+' =========================
+package "Application Layer (Business Logic)" {
+
+  component "Authentication Module"
+  component "User Management Module"
+  component "Transaction Management Module"
+  component "Budget Management Module"
+  component "Category Management Module"
+  component "Goal Management Module"
+  component "Report Module"
+  component "Notification Module"
+}
+
+' =========================
+' DATA LAYER
+' =========================
+package "Data Layer" {
+
+  database "Main Database\n(AES-256 Encrypted)" as DB
+
+  component "User Repository"
+  component "Transaction Repository"
+  component "Budget Repository"
+  component "Category Repository"
+  component "Goal Repository"
+  component "Notification Repository"
+}
+
+' =========================
+' EXTERNAL SYSTEMS
+' =========================
+package "External Systems" {
+  component "Bank API (OAuth2)" as BankAPI
+  component "E-Wallet API" as WalletAPI
+}
+
+' =========================
+' CONNECTIONS
+' =========================
+
+' UI -> Business
+MobileUI --> "Authentication Module"
+WebUI --> "Authentication Module"
+
+"Dashboard UI" --> "Transaction Management Module"
+"Transactions UI" --> "Transaction Management Module"
+"Budget UI" --> "Budget Management Module"
+"Reports UI" --> "Report Module"
+"Goals UI" --> "Goal Management Module"
+"Notifications UI" --> "Notification Module"
+
+' Business -> Data
+"User Management Module" --> "User Repository"
+"Transaction Management Module" --> "Transaction Repository"
+"Budget Management Module" --> "Budget Repository"
+"Category Management Module" --> "Category Repository"
+"Goal Management Module" --> "Goal Repository"
+"Notification Module" --> "Notification Repository"
+
+"User Repository" --> DB
+"Transaction Repository" --> DB
+"Budget Repository" --> DB
+"Category Repository" --> DB
+"Goal Repository" --> DB
+"Notification Repository" --> DB
+
+' External Integration
+"Transaction Management Module" --> BankAPI
+"Transaction Management Module" --> WalletAPI
+
+@enduml
