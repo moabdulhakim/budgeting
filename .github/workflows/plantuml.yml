@@ -1,36 +1,37 @@
-name: Generate PlantUML Diagrams
+name: Generate High-Quality UML Diagrams
 
 on:
   push:
     paths:
-      - '**.puml'      # هيشتغل بس لو حد عدل في ملفات الـ PlantUML
+      - '**.puml'
       - '**.plantuml'
+  workflow_dispatch: # بيسمح لك تشغل الأكشن مانيوال لو احتجت
 
 jobs:
-  generate-diagrams:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # ضروري عشان الـ Action يقدر يعمل Push للصور
+      contents: write # ضروري عشان الأكشن يقدر يرفع الصور الجديدة للـ Repo
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # عشان يجيب الـ History كله ويقدر يعمل Commit صح
+          fetch-depth: 0
 
       - name: Install PlantUML & Graphviz
         run: |
           sudo apt-get update
           sudo apt-get install -y plantuml graphviz
 
-      - name: Generate PNG Images from UML
+      - name: Generate SVG Diagrams
         run: |
-          # هيلف على كل الملفات اللي امتدادها .puml ويحولها لصور في نفس الفولدر
-          find . -name "*.puml" -exec plantuml -tpng {} \;
-          find . -name "*.plantuml" -exec plantuml -tpng {} \;
+          # الكود ده بيلف على كل الملفات ويحولها لـ SVG بجودة خرافية
+          find . -name "*.puml" -exec plantuml -tsvg {} \;
+          find . -name "*.plantuml" -exec plantuml -tsvg {} \;
 
-      - name: Commit and Push Generated Images
+      - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: auto-generate PlantUML images"
-          file_pattern: "*.png"
+          commit_message: "docs: auto-generate high-quality UML SVGs"
+          file_pattern: "*.svg"
