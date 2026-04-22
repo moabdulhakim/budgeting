@@ -1,0 +1,163 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class UI {
+  + showSignUp()
+  + showLogin()
+  + showDashboard()
+  + showAddIncomeForm()
+  + showAddExpenseForm()
+  + showBudgetScreen()
+  + showCategoryScreen()
+  + submit()
+  + login(email, password)
+}
+
+class TransactionService {
+  + addIncome()
+  + addExpense()
+  + getTransactions()
+}
+
+class ReportService {
+  + generateMonthlyReport()
+}
+
+class CategoryService {
+  + createCategory()
+  + editCategory()
+  + deleteCategory()
+}
+
+class AuthService {
+  + signUp(name, email, password)
+  + login(email, password)
+  + validateCredentials()
+}
+
+class BudgetService {
+  + createBudget()
+  + calculateRemainingBudget()
+  + checkBudgetLimit()
+  + trackBudgetUsage()
+}
+
+class NotificationService {
+  + sendBudgetAlert()
+}
+
+class Database {
+  + save()
+  + update()
+  + delete()
+  + fetch()
+}
+
+class User {
+  - userId: int
+  - name: String
+  - email: String
+  - password: String
+  - balance: double
+  + signUp()
+  + login()
+  + updateProfile()
+}
+
+class Admin {
+  + createDefaultCategory()
+  + manageUserAccount()
+  + generateSystemReport()
+}
+
+abstract class Transaction << (A,#FF7700) >> {
+  - transactionId: int
+  - amount: double
+  - date: Date
+  - note: String
+  + getDetails()
+}
+
+class Goal {
+  - goalId: int
+  - targetAmount: double
+  - currentAmount: double
+  - progress: double
+  + setGoal()
+  + updateProgress()
+}
+
+class Budget {
+  - budgetId: int
+  - month: String
+  - totalLimit: double
+  + createBudget()
+  + updateBudget()
+  + calculateRemaining()
+  + checkBudgetStatus()
+}
+
+class Category {
+  - categoryId: int
+  - name: String
+  - type: String
+  + createCategory()
+  + editCategory()
+  + deleteCategory()
+}
+
+class Income {
+  - source: String
+  + addIncome()
+}
+
+class Expense {
+  - categoryId: int
+  + addExpense()
+}
+
+class Report {
+  - reportId: int
+  - month: String
+  + generateReport()
+  + showSummary()
+}
+
+class Dashboard {
+  + viewTotalIncome()
+  + viewTotalExpense()
+  + viewBalance()
+  + viewRecentTransactions()
+}
+
+' ================= Relationships =================
+
+UI --> TransactionService
+UI --> ReportService
+UI --> CategoryService
+UI --> AuthService
+UI --> BudgetService
+
+TransactionService --> Database
+ReportService --> Database
+CategoryService --> Database
+AuthService --> Database
+BudgetService --> Database
+
+BudgetService --> NotificationService
+
+Admin -up-|> User
+Income -up-|> Transaction
+Expense -up-|> Transaction
+
+User "1" o--> "0..*" Transaction : records
+User "1" o--> "0..*" Goal 
+User "1" o--> "0..*" Budget : defines
+
+Budget "0..*" --> "1..1" Category : limits per category
+Category "1" --> "0..*" Expense : used in
+
+User ..> Report
+User ..> Dashboard
+
+@enduml
