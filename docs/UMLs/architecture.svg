@@ -1,4 +1,67 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="320px" preserveAspectRatio="none" style="width:443px;height:320px;background:#000000;" version="1.1" viewBox="0 0 443 320" width="443px" zoomAndPan="magnify"><defs/><g><rect fill="#04000B" height="1" style="stroke: #04000B; stroke-width: 1.0;" width="1" x="0" y="0"/><rect fill="#33FF02" height="21.2969" style="stroke: #33FF02; stroke-width: 1.0;" width="436" x="5" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="301" x="6" y="20">[From architecture.plantuml (line 19) ]</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="40.2969"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="79" x="5" y="56.5938">@startuml</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="436" x="5" y="72.8906">title Layered Architecture - Personal Budgeting System</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="89.1875"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="282" x="5" y="105.4844">package "Presentation Layer (UI)" {</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="121.7813"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="409" x="15" y="138.0781">component "Mobile App (Android / iOS)" as MobileUI</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="313" x="15" y="154.375">component "Web Application" as WebUI</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="170.6719"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="213" x="15" y="186.9688">component "Dashboard UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="230" x="15" y="203.2656">component "Transactions UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="184" x="15" y="219.5625">component "Budget UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="190" x="15" y="235.8594">component "Reports UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="172" x="15" y="252.1563">component "Goals UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="226" x="15" y="268.4531">component "Notifications UI"</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="284.75"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="219" x="15" y="301.0469">MobileUI --&gt; "Dashboard UI"</text><text fill="#FF0000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="10" y="317.3438">Syntax Error?</text><!--MD5=[e931bf2fb73c4f6ab28e3d99c10e764b]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="583px" preserveAspectRatio="none" style="width:1880px;height:583px;" version="1.1" viewBox="0 0 1880 583" width="1880px" zoomAndPan="magnify"><defs><filter height="300%" id="f1dls8eyotpscg" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="448" x="722" y="16.708">Layered Architecture - Personal Budgeting System</text><!--MD5=[46a74c94f9dfea7fce37a1b9e1ae233e]
+cluster Presentation Layer (UI)--><polygon fill="#FFFFFF" filter="url(#f1dls8eyotpscg)" points="740,44.9531,928,44.9531,935,67.25,1565,67.25,1565,227.9531,740,227.9531,740,44.9531" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="740" x2="935" y1="67.25" y2="67.25"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="182" x="744" y="59.9482">Presentation Layer (UI)</text><!--MD5=[7928781ffea2ed9e1e34b48ccf23824c]
+cluster Application Layer (Business Logic)--><polygon fill="#FFFFFF" filter="url(#f1dls8eyotpscg)" points="22,251.9531,299,251.9531,306,274.25,1858,274.25,1858,338.9531,22,338.9531,22,251.9531" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="22" x2="306" y1="274.25" y2="274.25"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="271" x="26" y="266.9482">Application Layer (Business Logic)</text><!--MD5=[023fe2768d341cd525e8503fdfbee177]
+cluster Data Layer--><polygon fill="#FFFFFF" filter="url(#f1dls8eyotpscg)" points="112,362.9531,202,362.9531,209,385.25,1243,385.25,1243,571.9531,112,571.9531,112,362.9531" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="112" x2="209" y1="385.25" y2="385.25"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="84" x="116" y="377.9482">Data Layer</text><!--MD5=[56958750488fff09e2ce92554dc9497d]
+cluster External Systems--><polygon fill="#FFFFFF" filter="url(#f1dls8eyotpscg)" points="1277,362.9531,1419,362.9531,1426,385.25,1590,385.25,1590,449.9531,1277,449.9531,1277,362.9531" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="1277" x2="1426" y1="385.25" y2="385.25"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="136" x="1281" y="377.9482">External Systems</text><!--MD5=[377ef8d79e34107c183e593cd2e831d6]
+entity MobileUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="199" x="1013.5" y="79.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1008.5" y="84.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1008.5" y="106.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="179" x="1023.5" y="102.9482">Mobile App (Android / iOS)</text><!--MD5=[cda190aec85529d7ef2e1486252d4310]
+entity WebUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="130" x="1248" y="79.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1243" y="84.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1243" y="106.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="110" x="1258" y="102.9482">Web Application</text><!--MD5=[29cda369bef97a8e3ac514e60d2aa6f2]
+entity DashUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="113" x="1147.5" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1142.5" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1142.5" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="93" x="1157.5" y="198.9482">Dashboard UI</text><!--MD5=[dcc698b6bc5bcb54df608e0b97d636b2]
+entity TransUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="126" x="1296" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1291" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1291" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="106" x="1306" y="198.9482">Transactions UI</text><!--MD5=[2f9506bc02f1393f0c4bc840be60c105]
+entity BudgUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="88" x="1024" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1019" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1019" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="68" x="1034" y="198.9482">Budget UI</text><!--MD5=[9e556b12b401e9facb6ea2ba709d076a]
+entity RepUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="92" x="1457" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1452" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1452" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="72" x="1467" y="198.9482">Reports UI</text><!--MD5=[3ba6d21bca5a7fdbc3b9707e151bc421]
+entity GoalUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="76" x="756" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="751" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="751" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="56" x="766" y="198.9482">Goals UI</text><!--MD5=[9df5601b4bc798be31ce48ed1070c402]
+entity NotifUI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="121" x="867.5" y="175.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="862.5" y="180.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="862.5" y="202.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="101" x="877.5" y="198.9482">Notifications UI</text><!--MD5=[1826142213900e0a48658c9a6a202286]
+entity AuthMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="175" x="1666.5" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1661.5" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1661.5" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="155" x="1676.5" y="309.9482">Authentication Module</text><!--MD5=[efa0554eefd8ab77a0e7490f65d83200]
+entity UserMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="202" x="985" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="980" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="980" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="182" x="995" y="309.9482">User Management Module</text><!--MD5=[fb1d843f990a839ccebd1492575974e7]
+entity TransMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="251" x="1222.5" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1217.5" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1217.5" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="231" x="1232.5" y="309.9482">Transaction Management Module</text><!--MD5=[e116c979100d9f68addcb1da8428701a]
+entity BudgMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="221" x="728.5" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="723.5" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="723.5" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="201" x="738.5" y="309.9482">Budget Management Module</text><!--MD5=[4d8f715e7ddd452ca5a49f786d748c82]
+entity CatMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="232" x="461" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="456" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="456" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="212" x="471" y="309.9482">Category Management Module</text><!--MD5=[2a132d9a8b8c475204e2b4a273753ce3]
+entity GoalMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="201" x="38.5" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="33.5" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="33.5" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="181" x="48.5" y="309.9482">Goal Management Module</text><!--MD5=[4a58c86af9ed65e06c90ff7830bd4294]
+entity RepMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="122" x="1509" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1504" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1504" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="102" x="1519" y="309.9482">Report Module</text><!--MD5=[e05ec3d089bfbe5802601aa52304c0a9]
+entity NotifMod--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="151" x="274.5" y="286.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="269.5" y="291.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="269.5" y="313.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="131" x="284.5" y="309.9482">Notification Module</text><!--MD5=[f9ba5bf973e7832d2ce5ed59077b93f7]
+entity DB--><path d="M595.5,503.9531 C595.5,493.9531 677,493.9531 677,493.9531 C677,493.9531 758.5,493.9531 758.5,503.9531 L758.5,545.5469 C758.5,555.5469 677,555.5469 677,555.5469 C677,555.5469 595.5,555.5469 595.5,545.5469 L595.5,503.9531 " fill="#FEFECE" filter="url(#f1dls8eyotpscg)" style="stroke: #000000; stroke-width: 1.5;"/><path d="M595.5,503.9531 C595.5,513.9531 677,513.9531 677,513.9531 C677,513.9531 758.5,513.9531 758.5,503.9531 " fill="none" style="stroke: #000000; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="102" x="605.5" y="530.9482">Main Database</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="143" x="605.5" y="547.2451">(AES-256 Encrypted)</text><!--MD5=[4c773c7329bb2adf334e1bb95f268202]
+entity UserRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="130" x="882" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="877" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="877" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="110" x="892" y="420.9482">User Repository</text><!--MD5=[ddd745815a5b2e31c47c845fbc2fbe89]
+entity TransRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="179" x="1047.5" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1042.5" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1042.5" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="159" x="1057.5" y="420.9482">Transaction Repository</text><!--MD5=[9f52f0c6a940b1702de51f9a2964288d]
+entity BudgRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="149" x="697.5" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="692.5" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="692.5" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="129" x="707.5" y="420.9482">Budget Repository</text><!--MD5=[3559ce6061f63a7efd574d6cd53bf9d9]
+entity CatRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="160" x="502" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="497" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="497" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="140" x="512" y="420.9482">Category Repository</text><!--MD5=[90658d694bc7d94a26ad24c518de0e83]
+entity GoalRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="129" x="128.5" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="123.5" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="123.5" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="109" x="138.5" y="420.9482">Goal Repository</text><!--MD5=[163558d70e7dafd656acee8693091fdd]
+entity NotifRepo--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="174" x="293" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="288" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="288" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="154" x="303" y="420.9482">Notification Repository</text><!--MD5=[080c431ad92f74352321921b83d351b7]
+entity BankAPI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="146" x="1428" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1423" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1423" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="126" x="1438" y="420.9482">Bank API (OAuth2)</text><!--MD5=[9c5fe56f162cbbda1618be4e9095fb79]
+entity WalletAPI--><rect fill="#FEFECE" filter="url(#f1dls8eyotpscg)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="100" x="1293" y="397.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1288" y="402.9531"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1288" y="424.25"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="80" x="1303" y="420.9482">E-Wallet API</text><!--MD5=[ea25aa227543b55472d45c7c2e39f5cf]
+link MobileUI to DashUI--><path d="M1129.69,116.1931 C1144.96,131.9631 1167.57,155.3231 1183.84,172.1231 " fill="none" id="MobileUI-&gt;DashUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1187.42,175.8231,1184.0338,166.5747,1183.9422,172.2308,1178.2861,172.1392,1187.42,175.8231" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[246eff7233f83c7fdcd08dd2299f65cf]
+link MobileUI to TransUI--><path d="M1157.55,115.9731 C1200.43,132.3631 1265.15,157.0931 1309.59,174.0731 " fill="none" id="MobileUI-&gt;TransUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1314.37,175.9031,1307.3915,168.9532,1309.6996,174.1178,1304.535,176.4259,1314.37,175.9031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[b133195c331852bf638114ae92f9ea20]
+link MobileUI to BudgUI--><path d="M1104.75,116.1931 C1097.32,131.6931 1086.39,154.5431 1078.38,171.2731 " fill="none" id="MobileUI-&gt;BudgUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1076.2,175.8231,1083.6895,169.4272,1078.3558,171.3117,1076.4713,165.978,1076.2,175.8231" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[8bbb237d3e1b0be3a6f1a67392395212]
+link MobileUI to RepUI--><path d="M1188.5,116.0031 C1254.88,131.1631 1354.05,154.2431 1440,175.9531 C1443.86,176.9331 1447.85,177.9531 1451.86,179.0031 " fill="none" id="MobileUI-&gt;RepUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1456.94,180.3431,1449.2507,174.1889,1452.1039,179.0735,1447.2193,181.9266,1456.94,180.3431" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[fc2464b7f1cd4058df17f7782f9e0bfb]
+link MobileUI to GoalUI--><path d="M1054.19,115.9931 C1000.86,131.4831 920.1,155.0531 850,175.9531 C845.87,177.1831 841.57,178.4731 837.28,179.7731 " fill="none" id="MobileUI-&gt;GoalUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="832.24,181.2931,842.0115,182.5249,837.0272,179.8498,839.7023,174.8655,832.24,181.2931" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[8174e3461d615b28c7b670ab39583e45]
+link MobileUI to NotifUI--><path d="M1079.5,115.9731 C1047.64,132.1631 999.76,156.4931 966.38,173.4531 " fill="none" id="MobileUI-&gt;NotifUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="961.56,175.9031,971.395,175.3805,966.0149,173.6329,967.7626,168.2527,961.56,175.9031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[fd5eea8056de6fe25e31940c3fc0b8da]
+link WebUI to DashUI--><path d="M1293.26,115.9731 C1274.86,131.8431 1247.37,155.5431 1227.77,172.4531 " fill="none" id="WebUI-&gt;DashUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1223.96,175.7431,1233.385,172.8851,1227.7432,172.4739,1228.1543,166.832,1223.96,175.7431" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[c60acb1be5478c0119ad972c95d36406]
+link WebUI to TransUI--><path d="M1321.44,116.1931 C1329.02,131.6931 1340.2,154.5431 1348.39,171.2731 " fill="none" id="WebUI-&gt;TransUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1350.62,175.8231,1350.2483,165.9813,1348.4183,171.334,1343.0656,169.504,1350.62,175.8231" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[5a659ca21776429645d79dcc93d63d34]
+link WebUI to BudgUI--><path d="M1268.63,115.9731 C1225.79,132.4131 1161.07,157.2431 1116.79,174.2331 " fill="none" id="WebUI-&gt;BudgUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1112.04,176.0531,1121.875,176.5759,1116.7104,174.2678,1119.0185,169.1032,1112.04,176.0531" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[262d22b8928603f1cf1121cc85379158]
+link WebUI to RepUI--><path d="M1347.41,115.9731 C1380.26,132.2331 1429.7,156.6931 1464,173.6631 " fill="none" id="WebUI-&gt;RepUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1468.53,175.9031,1462.2303,168.3326,1464.0465,173.6899,1458.6891,175.5062,1468.53,175.9031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[28a859a13c90050f0c34bb5b26f06717]
+link WebUI to GoalUI--><path d="M1247.81,112.5931 C1241.8,113.7631 1235.79,114.9031 1230,115.9531 C1061.76,146.4531 1016.65,137.6931 850,175.9531 C845.8,176.9131 841.46,178.0331 837.13,179.2131 " fill="none" id="WebUI-&gt;GoalUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="832.07,180.6331,841.8138,182.068,836.8862,179.2897,839.6644,174.3621,832.07,180.6331" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[9e0342bc39ce21719473d830906065b9]
+link WebUI to NotifUI--><path d="M1247.69,114.9031 C1176.88,132.1931 1064.5,159.6231 993.58,176.9431 " fill="none" id="WebUI-&gt;NotifUI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="988.55,178.1731,998.2419,179.9246,993.4074,176.9874,996.3446,172.1529,988.55,178.1731" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[0ac17a0eab709151d1b29de9cf3e3c4e]
+link MobileUI to AuthMod--><path d="M1212.71,113.5431 C1336.32,131.9831 1534.73,162.9131 1567,175.9531 C1601.01,189.7031 1684.7,251.3431 1727.65,283.8031 " fill="none" id="MobileUI-&gt;AuthMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1731.67,286.8531,1726.9045,278.234,1727.682,283.8371,1722.0789,284.6147,1731.67,286.8531" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[f054391000cbd2ea362f7603bd0a5010]
+link WebUI to AuthMod--><path d="M1378.2,106.6831 C1468.81,118.4431 1626.96,142.9931 1674,175.9531 C1711.74,202.3931 1735.37,252.8931 1746.48,281.9331 " fill="none" id="WebUI-&gt;AuthMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1748.28,286.7531,1748.8652,276.9217,1746.5244,282.0715,1741.3746,279.7307,1748.28,286.7531" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[6136bbc7ad4aa34f9b25cc2471f63f25]
+link DashUI to TransMod--><path d="M1226.5,211.9831 C1252.03,231.3131 1293.65,262.8131 1320.93,283.4631 " fill="none" id="DashUI-&gt;TransMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1325.18,286.6831,1320.4145,278.064,1321.192,283.6671,1315.5889,284.4447,1325.18,286.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[c8970333812d7e081699a6ef5479a234]
+link TransUI to TransMod--><path d="M1357.28,211.9831 C1355.39,230.7531 1352.33,261.0031 1350.25,281.6531 " fill="none" id="TransUI-&gt;TransMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1349.74,286.6831,1354.6181,278.1272,1350.2389,281.7081,1346.658,277.3289,1349.74,286.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[c15a97d4a37286a477c6cacb4af217c8]
+link BudgUI to BudgMod--><path d="M1046.48,212.1131 C1035.05,220.4431 1020.41,229.9331 1006,235.9531 C990.08,242.6131 984.38,238.5031 968,243.9531 C935.57,254.7531 900.5,271.4131 875.13,284.4331 " fill="none" id="BudgUI-&gt;BudgMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="870.51,286.8231,880.3429,286.2627,874.9561,284.5357,876.6831,279.1489,870.51,286.8231" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[364c838f3f3badedd3008ba7516c0d5a]
+link RepUI to RepMod--><path d="M1513.47,211.9831 C1525.1,230.9131 1543.92,261.5231 1556.61,282.1731 " fill="none" id="RepUI-&gt;RepMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1559.38,286.6831,1558.0698,276.9218,1556.7595,282.4248,1551.2565,281.1146,1559.38,286.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[6b7dd8983e5d30afd52caa9dcd1cbfda]
+link GoalUI to GoalMod--><path d="M755.85,196.5631 C649.44,201.3431 351,216.8531 257,243.9531 C225.74,252.9631 192.97,270.3631 169.92,284.1031 " fill="none" id="GoalUI-&gt;GoalMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="165.44,286.8031,175.2125,285.5787,169.7212,284.2202,171.0797,278.7289,165.44,286.8031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[244fce78d08202da8c17c75f7c2ba35e]
+link NotifUI to NotifMod--><path d="M902.52,212.0031 C887.61,220.9831 868.02,231.1131 849,235.9531 C805.27,247.0831 486.15,230.7731 443,243.9531 C417.08,251.8631 391.49,269.2731 373.74,283.3131 " fill="none" id="NotifUI-&gt;NotifMod" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="369.4,286.8031,378.9232,284.2916,373.3002,283.6744,373.9173,278.0513,369.4,286.8031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[30d3f9a6f80e3edc3ba034571f9a505a]
+link UserMod to UserRepo--><path d="M1064.28,322.9831 C1039.64,342.3131 999.46,373.8131 973.13,394.4631 " fill="none" id="UserMod-&gt;UserRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="969.02,397.6831,978.5685,395.2695,972.9521,394.5946,973.627,388.9782,969.02,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[8f2062183315c16c77144980d7121efc]
+link TransMod to TransRepo--><path d="M1315.03,322.9831 C1277.05,342.6031 1214.76,374.7831 1174.84,395.4031 " fill="none" id="TransMod-&gt;TransRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1170.08,397.8631,1179.9114,397.2777,1174.5203,395.5645,1176.2336,390.1733,1170.08,397.8631" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[5f824fa81e9380092684f435a2a80094]
+link BudgMod to BudgRepo--><path d="M828.53,322.9831 C816.9,341.9131 798.08,372.5231 785.39,393.1731 " fill="none" id="BudgMod-&gt;BudgRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="782.62,397.6831,790.7435,392.1146,785.2405,393.4248,783.9302,387.9218,782.62,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[14eb838bfdf3aed3dfc8292d010ce2f2]
+link CatMod to CatRepo--><path d="M577.78,322.9831 C578.64,341.7531 580.03,372.0031 580.98,392.6531 " fill="none" id="CatMod-&gt;CatRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="581.21,397.6831,584.7948,388.5098,580.9817,392.6883,576.8032,388.8752,581.21,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[e6655b5adde0bf61d9b052db6699040d]
+link GoalMod to GoalRepo--><path d="M147.44,322.9831 C156.81,341.9131 171.98,372.5231 182.21,393.1731 " fill="none" id="GoalMod-&gt;GoalRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="184.44,397.6831,184.0054,387.8439,182.2097,393.2081,176.8454,391.4124,184.44,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[eabac9c371fb4bf965554c57fb7a0d37]
+link NotifMod to NotifRepo--><path d="M354.69,322.9831 C359.85,341.7531 368.18,372.0031 373.86,392.6531 " fill="none" id="NotifMod-&gt;NotifRepo" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="375.25,397.6831,376.7191,387.9444,373.9236,392.8623,369.0057,390.0668,375.25,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[d7aadd756634531d570725b29ab2da80]
+link UserRepo to DB--><path d="M914.7,434.0331 C899.51,441.7731 881.03,450.7731 864,457.9531 C831.78,471.5431 795.69,484.7331 763.88,495.7131 " fill="none" id="UserRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="758.81,497.4531,768.6197,498.3309,763.5419,495.8377,766.035,490.7599,758.81,497.4531" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[b2d549afaad9d2468ce580f9de1411a3]
+link TransRepo to DB--><path d="M1097.69,433.9831 C1077.71,442.1231 1052.88,451.4931 1030,457.9531 C940.65,483.2031 835.79,501.4131 763.71,512.2231 " fill="none" id="TransRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="758.58,512.9931,768.0745,515.6111,763.5245,512.25,766.8856,507.7,758.58,512.9931" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[0dd6a01649927247f89e67b066f49eb2]
+link BudgRepo to DB--><path d="M756.74,434.1431 C743.47,449.0831 723.86,471.1731 707.41,489.7031 " fill="none" id="BudgRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="703.73,493.8431,712.6912,489.7569,707.0447,490.0998,706.7018,484.4533,703.73,493.8431" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[e8eae1c26b119471e03c175fe337e24b]
+link CatRepo to DB--><path d="M597.26,434.1431 C610.53,449.0831 630.14,471.1731 646.59,489.7031 " fill="none" id="CatRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="650.27,493.8431,647.2982,484.4533,646.9553,490.0998,641.3088,489.7569,650.27,493.8431" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[a4765c572c4b784f41b9e7da65a16b64]
+link GoalRepo to DB--><path d="M221.7,433.9731 C237.04,442.3831 256.53,451.9731 275,457.9531 C380.34,492.0731 507.19,509.1431 589.84,517.2531 " fill="none" id="GoalRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="595.22,517.7831,586.6378,512.9514,590.2423,517.3111,585.8826,520.9156,595.22,517.7831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[f8f86d43f5cbb6476bb736fa289cee8c]
+link NotifRepo to DB--><path d="M422.08,434.0531 C440.94,441.5831 463.51,450.4131 484,457.9531 C518.69,470.7131 557.17,484.0431 590.59,495.3431 " fill="none" id="NotifRepo-&gt;DB" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="595.48,497.0031,588.2308,490.3361,590.7423,495.4049,585.6736,497.9164,595.48,497.0031" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[aafb973f9deca4113e2dc8f6d9952daf]
+link TransMod to BankAPI--><path d="M1371.91,322.9831 C1399.22,342.4431 1443.88,374.2631 1472.85,394.9031 " fill="none" id="TransMod-&gt;BankAPI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1477.01,397.8631,1472.0001,389.3837,1472.9375,394.9623,1467.3588,395.8997,1477.01,397.8631" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[de36bd7ffbf463c225ea3099eedb90f0]
+link TransMod to WalletAPI--><path d="M1347.22,322.9831 C1346.36,341.7531 1344.97,372.0031 1344.02,392.6531 " fill="none" id="TransMod-&gt;WalletAPI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="1343.79,397.6831,1348.1968,388.8752,1344.0183,392.6883,1340.2052,388.5098,1343.79,397.6831" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[4cd1f9ea8dae4535412eb588351c5016]
 @startuml
 title Layered Architecture - Personal Budgeting System
 
@@ -7,50 +70,50 @@ package "Presentation Layer (UI)" {
   component "Mobile App (Android / iOS)" as MobileUI
   component "Web Application" as WebUI
 
-  component "Dashboard UI"
-  component "Transactions UI"
-  component "Budget UI"
-  component "Reports UI"
-  component "Goals UI"
-  component "Notifications UI"
+  component "Dashboard UI" as DashUI
+  component "Transactions UI" as TransUI
+  component "Budget UI" as BudgUI
+  component "Reports UI" as RepUI
+  component "Goals UI" as GoalUI
+  component "Notifications UI" as NotifUI
 
-  MobileUI - -> "Dashboard UI"
-  MobileUI - -> "Transactions UI"
-  MobileUI - -> "Budget UI"
-  MobileUI - -> "Reports UI"
-  MobileUI - -> "Goals UI"
-  MobileUI - -> "Notifications UI"
+  MobileUI - -> DashUI
+  MobileUI - -> TransUI
+  MobileUI - -> BudgUI
+  MobileUI - -> RepUI
+  MobileUI - -> GoalUI
+  MobileUI - -> NotifUI
 
-  WebUI - -> "Dashboard UI"
-  WebUI - -> "Transactions UI"
-  WebUI - -> "Budget UI"
-  WebUI - -> "Reports UI"
-  WebUI - -> "Goals UI"
-  WebUI - -> "Notifications UI"
+  WebUI - -> DashUI
+  WebUI - -> TransUI
+  WebUI - -> BudgUI
+  WebUI - -> RepUI
+  WebUI - -> GoalUI
+  WebUI - -> NotifUI
 }
 
 package "Application Layer (Business Logic)" {
 
-  component "Authentication Module"
-  component "User Management Module"
-  component "Transaction Management Module"
-  component "Budget Management Module"
-  component "Category Management Module"
-  component "Goal Management Module"
-  component "Report Module"
-  component "Notification Module"
+  component "Authentication Module" as AuthMod
+  component "User Management Module" as UserMod
+  component "Transaction Management Module" as TransMod
+  component "Budget Management Module" as BudgMod
+  component "Category Management Module" as CatMod
+  component "Goal Management Module" as GoalMod
+  component "Report Module" as RepMod
+  component "Notification Module" as NotifMod
 }
 
 package "Data Layer" {
 
   database "Main Database\n(AES-256 Encrypted)" as DB
 
-  component "User Repository"
-  component "Transaction Repository"
-  component "Budget Repository"
-  component "Category Repository"
-  component "Goal Repository"
-  component "Notification Repository"
+  component "User Repository" as UserRepo
+  component "Transaction Repository" as TransRepo
+  component "Budget Repository" as BudgRepo
+  component "Category Repository" as CatRepo
+  component "Goal Repository" as GoalRepo
+  component "Notification Repository" as NotifRepo
 }
 
 package "External Systems" {
@@ -59,32 +122,32 @@ package "External Systems" {
 }
 
 
-MobileUI - -> "Authentication Module"
-WebUI - -> "Authentication Module"
+MobileUI - -> AuthMod
+WebUI - -> AuthMod
 
-"Dashboard UI" - -> "Transaction Management Module"
-"Transactions UI" - -> "Transaction Management Module"
-"Budget UI" - -> "Budget Management Module"
-"Reports UI" - -> "Report Module"
-"Goals UI" - -> "Goal Management Module"
-"Notifications UI" - -> "Notification Module"
+DashUI - -> TransMod
+TransUI - -> TransMod
+BudgUI - -> BudgMod
+RepUI - -> RepMod
+GoalUI - -> GoalMod
+NotifUI - -> NotifMod
 
-"User Management Module" - -> "User Repository"
-"Transaction Management Module" - -> "Transaction Repository"
-"Budget Management Module" - -> "Budget Repository"
-"Category Management Module" - -> "Category Repository"
-"Goal Management Module" - -> "Goal Repository"
-"Notification Module" - -> "Notification Repository"
+UserMod - -> UserRepo
+TransMod - -> TransRepo
+BudgMod - -> BudgRepo
+CatMod - -> CatRepo
+GoalMod - -> GoalRepo
+NotifMod - -> NotifRepo
 
-"User Repository" - -> DB
-"Transaction Repository" - -> DB
-"Budget Repository" - -> DB
-"Category Repository" - -> DB
-"Goal Repository" - -> DB
-"Notification Repository" - -> DB
+UserRepo - -> DB
+TransRepo - -> DB
+BudgRepo - -> DB
+CatRepo - -> DB
+GoalRepo - -> DB
+NotifRepo - -> DB
 
-"Transaction Management Module" - -> BankAPI
-"Transaction Management Module" - -> WalletAPI
+TransMod - -> BankAPI
+TransMod - -> WalletAPI
 
 @enduml
 
