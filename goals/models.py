@@ -19,18 +19,22 @@ class Goal(models.Model):
         if self.target == 0:
             return 0
         return (self.current / self.target) * 100
+
     def __str__(self):
-        return f"{self.name} - by {self.author.username} - {self.getProgress}%"
-    
+        return f"{self.name} - {self.getProgress}%"
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     def __str__(self):
         return self.name
 
 class Transaction(models.Model):
+    goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     def __str__(self):
-        return f"{self.amount} - {self.category.name}"
+        goal_name = self.goal.name if self.goal else "No Goal"
+        return f"{self.amount} - {self.category.name} ({goal_name})"
