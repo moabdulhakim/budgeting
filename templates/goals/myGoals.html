@@ -6,14 +6,20 @@
     <title>Document</title>
 </head>
 <body>
+    <header>
+        <a href="/goals/create">Create Goal</a>
+        <a href="/logout">Logout</a>
+    </header>
     {% for goal in goals %}
-        <div>
+        <a href="{{ goal.id }}/" style="color: black; text-decoration: none; display: block;" >
             <h1>{{ goal.name }}</h1>
             <p>{{ goal.description }}</p>
             <p>{{ goal.dueDate }}</p>
             <p>{{ goal.target }}</p>
             <p>{{ goal.current }}</p>
-        </div>
+
+            <a href="{{ goal.id }}/update" style="color: black; text-decoration: none; display: block;">Update Goal</a>
+        </a>
     {% endfor %}
 </body>
 </html>

@@ -10,15 +10,17 @@ class Goal(models.Model):
     dueDate = models.DateField(null=True, blank=True)
     target = models.DecimalField(max_digits=20, decimal_places=2)
     current = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    image = models.ImageField(upload_to='goals/%Y/%m/%d/', null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
+    
     @property
-    def progress_percentage(self):
+    def getProgress(self):
         if self.target == 0:
             return 0
         return (self.current / self.target) * 100
     def __str__(self):
-        return f"{self.name} - by {self.author.username} - {self.progress_percentage}%"
+        return f"{self.name} - by {self.author.username} - {self.getProgress}%"
     
 class Category(models.Model):
     name = models.CharField(max_length=100)

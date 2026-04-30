@@ -1,7 +1,7 @@
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.http import request, JsonResponse
 from django.shortcuts import render
 from decimal import Decimal, InvalidOperation
@@ -15,6 +15,7 @@ def getGoals(request):
         
     return render(request, 'goals/myGoals.html', {'goals': goals})
 
+# create goal
 class GoalCreateView(LoginRequiredMixin, CreateView):
     model = Goal
     fields = [
@@ -22,7 +23,8 @@ class GoalCreateView(LoginRequiredMixin, CreateView):
         'description',
         'dueDate',
         'target',
-        'current'
+        'current',
+        'image'
     ]
     template_name = 'goals/createGoal.html'
     success_url = '/goals'
@@ -31,6 +33,25 @@ class GoalCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+# update goal
+class GoalUpdateView(LoginRequiredMixin, UpdateView):
+    model = Goal
+    fields = [
+        'name',
+        'description',
+        'dueDate',
+        'target',
+        'current',
+        'image'
+    ]
+    template_name = 'goals/updateGoal.html'
+    success_url = '/goals'
+    slug_field = 'id'
+    slug_url_kwarg = 'goalId'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 @login_required
 def depositGoalAmount(request):
@@ -62,3 +83,14 @@ def depositGoalAmount(request):
         'new_current': str(goal.current),
         'goalId': goalId
     })
+
+
+# get specific goal
+@login_required
+def getGoal(request, goalId):
+    try:
+        goal = Goal.objects.get(id=goalId, author=request.user)
+    except Goal.DoesNotExist:
+        return JsonResponse({'error': 'Goal not found or access denied'})
+
+    return render(request, 'goals/goal.html', {'goal': goal, 'title': goal.name})
