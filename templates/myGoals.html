@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for goal in goals %}
+        <div>
+            <h1>{{ goal.name }}</h1>
+            <p>{{ goal.description }}</p>
+            <p>{{ goal.dueDate }}</p>
+            <p>{{ goal.target }}</p>
+            <p>{{ goal.current }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
