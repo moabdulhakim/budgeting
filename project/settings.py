@@ -68,6 +68,7 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_URL = '/admin/login/'
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
