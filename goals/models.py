@@ -12,9 +12,13 @@ class Goal(models.Model):
     current = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
-
+    @property
+    def progress_percentage(self):
+        if self.target == 0:
+            return 0
+        return (self.current / self.target) * 100
     def __str__(self):
-        return f"{self.name} - by {self.author.username}"
+        return f"{self.name} - by {self.author.username} - {self.progress_percentage}%"
     
 class Category(models.Model):
     name = models.CharField(max_length=100)
