@@ -14,7 +14,7 @@ class Goal(models.Model):
     updatedAt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - by {self.author.username}"
     
 class Category(models.Model):
     name = models.CharField(max_length=100)
