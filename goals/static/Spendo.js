@@ -14,10 +14,10 @@ let transactions = [
 ];
 
 let budgetCategories = [
-{ name: 'Food & Dining', budgeted: 1200, spent: 980, color: '#f59e0b', bg: 'var(--orange-bg)' },
+{ name: 'Food & Dining', budgeted: 1000, spent: 700, color: '#f59e0b', bg: 'var(--orange-bg)' },
 { name: 'Housing', budgeted: 1800, spent: 1800, color: '#6c63ff', bg: 'var(--accent-glow)' },
 { name: 'Transport', budgeted: 400, spent: 280, color: '#3b82f6', bg: 'var(--blue-bg)' },
-{ name: 'Entertainment', budgeted: 300, spent: 340, color: '#ef4444', bg: 'var(--red-bg)' },
+{ name: 'Entertainment', budgeted: 300, spent: 290, color: '#ef4444', bg: 'var(--red-bg)' },
 { name: 'Shopping', budgeted: 600, spent: 520, color: '#a855f7', bg: 'var(--purple-bg)' },
 { name: 'Health', budgeted: 250, spent: 190, color: '#22c55e', bg: 'var(--green-bg)' },
 { name: 'Utilities', budgeted: 350, spent: 189, color: '#f97316', bg: 'rgba(249,115,22,0.1)' },
@@ -31,6 +31,10 @@ let savingsGoals = [
 { name: 'Car Down Payment', saved: 6000, target: 15000, color: '#f59e0b' },
 ];
 
+let recurringPayments = [
+    { name: 'Housing', amount: 5000, dayOfMonth: 10 },
+    { name: 'Transport', amount: 300, dayOfMonth: 5 }
+];
 let currentFilter = "all";
 
 // ===== AUTH =====
@@ -82,6 +86,7 @@ document.getElementById(`page-${page}`).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(btn => {
 if (btn.getAttribute('onclick')?.includes(page)) btn.classList.add('active');
 });
+
 // Init page-specific charts
 setTimeout(() => {
 if (page === 'reports') initReportCharts();
@@ -155,6 +160,7 @@ function saveTransaction() {
 
   renderTransactions("all-transactions");
   renderTransactions("recent-tx", 6);
+  checkBudgetLimits();
 }
 
 function renderBudgetOverview() {
@@ -179,24 +185,23 @@ return `
 }
 
 function renderGoals() {
-const container = document.getElementById('goals-list');
-container.innerHTML = savingsGoals.map(g => {
-const pct = Math.round((g.saved / g.target) * 100);
-return `
-<div class="goal-item">
-<div class="goal-header">
-<div class="goal-name-row">
-<span class="goal-name">${g.name}</span>
-</div>
-<span class="goal-pct">${pct}%</span>
-</div>
-<div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
-<div class="goal-bar-bg">
-<div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${g.color},${g.color}99)"></div>
-</div>
-</div>
-`;
-}).join('');
+    const container = document.getElementById('goals-list');
+    container.innerHTML = savingsGoals.map((g, index) => {
+        const pct = Math.round((g.saved / g.target) * 100);
+        return `
+        <div class="goal-item">
+            <button class="edit-goal-btn" onclick="openEditGoalModal(${index})">✏️</button>
+            <div class="goal-header">
+                <div class="goal-name-row"><span class="goal-name">${g.name}</span></div>
+                <span class="goal-pct">${pct}%</span>
+            </div>
+            <div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
+            <div class="goal-bar-bg">
+                <div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${g.color},${g.color}99)"></div>
+            </div>
+        </div>
+        `;
+    }).join('');
 }
 
 function renderBudgetCards() {
@@ -255,37 +260,97 @@ closeCatModal();
 renderBudgetOverview();
 renderBudgetCards();
 renderReportTable();
+checkBudgetLimits();
 }
 
 
 // ===== GOAL MODAL =====
 function addGoal() {
-document.getElementById("goal-modal").classList.add("active");
+    document.getElementById("edit-goal-id").value = "";
+    document.getElementById("goal-name").value = "";
+    document.getElementById("goal-saved").value = "0";
+    document.getElementById("goal-target").value = "";
+    document.getElementById("goal-modal-title").textContent = "Add New Savings Goal";
+    document.getElementById("save-goal-btn").textContent = "Add Goal";
+    document.getElementById("goal-modal").classList.add("active");
 }
+
+function saveGoal() {
+    const name = document.getElementById("goal-name").value;
+    const saved = Number(document.getElementById("goal-saved").value);
+    const target = Number(document.getElementById("goal-target").value);
+    const editId = document.getElementById("edit-goal-id").value;
+
+    if (!name || !target) return;
+
+
+    if (saved >= target && target > 0) {
+        const duration = 3 * 1000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0, y: 0.7 },
+                colors: ['#6c63ff', '#a855f7', '#22c55e']
+            });
+
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1, y: 0.7 },
+                colors: ['#6c63ff', '#a855f7', '#22c55e']
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
+
+        setTimeout(() => {
+            alert(`Goal Achieved! You've successfully reached your target for: ${name}`);
+        }, 1000);
+    }
+
+
+    if (editId !== "") {
+        savingsGoals[editId].name = name;
+        savingsGoals[editId].saved = saved;
+        savingsGoals[editId].target = target;
+    } else {
+        savingsGoals.push({
+            name,
+            target,
+            saved: saved,
+            color: "#6c63ff"
+        });
+    }
+
+    closeGoalModal();
+    renderGoals();
+    initSavingsChart();
+}
+
 
 function closeGoalModal() {
 document.getElementById("goal-modal").classList.remove("active");
 }
 
-function saveGoal() {
-const name = document.getElementById("goal-name").value;
-const target = Number(document.getElementById("goal-target").value);
+function openEditGoalModal(index) {
+    const goal = savingsGoals[index];
+    document.getElementById("edit-goal-id").value = index;
+    document.getElementById("goal-name").value = goal.name;
+    document.getElementById("goal-saved").value = goal.saved;
+    document.getElementById("goal-target").value = goal.target;
+    document.getElementById("goal-modal-title").textContent = "Edit Goal";
+    document.getElementById("save-goal-btn").textContent = "Save Changes";
 
-if (!name || !target) return;
-
-savingsGoals.push({
-name,
-target,
-saved: 0,
-color: "#22c55e"
-});
-
-closeGoalModal();
-
-renderGoals();
-initSavingsChart();
+    document.getElementById("goal-modal").classList.add("active");
 }
-
 function renderReportTable() {
 const tbody = document.getElementById('report-table');
 tbody.innerHTML = budgetCategories.map(b => {
@@ -577,6 +642,78 @@ e.target.classList.add('active');
 }
 });
 
+// ============ Budget Limits =========
+
+function checkBudgetLimits() {
+    const alertBanner = document.getElementById('limit-alert');
+    const categorySpan = document.getElementById('alert-category-name');
+
+    if (!alertBanner || !categorySpan) return;
+
+    const overBudgetNames = budgetCategories
+        .filter(cat => (cat.spent / cat.budgeted) >= 0.9)
+        .map(cat => cat.name);
+
+    if (overBudgetNames.length > 0) {
+        const namesText = overBudgetNames.length > 1
+            ? overBudgetNames.slice(0, -1).join(', ') + ' & ' + overBudgetNames.slice(-1)
+            : overBudgetNames[0];
+
+        categorySpan.textContent = namesText;
+        alertBanner.style.display = 'flex';
+    } else {
+        alertBanner.style.display = 'none';
+    }
+}
+
+// ============ UpcomingPayments =========
+
+function checkUpcomingPayments() {
+    var alertBanner = document.getElementById('upcoming-payment-alert');
+    var alertMsg = document.getElementById('payment-details-msg');
+
+    if (!alertBanner || !alertMsg) return;
+
+    var today = new Date();
+    var currentDay = today.getDate();
+
+    var upcomingPayments = recurringPayments.filter(function(p) {
+        var diff = p.dayOfMonth - currentDay;
+        return diff > 0 && diff <= 10;
+    });
+
+    if (upcomingPayments.length > 0) {
+        var message = "<strong>Upcoming Payment:</strong> You'll need ";
+
+        for (var i = 0; i < upcomingPayments.length; i++) {
+            var p = upcomingPayments[i];
+            var daysLeft = p.dayOfMonth - currentDay;
+
+            message += "<strong>$" + p.amount + "</strong> for " + p.name + " in <strong>" + daysLeft + " days</strong>";
+
+            if (i < upcomingPayments.length - 1) {
+                message += " and ";
+            }
+        }
+
+        alertMsg.innerHTML = message;
+        alertBanner.style.display = 'flex';
+    } else {
+        alertBanner.style.display = 'none';
+    }
+}
+// current date
+function updateCurrentMonthDisplay() {
+    const displayElement = document.getElementById('current-date-display');
+
+    if (!displayElement) return;
+
+    const now = new Date();
+    const options = { month: 'long', year: 'numeric' };
+    const dateString = now.toLocaleDateString('en-US', options);
+
+    displayElement.textContent = `📅 ${dateString}`;
+}
 // ===== INIT =====
 function initApp() {
 renderTransactions('recent-tx', 6);
@@ -585,7 +722,11 @@ renderBudgetOverview();
 renderGoals();
 renderBudgetCards();
 renderReportTable();
+checkBudgetLimits();
+checkUpcomingPayments();
+updateCurrentMonthDisplay();
 setTimeout(() => initDashboardCharts(), 100);
 }
 
 Chart.defaults.font.family = 'Sora';
+

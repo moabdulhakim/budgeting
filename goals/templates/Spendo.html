@@ -1,5 +1,4 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +6,7 @@
 <title>Spendo - Personal Finance</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'Spendo.css' %}">
 </head>
 <body>
@@ -92,7 +92,7 @@ Transactions
 <div class="sidebar-section">
 <div class="sidebar-label">Account</div>
 <button class="nav-item" onclick="navigate('savings')">
-Savings
+Goals
 </button>
 </div>
 
@@ -116,17 +116,35 @@ Savings
 
 <!-- DASHBOARD PAGE -->
 <div id="page-dashboard" class="page active">
-<div class="topbar">
-<div>
-<h1 class="page-title">Dashboard</h1>
-<p class="page-sub">Welcome back, <span id="greet-name">Alex</span> 👋</p>
-</div>
-<div class="topbar-right">
-<div class="month-selector">📅 April 2025</div>
-<div class="notif-btn">🔔<span class="notif-dot"></span></div>
-</div>
-</div>
+  <div class="topbar">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-sub">Welcome back, <span id="greet-name">Alex</span> 👋</p>
+    </div>
+      <div class="topbar-right">
+      <div class="month-selector" id="current-date-display">📅 </div>
+      <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+      </div>
+  </div>
 
+  <div id="limit-alert" class="alert-banner" style="display: none; margin: 20px;">
+        <div class="alert-content">
+            <span class="alert-icon">⚠️</span>
+            <div class="alert-msg">
+                <strong>Budget Warning:</strong> You've spent over 90% of your <span id="alert-category-name"></span> budget!
+            </div>
+        </div>
+        <button class="alert-close" onclick="this.parentElement.style.display='none'">×</button>
+  </div>
+
+  <div id="upcoming-payment-alert" class="alert-banner payment-alert" style="display: none; margin: 20px;">
+    <div class="alert-content">
+        <span class="alert-icon">📅</span>
+        <div class="alert-msg" id="payment-details-msg">
+            </div>
+    </div>
+    <button class="alert-close" onclick="this.parentElement.style.display='none'">×</button>
+  </div>
 <!-- STAT CARDS -->
 <div class="stats-grid">
 <div class="stat-card accent-card">
@@ -213,9 +231,6 @@ Savings
 <div>
 <h1 class="page-title">Reports</h1>
 <p class="page-sub">Detailed financial analytics</p>
-</div>
-<div class="topbar-right">
-<div class="month-selector">📅 April 2025</div>
 </div>
 </div>
 
@@ -366,25 +381,39 @@ Savings
 
 <!-- ADD TRANSACTION MODAL -->
 <div id="tx-modal" class="modal">
-  <div class="modal-content">
-    <h2>Add Transaction</h2>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-size: 1.25rem; font-weight: 700;">Add Transaction</h2>
+        </div>
 
-    <input id="tx-name" placeholder="Transaction name" />
+        <div class="form-group">
+            <label>Transaction Name</label>
+            <input id="tx-name" type="text" placeholder="e.g. Grocery Store" />
+        </div>
 
-    <input id="tx-amount" type="number" placeholder="Amount" />
+        <div class="form-group">
+            <label>Amount</label>
+            <input id="tx-amount" type="number" placeholder="0.00" />
+        </div>
 
-    <select id="tx-type">
-      <option value="expense">Expense</option>
-      <option value="income">Income</option>
-    </select>
+        <div class="form-group">
+            <label>Type</label>
+            <select id="tx-type" style="width: 100%; padding: 12px; border-radius: 10px; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text); font-family: inherit; outline: none;">
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+        </div>
 
-    <input id="tx-category" placeholder="Category" />
+        <div class="form-group">
+            <label>Category</label>
+            <input id="tx-category" type="text" placeholder="e.g. Food" />
+        </div>
 
-    <div class="modal-actions">
-      <button class="modal-save" onclick="saveTransaction()">Save</button>
-      <button class="modal-cancel" onclick="closeTxModal()">Cancel</button>
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeTxModal()">Cancel</button>
+            <button class="modal-save" onclick="saveTransaction()">Add Transaction</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- SAVINGS PAGE -->
@@ -420,7 +449,7 @@ Savings
 <div class="charts-grid">
 <div class="chart-card">
 <div class="chart-header">
-<div class="chart-title">Savings Progress</div>
+<div class="chart-title">Goals Progress</div>
 <div class="chart-sub">All goals overview</div>
 </div>
 <div style="height:200px"><canvas id="savingsChart"></canvas></div>
@@ -435,34 +464,59 @@ Savings
 </div>
 
 <!-- ADD CATEGORY MODAL -->
-<div class="modal" id="category-modal">
-  <div class="modal-content">
-    <div class="modal-title">Add Category</div>
+<div id="category-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-size: 1.25rem; font-weight: 700;">Add Budget Category</h2>
+        </div>
 
-    <input type="text" id="cat-name" placeholder="Category name">
-    <input type="number" id="cat-budget" placeholder="Budget">
+        <div class="form-group">
+            <label>Category Name</label>
+            <input type="text" id="cat-name" placeholder="e.g. Housing">
+        </div>
 
-    <div class="modal-actions">
-      <button class="modal-save" onclick="saveCategory()">Save</button>
-      <button class="modal-cancel" onclick="closeCatModal()">Cancel</button>
+        <div class="form-group">
+            <label>Monthly Budget</label>
+            <input type="number" id="cat-budget" placeholder="0.00">
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeCatModal()">Cancel</button>
+            <button class="modal-save" onclick="saveCategory()">Save Category</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- ADD GOAL MODAL -->
-<div class="modal" id="goal-modal">
-  <div class="modal-content">
-    <div class="modal-title">New Savings Goal</div>
+<div id="goal-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="goal-modal-title">Add New Savings Goal</h3>
+            <button class="close-modal" onclick="closeGoalModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-goal-id" value="">
 
-    <input type="text" id="goal-name" placeholder="Goal name">
-    <input type="number" id="goal-target" placeholder="Target amount">
+            <div class="form-group">
+                <label>Goal Name</label>
+                <input type="text" id="goal-name" placeholder="e.g. Vacation to Japan">
+            </div>
 
-    <div class="modal-actions">
-      <button class="modal-save" onclick="saveGoal()">Save</button>
-      <button class="modal-cancel" onclick="closeGoalModal()">Cancel</button>
+            <div class="form-group" id="saved-amount-group">
+                <label>Current Saved Amount ($)</label>
+                <input type="number" id="goal-saved" placeholder="0">
+            </div>
 
+            <div class="form-group">
+                <label>Target Amount ($)</label>
+                <input type="number" id="goal-target" placeholder="10000">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveGoal()" id="save-goal-btn">Save Goal</button>
+        </div>
     </div>
-  </div>
 </div>
 
 </main>
