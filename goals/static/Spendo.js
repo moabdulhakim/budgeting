@@ -37,8 +37,63 @@ let recurringPayments = [
 ];
 let currentFilter = "all";
 
+function showToast(message, type = "info") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // ===== AUTH =====
 let currentUser = null;
+
+function validateEmail(email) {
+    if (!email.trim()) {
+        return "Email is required";
+    }
+
+    if (!email.includes("@")) {
+        return "Email must include '@' (example: name@gmail.com)";
+    }
+
+    const parts = email.split("@");
+
+    if (parts.length !== 2) {
+        return "Email must contain only one '@'";
+    }
+
+    const [username, domain] = parts;
+
+    if (!username) {
+        return "Missing username before '@'";
+    }
+
+    if (!domain) {
+        return "Missing domain after '@'";
+    }
+
+    if (!domain.includes(".")) {
+        return "Domain must include '.' (example: gmail.com)";
+    }
+
+    if (domain.startsWith(".")) {
+        return "Domain can't start with '.'";
+    }
+
+    if (domain.endsWith(".")) {
+        return "Domain can't end with '.'";
+    }
+
+    return null;
+}
 
 function switchTab(tab) {
 document.querySelectorAll('.auth-tab').forEach((t, i) => {
@@ -51,15 +106,41 @@ document.getElementById('auth-sub').textContent = tab === 'login' ? 'Sign in to 
 }
 
 function doLogin() {
-const email = document.getElementById('login-email').value || 'alex@email.com';
-const name = email.split('@')[0].replace(/\./g,' ').replace(/\b\w/g, l => l.toUpperCase());
-launchApp({ name, email });
+    const email = document.getElementById('login-email').value;
+
+    const error = validateEmail(email);
+
+    if (error) {
+        showToast(error, "error");
+        return;
+    }
+
+    const name = email.split('@')[0]
+        .replace(/\./g,' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+
+    showToast("Logged in successfully", "success");
+    launchApp({ name, email });
 }
 
 function doSignup() {
-const name = document.getElementById('signup-name').value || 'New User';
-const email = document.getElementById('signup-email').value || 'user@email.com';
-launchApp({ name, email });
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+
+    if (!name.trim()) {
+        showToast("Name is required", "error");
+        return;
+    }
+
+    const error = validateEmail(email);
+
+    if (error) {
+        showToast(error, "error");
+        return;
+    }
+
+    showToast("Account created successfully", "success");
+    launchApp({ name, email });
 }
 
 function launchApp(user) {
@@ -147,8 +228,20 @@ function saveTransaction() {
   const type = document.getElementById("tx-type").value;
   const category = document.getElementById("tx-category").value;
 
-  if (!name || !amount || !category) return;
+ if (!name.trim()) {
+    showToast("Transaction name required", "error");
+    return;
+}
 
+if (amount <= 0) {
+    showToast("Amount must be greater than 0", "error");
+    return;
+}
+
+if (!category) {
+    showToast("Please select a category", "error");
+    return;
+}
   transactions.unshift({
     name,
     category,
@@ -156,11 +249,21 @@ function saveTransaction() {
     amount: type === "expense" ? -Math.abs(amount) : Math.abs(amount)
   });
 
+  const cat = budgetCategories.find(c => c.name === category);
+  if(cat && type === "expense"){
+      cat.spent += Math.abs(amount);
+  }
+
   closeTxModal();
 
   renderTransactions("all-transactions");
   renderTransactions("recent-tx", 6);
+  renderBudgetOverview();
+  renderBudgetCards();
+  renderReportTable();
   checkBudgetLimits();
+  initDashboardCharts();
+  showToast("Transaction added successfully", "success")
 }
 
 function renderBudgetOverview() {
@@ -246,7 +349,15 @@ function saveCategory() {
 const name = document.getElementById("cat-name").value;
 const budgeted = Number(document.getElementById("cat-budget").value);
 
-if (!name || !budgeted) return;
+if (!name.trim()) {
+    showToast("Category name required", "error");
+    return;
+}
+
+if (budgeted <= 0) {
+    showToast("budgeted must be greater than 0", "error");
+    return;
+}
 
 budgetCategories.push({
 name,
@@ -261,6 +372,7 @@ renderBudgetOverview();
 renderBudgetCards();
 renderReportTable();
 checkBudgetLimits();
+showToast("Category saved successfully", "success")
 }
 
 
@@ -281,7 +393,15 @@ function saveGoal() {
     const target = Number(document.getElementById("goal-target").value);
     const editId = document.getElementById("edit-goal-id").value;
 
-    if (!name || !target) return;
+    if (!name.trim()) {
+    showToast("Goal name required", "error");
+    return;
+}
+
+if (target <= 0) {
+    showToast("target must be greater than 0", "error");
+    return;
+}
 
 
     if (saved >= target && target > 0) {
@@ -312,7 +432,7 @@ function saveGoal() {
         }());
 
         setTimeout(() => {
-            alert(`Goal Achieved! You've successfully reached your target for: ${name}`);
+            showToast(`Goal Achieved!: ${name}`, "success");
         }, 1000);
     }
 
@@ -333,6 +453,7 @@ function saveGoal() {
     closeGoalModal();
     renderGoals();
     initSavingsChart();
+    showToast("Goal saved successfully", "success")
 }
 
 
@@ -678,7 +799,7 @@ function checkUpcomingPayments() {
     var currentDay = today.getDate();
 
     var upcomingPayments = recurringPayments.filter(function(p) {
-        var diff = p.dayOfMonth - currentDay;
+        var diff = p.dayOfMonth >= currentDay ? p.dayOfMonth - currentDay : (30 - currentDay + p.dayOfMonth);
         return diff > 0 && diff <= 10;
     });
 
@@ -729,4 +850,5 @@ setTimeout(() => initDashboardCharts(), 100);
 }
 
 Chart.defaults.font.family = 'Sora';
+
 
