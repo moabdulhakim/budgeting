@@ -1,4 +1,5 @@
 @startuml
+!pragma plantuml_limit_size 8192
 title Personal Budgeting System - Class Diagram
 skinparam classAttributeIconSize 0
 skinparam monochrome true
@@ -21,6 +22,31 @@ package "View (UI Layer)" as LayerUI {
 }
 
 package "Controllers (Service Layer)" as LayerService {
+
+    class GoalView {
+        + getGoals(request)
+        + depositGoalAmount(request)
+        + getGoal(request, goalId)
+    }
+    
+    class GoalCreateView {
+        + model: Goal
+        + fields: string[]
+        + template_name: string
+        + success_url: string
+        
+        + form_valid()
+    }
+    
+    class GoalUpdateView {
+        + fields: string[]
+        + template_name: string
+        + success_url: string
+        + slug_field: string
+        + slug_url_kwarg: string
+        + form_valid()
+    }
+
     class AuthService {
       + signUp(name, email, password)
       + login(email, password)
@@ -147,12 +173,18 @@ package "Models (Entity Layer)" as LayerModel {
     }
     
     class Goal {
-      - goalId: int
-      - targetAmount: BigDecimal
-      - currentAmount: BigDecimal
-      - progress: double
-      + setGoal()
-      + updateProgress()
+    + id: uuid
+    + author: User
+    + name: string
+    + description: string
+    + dueDate: Date
+    + image: string
+    + target: BigDecimal
+    + current: BigDecimal
+    + createdAt: Date
+    + updatedAt: Date
+    
+    + getProgress()
     }
     
     class Report {
@@ -201,6 +233,9 @@ ScreenReportStrategy ..|> IReportStrategy : implements
 
 ' Services to Models Dependencies (Uses)
 TransactionService ..> Transaction
+GoalCreateView ..> Goal
+GoalView ..> Goal
+GoalUpdateView ..> Goal
 CategoryService ..> Category
 BudgetService ..> Budget
 AuthService ..> User
@@ -222,12 +257,4 @@ Budget "1" o-- "1..*" Category : limits per category
 User "1" o-- "0..*" Goal
 User ..> Dashboard
 User ..> Report
-
-' - Separate all classes into three categories Model, View, Controllers, and Database to indicate MVC Design Pattern.
-' - Apply Observer pattern by make NotificationService implements IObserver interface.
-' - Let BudgetService (the observalble) to be owner of IObserver to notify it on updates.
-' - Apply Singleton Pattern on Database to ensure Dependency Inversion Princible.
-' - Apply Strategy Pattern by adding IReportStrategy interface that is implemented by two strategies (PDFReport, ScreenReport) and is used by ReportService.
-' - Change money types from double to BigDecimal to avoid floating-point precision problems
-
 @enduml
