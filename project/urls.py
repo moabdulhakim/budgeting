@@ -1,5 +1,5 @@
 """
-URL configuration for project project.
+URL configuration for project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/6.0/topics/http/urls/
@@ -21,6 +21,5 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('goals/', include('goals.urls')),
-    path('', RedirectView.as_view(url='/admin/login/', permanent=True)),
+    path('', include('goals.urls'))
 ]

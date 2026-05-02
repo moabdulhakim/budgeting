@@ -25,41 +25,8 @@ def depositGoalAmount(request):
     if request.method != 'PUT':
         return HttpResponseNotAllowed(['PUT'])
 
-    try:
-        data = json.loads(request.body)
-        goalId = data.get('goalId')
-        amount_val = data.get('amount')
+def index(request):
+    return HttpResponse("Hello")
 
-        if not goalId or amount_val is None:
-            return JsonResponse({'error': 'Missing goalId or amount'}, status=400)
-
-        amount = Decimal(str(amount_val))
-        if amount <= 0:
-            return JsonResponse({'error': 'Amount must be positive'}, status=400)
-
-        goal = Goal.objects.get(id=goalId, author=request.user)
-        goal.current += amount
-        goal.save()
-
-        return JsonResponse({
-            'success': True,
-            'new_current': str(goal.current),
-            'goalId': goalId
-        })
-    except (InvalidOperation, TypeError, ValueError):
-        return JsonResponse({'error': 'Invalid data format'}, status=400)
-    except Goal.DoesNotExist:
-        return JsonResponse({'error': 'Goal not found'}, status=404)
-
-@login_required
-def getGoalDetailApi(request, goalId):
-    goal = get_object_or_404(Goal, id=goalId, author=request.user)
-    return JsonResponse({
-        'id': str(goal.id),
-        'name': goal.name,
-        'description': goal.description,
-        'target': str(goal.target),
-        'current': str(goal.current),
-        'progress': float(goal.getProgress),
-        'image': goal.image.url if goal.image else None
-    })
+def home(request):
+    return render(request, 'Spendo.html')
