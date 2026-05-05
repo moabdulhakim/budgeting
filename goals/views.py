@@ -1,14 +1,11 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.db import IntegrityError
-from .models import Goal, Transaction, Category
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from decimal import Decimal, InvalidOperation
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 
-# الصفحة الرئيسية
 def home(request):
     return render(request, 'Spendo.html') #[cite: 4]
 
