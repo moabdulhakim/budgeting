@@ -289,13 +289,21 @@ return `
 
 function renderGoals() {
     const container = document.getElementById('goals-list');
+
     container.innerHTML = savingsGoals.map((g, index) => {
         const pct = Math.round((g.saved / g.target) * 100);
+
+        const displayImage = g.image
+            ? `<img src="${g.image}" class="goal-img-preview">`
+            : `<div class="goal-icon-placeholder">🎯</div>`;
+
         return `
         <div class="goal-item">
             <button class="edit-goal-btn" onclick="openEditGoalModal(${index})">✏️</button>
             <div class="goal-header">
-                <div class="goal-name-row"><span class="goal-name">${g.name}</span></div>
+                <div class="goal-name-row">
+                    ${displayImage} <span class="goal-name">${g.name}</span>
+                </div>
                 <span class="goal-pct">${pct}%</span>
             </div>
             <div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
@@ -306,6 +314,19 @@ function renderGoals() {
         `;
     }).join('');
 }
+
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'goal-image-input') {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('goal-image-url').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
 
 function renderBudgetCards() {
 const container = document.getElementById('budget-cards');
@@ -392,24 +413,31 @@ function saveGoal() {
     const saved = Number(document.getElementById("goal-saved").value);
     const target = Number(document.getElementById("goal-target").value);
     const editId = document.getElementById("edit-goal-id").value;
+    const imageUrl = document.getElementById("goal-image-url").value;
 
     if (!name.trim()) {
-    showToast("Goal name required", "error");
-    return;
-}
+        showToast("Goal name required", "error");
+        return;
+    }
 
-if (target <= 0) {
-    showToast("target must be greater than 0", "error");
-    return;
-}
+    if (target <= 0) {
+        showToast("Target must be greater than 0", "error");
+        return;
+    }
 
+    const goalData = {
+        name: name,
+        target: target,
+        saved: saved,
+        image: imageUrl || null,
+        color: "#6c63ff"
+    };
 
     if (saved >= target && target > 0) {
         const duration = 3 * 1000;
         const end = Date.now() + duration;
 
         (function frame() {
-
             confetti({
                 particleCount: 5,
                 angle: 60,
@@ -417,7 +445,6 @@ if (target <= 0) {
                 origin: { x: 0, y: 0.7 },
                 colors: ['#6c63ff', '#a855f7', '#22c55e']
             });
-
             confetti({
                 particleCount: 5,
                 angle: 120,
@@ -425,7 +452,6 @@ if (target <= 0) {
                 origin: { x: 1, y: 0.7 },
                 colors: ['#6c63ff', '#a855f7', '#22c55e']
             });
-
             if (Date.now() < end) {
                 requestAnimationFrame(frame);
             }
@@ -436,24 +462,20 @@ if (target <= 0) {
         }, 1000);
     }
 
-
     if (editId !== "") {
-        savingsGoals[editId].name = name;
-        savingsGoals[editId].saved = saved;
-        savingsGoals[editId].target = target;
+        savingsGoals[editId] = goalData;
     } else {
-        savingsGoals.push({
-            name,
-            target,
-            saved: saved,
-            color: "#6c63ff"
-        });
+        savingsGoals.push(goalData);
     }
 
     closeGoalModal();
     renderGoals();
     initSavingsChart();
-    showToast("Goal saved successfully", "success")
+
+    document.getElementById("goal-image-input").value = "";
+    document.getElementById("goal-image-url").value = "";
+
+    showToast("Goal saved successfully", "success");
 }
 
 
@@ -826,7 +848,7 @@ function checkUpcomingPayments() {
 // current date
 function updateCurrentMonthDisplay() {
     const displayElement = document.getElementById('current-date-display');
-
+    const budgetDateElement = document.getElementById('current-budget-date');
     if (!displayElement) return;
 
     const now = new Date();
@@ -834,7 +856,9 @@ function updateCurrentMonthDisplay() {
     const dateString = now.toLocaleDateString('en-US', options);
 
     displayElement.textContent = `📅 ${dateString}`;
+    if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
+
 // ===== INIT =====
 function initApp() {
 renderTransactions('recent-tx', 6);
@@ -847,8 +871,7 @@ checkBudgetLimits();
 checkUpcomingPayments();
 updateCurrentMonthDisplay();
 setTimeout(() => initDashboardCharts(), 100);
+if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
 
 Chart.defaults.font.family = 'Sora';
-
-

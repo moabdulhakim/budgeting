@@ -310,7 +310,8 @@ Goals
 <div class="stat-card accent-card">
 <div class="stat-header"><span class="stat-label">Total Budget</span></div>
 <div class="stat-value">$5,800</div>
-<div class="stat-change">April 2025</div>
+<div id="current-budget-date" class="stat-label" style="color: rgba(255,255,255,0.8);">
+    </div>
 </div>
 <div class="stat-card">
 <div class="stat-header"><span class="stat-label">Spent</span></div>
@@ -491,6 +492,11 @@ Goals
             <div class="form-group">
                 <label>Target Amount ($)</label>
                 <input type="number" id="goal-target" placeholder="10000">
+            </div>
+            <input type="hidden" id="goal-image-url" value="">
+            <div class="form-group">
+                <label>Goal Image (Optional)</label>
+                <input type="file" id="goal-image-input" accept="image/*">
             </div>
         </div>
         <div class="modal-footer">
