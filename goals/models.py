@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 import uuid
+from django.db import models
+from django.contrib.auth.models import User
 
 class Goal(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -25,16 +27,22 @@ class Goal(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    budgeted = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    spent = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     def __str__(self):
         return self.name
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Transaction(models.Model):
-    goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
-    description = models.TextField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, default='Untitled')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    category = models.CharField(max_length=100, default='General')
+    type = models.CharField(max_length=10, choices=[('income', 'Income'), ('expense', 'Expense')], default='expense')
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        goal_name = self.goal.name if self.goal else "No Goal"
-        return f"{self.amount} - {self.category.name} ({goal_name})"
+        return f"{self.user.username} - {self.name} ({self.amount})"
+    
