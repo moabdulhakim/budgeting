@@ -25,6 +25,7 @@
 --radius-sm: 10px;
 --sidebar-w: 240px;
 --transition: 0.25s cubic-bezier(.4,0,.2,1);
+--text-muted: #6c757d;
 }
 [data-theme="dark"] {
 --bg: #0f1117;

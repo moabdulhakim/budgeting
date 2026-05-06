@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spendo - Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'Spendo.css' %}">
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-container">
+
+    <div class="auth-logo">
+      <div class="logo-icon">💰</div>
+      <span>Spendo</span>
+    </div>
+
+    <div class="auth-card">
+      <h2 class="auth-title">Create an account</h2>
+      <p class="auth-sub">Start managing your finances today</p>
+
+      <div class="auth-tabs">
+        <a href="{% url 'login' %}" class="auth-tab" onclick="switchTab()">Sign In</a>
+        <a href="{% url 'signup' %}" class="auth-tab active">Sign Up</a>
+      </div>
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert-banner" style="margin-bottom:16px;">
+        <div class="alert-content">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-msg">{{ message }}</div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <form method="POST" action="{% url 'signup' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="signup-name">Full name</label>
+          <input type="text" id="signup-name" name="full_name" placeholder="Alex Johnson" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email address</label>
+          <input type="email" id="signup-email" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-pass">Password</label>
+          <input type="password" id="signup-pass" name="password" placeholder="Min. 8 characters" minlength="8" required>
+        </div>
+
+        <button type="submit" class="auth-btn">Create Account →</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'Spendo.js' %}"></script>
+</body>
+</html>
