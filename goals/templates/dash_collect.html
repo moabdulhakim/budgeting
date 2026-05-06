@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% include "includes/aurh_screen.html" %}
+
+    <div id="app" style="display:none">
+
+        {% include "includes/sidebar.html" %}
+
+        <main class="main">
+            {% include "includes/dashboard.html" %}
+            {% include "includes/reports.html" %}
+            {% include "includes/budgetpage.html" %}
+            {% include "includes/transactions.html" %}
+            {% include "includes/goals.html" %}
+
+            {% include "includes/modals.html" %}
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+{% endblock %}

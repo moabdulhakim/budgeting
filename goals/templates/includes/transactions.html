@@ -1,0 +1,22 @@
+<!-- TRANSACTIONS PAGE -->
+<div id="page-transactions" class="page">
+<div class="topbar">
+<div>
+<h1 class="page-title">Transactions</h1>
+<p class="page-sub">All your income and expenses</p>
+</div>
+<div class="topbar-right">
+<button class="add-btn" onclick="openTxModal()">+ Add Transaction</button>
+</div>
+</div>
+
+<div class="filter-bar">
+<button class="filter-btn active" onclick="setTransactionFilter('all')">All</button>
+<button class="filter-btn" onclick="setTransactionFilter('income')">Income</button>
+<button class="filter-btn" onclick="setTransactionFilter('expenses')">Expenses</button>
+</div>
+
+<div class="chart-card">
+<div class="tx-list" id="all-transactions"></div>
+</div>
+</div>

@@ -1,0 +1,46 @@
+<div id="auth-screen">
+<div class="auth-container">
+<div class="auth-logo">
+<div class="logo-icon">💰</div>
+<span>Spendo</span>
+</div>
+<div class="auth-card">
+<h2 class="auth-title" id="auth-title">Welcome back</h2>
+<p class="auth-sub" id="auth-sub">Sign in to your account to continue</p>
+
+<div class="auth-tabs">
+<button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+<button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+</div>
+
+<div id="login-form">
+<div class="form-group">
+<label>Email address</label>
+<input type="email" placeholder="you@example.com" id="login-email" required>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" placeholder="••••••••" id="login-pass">
+</div>
+<button class="auth-btn" onclick="doLogin()">Sign In →</button>
+</div>
+
+<div id="signup-form" style="display:none">
+<div class="form-group">
+<label>Full name</label>
+<input type="text" placeholder="Alex Johnson" id="signup-name">
+</div>
+<div class="form-group">
+<label>Email address</label>
+<input type="email" placeholder="you@example.com" id="signup-email" required>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" placeholder="Min. 8 characters" id="signup-pass">
+</div>
+<button class="auth-btn" onclick="doSignup()">Create Account →</button>
+</div>
+
+</div>
+</div>
+</div>

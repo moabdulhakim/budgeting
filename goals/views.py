@@ -29,4 +29,4 @@ def index(request):
     return HttpResponse("Hello")
 
 def home(request):
-    return render(request, 'Spendo.html')
+    return render(request, 'dash_collect.html')

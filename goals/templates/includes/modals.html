@@ -1,0 +1,97 @@
+<!-- ADD TRANSACTION MODAL -->
+<div id="tx-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-size: 1.25rem; font-weight: 700;">Add Transaction</h2>
+        </div>
+
+        <div class="form-group">
+            <label>Transaction Name</label>
+            <input id="tx-name" type="text" placeholder="e.g. Grocery Store" />
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input id="tx-amount" type="number" placeholder="0.00" />
+        </div>
+
+        <div class="form-group">
+            <label>Type</label>
+            <select id="tx-type" style="width: 100%; padding: 12px; border-radius: 10px; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text); font-family: inherit; outline: none;">
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <input id="tx-category" type="text" placeholder="e.g. Food" />
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeTxModal()">Cancel</button>
+            <button class="modal-save" onclick="saveTransaction()">Add Transaction</button>
+        </div>
+    </div>
+</div>
+
+<!-- ADD CATEGORY MODAL -->
+<div id="category-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-size: 1.25rem; font-weight: 700;">Add Budget Category</h2>
+        </div>
+
+        <div class="form-group">
+            <label>Category Name</label>
+            <input type="text" id="cat-name" placeholder="e.g. Housing">
+        </div>
+
+        <div class="form-group">
+            <label>Monthly Budget</label>
+            <input type="number" id="cat-budget" placeholder="0.00">
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeCatModal()">Cancel</button>
+            <button class="modal-save" onclick="saveCategory()">Save Category</button>
+        </div>
+    </div>
+</div>
+
+<!-- ADD GOAL MODAL -->
+<div id="goal-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="goal-modal-title">Add New Savings Goal</h3>
+            <button class="close-modal" onclick="closeGoalModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-goal-id" value="">
+
+            <div class="form-group">
+                <label>Goal Name</label>
+                <input type="text" id="goal-name" placeholder="e.g. Vacation to Japan">
+            </div>
+
+            <div class="form-group" id="saved-amount-group">
+                <label>Current Saved Amount ($)</label>
+                <input type="number" id="goal-saved" placeholder="0">
+            </div>
+
+            <div class="form-group">
+                <label>Target Amount ($)</label>
+                <input type="number" id="goal-target" placeholder="10000">
+            </div>
+            <input type="hidden" id="goal-image-url" value="">
+            <div class="form-group">
+                <label>Goal Image (Optional)</label>
+                <input type="file" id="goal-image-input" accept="image/*">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveGoal()" id="save-goal-btn">Save Goal</button>
+        </div>
+    </div>
+</div>

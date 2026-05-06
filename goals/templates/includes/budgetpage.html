@@ -1,0 +1,42 @@
+<div id="page-budget" class="page">
+<div class="topbar">
+<div>
+<h1 class="page-title">Budget</h1>
+<p class="page-sub">Manage your monthly budget allocations</p>
+</div>
+<div class="topbar-right">
+<button class="add-btn" onclick="addCategory()">+ Add Category</button>
+</div>
+</div>
+
+<div class="stats-grid" style="grid-template-columns: repeat(3,1fr)">
+<div class="stat-card accent-card">
+<div class="stat-header"><span class="stat-label">Total Budget</span></div>
+<div class="stat-value">$5,800</div>
+<div id="current-budget-date" class="stat-label" style="color: rgba(255,255,255,0.8);">
+    </div>
+</div>
+<div class="stat-card">
+<div class="stat-header"><span class="stat-label">Spent</span></div>
+<div class="stat-value">$4,350</div>
+<div class="stat-change down">75% of budget used</div>
+</div>
+<div class="stat-card">
+<div class="stat-header"><span class="stat-label">Remaining</span></div>
+<div class="stat-value">$1,450</div>
+<div class="stat-change up">25% left</div>
+</div>
+</div>
+
+<div class="budget-grid">
+<div class="chart-card budget-full">
+<div class="chart-header">
+<div class="chart-title">Budget vs Actual</div>
+</div>
+<div style="height:230px"><canvas id="budgetBarChart"></canvas></div>
+</div>
+</div>
+
+<!-- Budget Cards -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px" id="budget-cards"></div>
+</div>
