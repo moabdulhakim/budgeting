@@ -18,6 +18,7 @@
     </div>
 
     <div class="sidebar-bottom">
+        <a class="nav-item {% block nav_logout %}{% endblock %}" href="{% url 'logout' %}">Logout</a>
         <div class="theme-toggle">
             <span>🌙 Dark Mode</span>
             <button class="toggle-sw" id="theme-toggle" onclick="toggleTheme()"></button>

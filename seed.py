@@ -9,7 +9,7 @@ from finances.models import Category, Budget, Transaction, Notification
 print("Starting to plant seeds... 🌱")
 
 # 1. البحث عن اليوزر اللي اسمه Mohammad أو إنشاؤه
-user = User.objects.filter(first_name="Mohammad").first()
+user = User.objects.filter(email="ma@gmail.com").first()
 
 if not user:
     print("User 'Mohammad' not found! Creating a new user...")

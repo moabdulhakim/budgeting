@@ -9,8 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 @csrf_exempt
 def signup_view(request):
-    if request.method == "GET":
-        return render(request, "auth/signup.html")
     """
     Registers a new user by creating a User instance in the database.
     
@@ -22,36 +20,28 @@ def signup_view(request):
     Returns:
         JsonResponse: Success message with status 201 or error message with appropriate status.
     """
+    if request.method == "GET":
+        return render(request, "auth/signup.html")
+        
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            email = data.get('username')  
-            password = data.get('password')
-            full_name = data.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        name = request.POST.get('username')
 
-            if User.objects.filter(username=email).exists():
-                return JsonResponse({
-                    'status': 'error', 
-                    'message': 'This email is already registered.'
-                }, status=400)
+        if User.objects.filter(email=email).exists():
+            return render(request, "auth/signup.html", {'messages': ['This email is already registered.']})
 
-            user = User.objects.create_user(username=email, password=password)
-            user.first_name = full_name
-            user.save()
+        if User.objects.filter(username=name).exists():
+            return render(request, "auth/signup.html", {'messages': ['This username is already taken.']})
 
-            return JsonResponse({
-                'status': 'success', 
-                'message': 'Account created successfully!',
-                'name': full_name
-            }, status=201)
-            
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        user = User.objects.create_user(username=name, first_name=name, email=email, password=password)
+        user.save()
+
+        login(request, user)
+        return redirect("dashboard")
 
 @csrf_exempt
 def login_view(request):
-    if request.method == "GET":
-        return render(request, "auth/login.html")
     """
     Authenticates a user and starts a session.
     
@@ -61,18 +51,24 @@ def login_view(request):
     Returns:
         JsonResponse: Success status with username or invalid credentials error.
     """
+    if request.method == "GET":
+        return render(request, "auth/login.html")
+        
     if request.method == "POST":
-        data = json.loads(request.body)
-        user = authenticate(username=data["username"], password=data["password"])
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        
+        user = authenticate(email=email, password=password)
         if user:
             login(request, user)
-            return redirect("dashboard")
-        return JsonResponse({"message": "Invalid credentials"}, status=400) 
+            return redirect("dashboard") 
+            
+        return render(request, "auth/login.html", {'messages': ['Invalid credentials']})
     
 def logout_view(request):
     """
     Logs out the user and terminates the current session.
-    
+
     Args:
         request (HttpRequest): The HTTP request object.
         
