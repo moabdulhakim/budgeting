@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% block page_header %}
+{% extends 'base.html' %} {% block page_header %}
 <div>
   <h1 class="page-title">Dashboard</h1>
   <p class="page-sub">Welcome back, {{ user.first_name }} 👋</p>
@@ -9,11 +7,7 @@
   <div class="month-selector">📅 {{ current_date }}</div>
   <div class="notif-btn">🔔<span class="notif-dot"></span></div>
 </div>
-{% endblock %}
-
-{% block content %}
-
-{% include 'includes/alerts.html' %}
+{% endblock %} {% block content %} {% include 'includes/alerts.html' %}
 
 <!-- STAT CARDS -->
 <div class="stats-grid">
@@ -59,15 +53,23 @@
         <div class="chart-sub">Last 6 months overview</div>
       </div>
       <div class="chart-legend">
-        <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Income</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Expenses</div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: var(--accent)"></span
+          >Income
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: var(--red)"></span
+          >Expenses
+        </div>
       </div>
     </div>
     <div class="chart-canvas">
-      <canvas id="incomeExpenseChart"
-        data-income="{{ chart_income_data|safe }}"
-        data-expenses="{{ chart_expenses_data|safe }}"
-        data-labels="{{ chart_labels|safe }}">
+      <canvas
+        id="incomeExpenseChart"
+        data-income='{{ chart_income_data|safe }}'
+        data-expenses='{{ chart_expenses_data|safe }}'
+        data-labels='{{ chart_labels|safe }}'
+      >
       </canvas>
     </div>
   </div>
@@ -80,9 +82,11 @@
       </div>
     </div>
     <div class="chart-canvas">
-      <canvas id="categoryDonutChart"
+      <canvas
+        id="categoryDonutChart"
         data-labels="{{ donut_labels|safe }}"
-        data-values="{{ donut_values|safe }}">
+        data-values="{{ donut_values|safe }}"
+      >
       </canvas>
     </div>
   </div>
@@ -103,12 +107,23 @@
           <div class="tx-name">{{ tx.name }}</div>
           <div class="tx-date">{{ tx.date }}</div>
         </div>
-        <div class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}">
+        <div
+          class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}"
+        >
           {% if tx.type == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
         </div>
       </div>
       {% empty %}
-      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No transactions yet.</p>
+      <p
+        style="
+          color: var(--text2);
+          font-size: 13px;
+          text-align: center;
+          padding: 20px 0;
+        "
+      >
+        No transactions yet.
+      </p>
       {% endfor %}
     </div>
   </div>
@@ -126,17 +141,50 @@
           <div class="budget-item-left">
             <div class="budget-cat-name">{{ item.category }}</div>
           </div>
-          <div class="budget-amounts">${{ item.spent }} / ${{ item.budget }}</div>
+          <div class="budget-amounts">
+            ${{ item.spent }} / ${{ item.amount }}
+          </div>
         </div>
         <div class="budget-bar-bg">
-          <div class="budget-bar-fill" style="width:{{ item.percent }}%; background:{% if item.percent >= 90 %}var(--red){% elif item.percent >= 70 %}var(--orange){% else %}var(--accent){% endif %};"></div>
+          <div
+            class="budget-bar-fill {% if item.percent >= 90 %}bar-danger{% elif item.percent >= 70 %}bar-warning{% else %}bar-normal{% endif %}"
+            style="--width: {{ item.percent }}%; width: var(--width);"
+          ></div>
         </div>
       </div>
       {% empty %}
-      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No budget categories yet.</p>
+      <p
+        style="
+          color: var(--text2);
+          font-size: 13px;
+          text-align: center;
+          padding: 20px 0;
+        "
+      >
+        No budget categories yet.
+      </p>
       {% endfor %}
     </div>
   </div>
 </div>
 
 {% endblock %}
+
+<!-- 
+variables needed to pass here as a backend:
+total_balance,
+balance_change,
+monthly_income, 
+income_change, 
+monthly_expenses, 
+expenses_change, 
+savings_rate, 
+savings_rate_change, 
+chart_income_data, 
+chart_expenses_data, 
+chart_labels, 
+donut_labels, 
+donut_values, 
+recent_transactions, 
+budget_overview
+-->

@@ -58,9 +58,8 @@
       <div class="budget-amounts">${{ cat.spent }} / ${{ cat.budget }}</div>
     </div>
     <div class="budget-bar-bg" style="margin-top:10px;">
-      <div class="budget-bar-fill"
-        style="width:{{ cat.percent }}%;
-               background:{% if cat.percent >= 90 %}var(--red){% elif cat.percent >= 70 %}var(--orange){% else %}var(--accent){% endif %};">
+      <div class="budget-bar-fill {% if cat.percent >= 90 %}bar-danger{% elif cat.percent >= 70 %}bar-warning{% else %}bar-normal{% endif %}"
+        style="--width: {{ cat.percent }}%; width: var(--width);">
       </div>
     </div>
     <div style="margin-top:8px;font-size:12px;color:var(--text2);">

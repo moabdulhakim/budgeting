@@ -21,9 +21,9 @@ from django.views.generic import RedirectView
 
 
 urlpatterns = [
-    path('/', include('')), # redirect to dashboard if logged in else auth
+    path('', include('dashboard.urls')), # redirect to dashboard if logged in else auth
+    path('auth/', include('accounts.urls')),
     path('admin/', admin.site.urls),
-    path('api/goals/', include('goals.urls')),
-    path('api/accounts/', include('accounts.urls')),
-    path('api/finances/', include('finances.urls')),
+    path('finances/', include('finances.urls')),
+    path('goals/', include('goals.urls')),
 ]

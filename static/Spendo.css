@@ -343,6 +343,9 @@ margin-bottom: 7px;
 height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden;
 }
 .budget-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+.budget-bar-fill.bar-normal { background: var(--accent); }
+.budget-bar-fill.bar-warning { background: var(--orange); }
+.budget-bar-fill.bar-danger { background: var(--red); }
 
 .transactions-grid {
 display: grid; grid-template-columns: 3fr 2fr; gap: 16px;

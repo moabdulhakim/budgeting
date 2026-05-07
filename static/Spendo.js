@@ -239,9 +239,6 @@ return `
 }).join('');
 }
 
-<<<<<<< HEAD
-// ===== BUDGET CARDS =====
-=======
 function renderGoals() {
     const container = document.getElementById('goals-list');
 
@@ -283,7 +280,6 @@ document.addEventListener('change', function(e) {
     }
 });
 
->>>>>>> origin/frontendBranch
 function renderBudgetCards() {
 const container = document.getElementById('budget-cards');
 container.innerHTML = budgetCategories.map(b => {
@@ -345,8 +341,6 @@ async function saveCategory() {
 }
 
 // ===== GOAL MODAL =====
-<<<<<<< HEAD
-=======
 function addGoal() {
     document.getElementById("edit-goal-id").value = "";
     document.getElementById("goal-name").value = "";
@@ -432,7 +426,6 @@ function closeGoalModal() {
 document.getElementById("goal-modal").classList.remove("active");
 }
 
->>>>>>> origin/frontendBranch
 function openEditGoalModal(index) {
     const goal = savingsGoals[index];
     document.getElementById("edit-goal-id").value = index;
@@ -714,10 +707,7 @@ function checkUpcomingPayments() {
 // current date
 function updateCurrentMonthDisplay() {
     const displayElement = document.getElementById('current-date-display');
-<<<<<<< HEAD
-=======
     const budgetDateElement = document.getElementById('current-budget-date');
->>>>>>> origin/frontendBranch
     if (!displayElement) return;
     const now = new Date();
     const options = { month: 'long', year: 'numeric' };
@@ -726,86 +716,6 @@ function updateCurrentMonthDisplay() {
     if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
 
-<<<<<<< HEAD
-// ===== Save Transaction =====
-async function saveTransaction() {
-    const type = document.getElementById('tx-type').value;
-    const name = document.getElementById('tx-name').value;
-    const amount = document.getElementById('tx-amount').value;
-    const category = document.getElementById('tx-category').value;
-    try {
-        const response = await fetch('/api/transactions/add/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
-            body: JSON.stringify({ type, name, amount: parseFloat(amount), category })
-        });
-        if (response.ok) {
-            showToast("Transaction added!", "success");
-            closeModal('tx-modal');
-            initApp(); // Refresh data immediately
-        }
-    } catch (e) {
-        showToast("Error saving transaction", "error");
-    }
-}
-
-async function initApp() {
-    try {
-        const response = await fetch('/api/dashboard/'); // Your Django URL
-        if (response.ok) {
-            const data = await response.json();
-                updateDashboardUI(data); 
-            transactions = data.transactions || [];
-            budgetCategories = data.categories || [];
-            savingsGoals = data.goals || [];
-            recurringPayments = data.upcoming || [];
-
-            renderTransactions('recent-tx', 6);
-            renderBudgetOverview();
-            renderGoals();
-            checkBudgetLimits();
-            checkUpcomingPayments();
-            updateCurrentMonthDisplay();
-            initDashboardCharts(); 
-        }
-    } catch (e) {
-        console.error("Error loading real data:", e);
-        showToast("Could not sync with database", "error");
-    }
-}
-
-// ===== Update Dashboard UI =====
-function updateDashboardUI(data) {
-    document.getElementById('total-balance').textContent = `$${(data.balance || 0).toLocaleString()}`;
-    document.getElementById('monthly-income').textContent = `$${(data.income || 0).toLocaleString()}`;
-    document.getElementById('monthly-expenses').textContent = `$${(data.expenses || 0).toLocaleString()}`;
-        const savingsRate = data.income > 0 ? 
-        (((data.income - data.expenses) / data.income) * 100).toFixed(1) : 0;
-    document.getElementById('savings-rate').textContent = `${savingsRate}%`;
-
-    // 3. Update Greeting Name (The name next to "Welcome back")
-    if (data.user && data.user.name) {
-        document.getElementById('greet-name').textContent = data.user.name.split(' ')[0];
-    }
-}
-
-// ===== LOGOUT =====
-async function doLogout() {
-    try {
-        const response = await fetch('/api/logout/', {
-            method: 'POST',
-            headers: { 'X-CSRFToken': CSRF_TOKEN }
-        });
-        if (response.ok) {
-            document.getElementById('app').style.display = 'none';
-            document.getElementById('auth-screen').style.display = 'flex';
-            showToast("Logged out successfully", "success");
-        }
-    } catch (e) {
-        showToast("Logout failed", "error");
-    }
-}
-=======
 // ===== INIT =====
 function initApp() {
 renderTransactions('recent-tx', 6);
@@ -822,4 +732,3 @@ if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
 
 Chart.defaults.font.family = 'Sora';
->>>>>>> origin/frontendBranch
