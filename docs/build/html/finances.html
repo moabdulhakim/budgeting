@@ -1,0 +1,1571 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>finances package &#8212; Spendo .1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=037a6758"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'finances';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="goals package" href="goals.html" />
+    <link rel="prev" title="dashboard package" href="dashboard.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Spendo .1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Navigation Menu:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">budgeting-App</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="accounts.html">accounts package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="dashboard.html">dashboard package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">finances package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="goals.html">goals package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">project package</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/moabdulhakim/budgeting" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/finances.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>finances package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> On this page </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.admin">finances.admin module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.apps">finances.apps module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig"><code class="docutils literal notranslate"><span class="pre">FinancesConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig.name"><code class="docutils literal notranslate"><span class="pre">FinancesConfig.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig.ready"><code class="docutils literal notranslate"><span class="pre">FinancesConfig.ready()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.models">finances.models module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget"><code class="docutils literal notranslate"><span class="pre">Budget</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.user"><code class="docutils literal notranslate"><span class="pre">Budget.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.category"><code class="docutils literal notranslate"><span class="pre">Budget.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.amount"><code class="docutils literal notranslate"><span class="pre">Budget.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.start_date"><code class="docutils literal notranslate"><span class="pre">Budget.start_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.end_date"><code class="docutils literal notranslate"><span class="pre">Budget.end_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Budget.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Budget.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Budget.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.alert_threshold"><code class="docutils literal notranslate"><span class="pre">Budget.alert_threshold</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">Budget.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">Budget.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.category_id"><code class="docutils literal notranslate"><span class="pre">Budget.category_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Budget.end_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_next_by_end_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_next_by_end_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_next_by_start_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_next_by_start_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_previous_by_end_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_previous_by_end_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_previous_by_start_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_previous_by_start_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.id"><code class="docutils literal notranslate"><span class="pre">Budget.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.objects"><code class="docutils literal notranslate"><span class="pre">Budget.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Budget.start_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Budget.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.user_id"><code class="docutils literal notranslate"><span class="pre">Budget.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category"><code class="docutils literal notranslate"><span class="pre">Category</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.user"><code class="docutils literal notranslate"><span class="pre">Category.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.name"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.icon"><code class="docutils literal notranslate"><span class="pre">Category.icon</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.is_custom"><code class="docutils literal notranslate"><span class="pre">Category.is_custom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Category.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Category.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Category.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.budget_set"><code class="docutils literal notranslate"><span class="pre">Category.budget_set</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.budgeted"><code class="docutils literal notranslate"><span class="pre">Category.budgeted</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">Category.icon</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.id"><code class="docutils literal notranslate"><span class="pre">Category.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">Category.is_custom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.objects"><code class="docutils literal notranslate"><span class="pre">Category.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.spent"><code class="docutils literal notranslate"><span class="pre">Category.spent</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.transaction_set"><code class="docutils literal notranslate"><span class="pre">Category.transaction_set</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">Category.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.user_id"><code class="docutils literal notranslate"><span class="pre">Category.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Notification.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Notification.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Notification.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.created_at"><code class="docutils literal notranslate"><span class="pre">Notification.created_at</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.get_next_by_created_at"><code class="docutils literal notranslate"><span class="pre">Notification.get_next_by_created_at()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.get_previous_by_created_at"><code class="docutils literal notranslate"><span class="pre">Notification.get_previous_by_created_at()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.id"><code class="docutils literal notranslate"><span class="pre">Notification.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.is_read"><code class="docutils literal notranslate"><span class="pre">Notification.is_read</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.message"><code class="docutils literal notranslate"><span class="pre">Notification.message</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.objects"><code class="docutils literal notranslate"><span class="pre">Notification.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.user"><code class="docutils literal notranslate"><span class="pre">Notification.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.user_id"><code class="docutils literal notranslate"><span class="pre">Notification.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.user"><code class="docutils literal notranslate"><span class="pre">Transaction.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.category"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.name"><code class="docutils literal notranslate"><span class="pre">Transaction.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.type"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.payment_method"><code class="docutils literal notranslate"><span class="pre">Transaction.payment_method</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Transaction.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Transaction.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Transaction.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.category_id"><code class="docutils literal notranslate"><span class="pre">Transaction.category_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_next_by_date"><code class="docutils literal notranslate"><span class="pre">Transaction.get_next_by_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_previous_by_date"><code class="docutils literal notranslate"><span class="pre">Transaction.get_previous_by_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_type_display"><code class="docutils literal notranslate"><span class="pre">Transaction.get_type_display()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.id"><code class="docutils literal notranslate"><span class="pre">Transaction.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">Transaction.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.objects"><code class="docutils literal notranslate"><span class="pre">Transaction.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">Transaction.payment_method</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16"><code class="docutils literal notranslate"><span class="pre">Transaction.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.user_id"><code class="docutils literal notranslate"><span class="pre">Transaction.user_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.signals">finances.signals module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.signals.checkBudgetAmount"><code class="docutils literal notranslate"><span class="pre">checkBudgetAmount()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.tests">finances.tests module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.urls">finances.urls module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances-urls-py">finances/urls.py</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.views">finances.views module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances-views-py">finances/views.py</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.add_category"><code class="docutils literal notranslate"><span class="pre">add_category()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.add_transaction"><code class="docutils literal notranslate"><span class="pre">add_transaction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.delete_transaction"><code class="docutils literal notranslate"><span class="pre">delete_transaction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_budget_page"><code class="docutils literal notranslate"><span class="pre">get_budget_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_reports_page"><code class="docutils literal notranslate"><span class="pre">get_reports_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_transactions_page"><code class="docutils literal notranslate"><span class="pre">get_transactions_page()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="finances-package">
+<h1>finances package<a class="headerlink" href="#finances-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-finances.admin">
+<span id="finances-admin-module"></span><h2>finances.admin module<a class="headerlink" href="#module-finances.admin" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-finances.apps">
+<span id="finances-apps-module"></span><h2>finances.apps module<a class="headerlink" href="#module-finances.apps" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="finances.apps.FinancesConfig">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">finances.apps.</span></span><span class="sig-name descname"><span class="pre">FinancesConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/apps.html#FinancesConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.apps.FinancesConfig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.apps.FinancesConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'finances'</span></span><a class="headerlink" href="#finances.apps.FinancesConfig.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.apps.FinancesConfig.ready">
+<span class="sig-name descname"><span class="pre">ready</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/apps.html#FinancesConfig.ready"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.apps.FinancesConfig.ready" title="Link to this definition">#</a></dt>
+<dd><p>Override this method in subclasses to run code when Django starts.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-finances.models">
+<span id="finances-models-module"></span><h2>finances.models module<a class="headerlink" href="#module-finances.models" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="finances.models.Budget">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">finances.models.</span></span><span class="sig-name descname"><span class="pre">Budget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/models.html#Budget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.models.Budget" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Model representing a budget allocation for a specific category.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#finances.models.Budget.user" title="Link to this definition">#</a></dt>
+<dd><p>The owner of the budget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#finances.models.Budget.category" title="Link to this definition">#</a></dt>
+<dd><p>The financial category assigned to this budget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#finances.models.Category" title="finances.models.Category">Category</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#finances.models.Budget.amount" title="Link to this definition">#</a></dt>
+<dd><p>The maximum amount allocated for this budget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.start_date">
+<span class="sig-name descname"><span class="pre">start_date</span></span><a class="headerlink" href="#finances.models.Budget.start_date" title="Link to this definition">#</a></dt>
+<dd><p>The beginning of the budget period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DateField</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.end_date">
+<span class="sig-name descname"><span class="pre">end_date</span></span><a class="headerlink" href="#finances.models.Budget.end_date" title="Link to this definition">#</a></dt>
+<dd><p>The expiration of the budget period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DateField</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Budget.DoesNotExist">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#finances.models.Budget.DoesNotExist" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Budget.MultipleObjectsReturned">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#finances.models.Budget.MultipleObjectsReturned" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Budget.NotUpdated">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NotUpdated</span></span><a class="headerlink" href="#finances.models.Budget.NotUpdated" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectNotUpdated</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseError</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.alert_threshold">
+<span class="sig-name descname"><span class="pre">alert_threshold</span></span><a class="headerlink" href="#finances.models.Budget.alert_threshold" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#id1" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.category_id">
+<span class="sig-name descname"><span class="pre">category_id</span></span><a class="headerlink" href="#finances.models.Budget.category_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">end_date</span></span><a class="headerlink" href="#id2" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Budget.get_next_by_end_date">
+<span class="sig-name descname"><span class="pre">get_next_by_end_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateField:</span> <span class="pre">end_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Budget.get_next_by_end_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Budget.get_next_by_start_date">
+<span class="sig-name descname"><span class="pre">get_next_by_start_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateField:</span> <span class="pre">start_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Budget.get_next_by_start_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Budget.get_previous_by_end_date">
+<span class="sig-name descname"><span class="pre">get_previous_by_end_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateField:</span> <span class="pre">end_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Budget.get_previous_by_end_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Budget.get_previous_by_start_date">
+<span class="sig-name descname"><span class="pre">get_previous_by_start_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateField:</span> <span class="pre">start_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Budget.get_previous_by_start_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#finances.models.Budget.id" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#finances.models.Budget.objects" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">start_date</span></span><a class="headerlink" href="#id3" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#id4" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Budget.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#finances.models.Budget.user_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finances.models.Category">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">finances.models.</span></span><span class="sig-name descname"><span class="pre">Category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/models.html#Category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.models.Category" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Model representing a financial category (e.g., Food, Transport, Salary).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#finances.models.Category.user" title="Link to this definition">#</a></dt>
+<dd><p>The user who created the custom category. Null for global categories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#finances.models.Category.name" title="Link to this definition">#</a></dt>
+<dd><p>Name of the category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.icon">
+<span class="sig-name descname"><span class="pre">icon</span></span><a class="headerlink" href="#finances.models.Category.icon" title="Link to this definition">#</a></dt>
+<dd><p>Icon identifier for UI display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.is_custom">
+<span class="sig-name descname"><span class="pre">is_custom</span></span><a class="headerlink" href="#finances.models.Category.is_custom" title="Link to this definition">#</a></dt>
+<dd><p>Flag to distinguish between system and user-defined categories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Category.DoesNotExist">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#finances.models.Category.DoesNotExist" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Category.MultipleObjectsReturned">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#finances.models.Category.MultipleObjectsReturned" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Category.NotUpdated">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NotUpdated</span></span><a class="headerlink" href="#finances.models.Category.NotUpdated" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectNotUpdated</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseError</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.budget_set">
+<span class="sig-name descname"><span class="pre">budget_set</span></span><a class="headerlink" href="#finances.models.Category.budget_set" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_reverse_many_to_one_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.budgeted">
+<span class="sig-name descname"><span class="pre">budgeted</span></span><a class="headerlink" href="#finances.models.Category.budgeted" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">icon</span></span><a class="headerlink" href="#id5" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#finances.models.Category.id" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">is_custom</span></span><a class="headerlink" href="#id6" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#id7" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#finances.models.Category.objects" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.spent">
+<span class="sig-name descname"><span class="pre">spent</span></span><a class="headerlink" href="#finances.models.Category.spent" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.transaction_set">
+<span class="sig-name descname"><span class="pre">transaction_set</span></span><a class="headerlink" href="#finances.models.Category.transaction_set" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_reverse_many_to_one_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#id8" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Category.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#finances.models.Category.user_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finances.models.Notification">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">finances.models.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_read</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_at</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/models.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.models.Notification" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Notification.DoesNotExist">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#finances.models.Notification.DoesNotExist" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Notification.MultipleObjectsReturned">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#finances.models.Notification.MultipleObjectsReturned" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Notification.NotUpdated">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NotUpdated</span></span><a class="headerlink" href="#finances.models.Notification.NotUpdated" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectNotUpdated</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseError</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#finances.models.Notification.created_at" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Notification.get_next_by_created_at">
+<span class="sig-name descname"><span class="pre">get_next_by_created_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">created_at&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Notification.get_next_by_created_at" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Notification.get_previous_by_created_at">
+<span class="sig-name descname"><span class="pre">get_previous_by_created_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">created_at&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Notification.get_previous_by_created_at" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#finances.models.Notification.id" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.is_read">
+<span class="sig-name descname"><span class="pre">is_read</span></span><a class="headerlink" href="#finances.models.Notification.is_read" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#finances.models.Notification.message" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#finances.models.Notification.objects" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#finances.models.Notification.user" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Notification.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#finances.models.Notification.user_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finances.models.Transaction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">finances.models.</span></span><span class="sig-name descname"><span class="pre">Transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/models.html#Transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.models.Transaction" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Model representing a financial transaction.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#finances.models.Transaction.user" title="Link to this definition">#</a></dt>
+<dd><p>The owner of the transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#finances.models.Transaction.category" title="Link to this definition">#</a></dt>
+<dd><p>The financial category assigned to this transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#finances.models.Category" title="finances.models.Category">Category</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#finances.models.Transaction.name" title="Link to this definition">#</a></dt>
+<dd><p>A brief title for the transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#finances.models.Transaction.amount" title="Link to this definition">#</a></dt>
+<dd><p>The monetary value of the transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#finances.models.Transaction.type" title="Link to this definition">#</a></dt>
+<dd><p>Indicates if it’s an ‘income’ or ‘expense’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.date">
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#finances.models.Transaction.date" title="Link to this definition">#</a></dt>
+<dd><p>When the transaction occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.payment_method">
+<span class="sig-name descname"><span class="pre">payment_method</span></span><a class="headerlink" href="#finances.models.Transaction.payment_method" title="Link to this definition">#</a></dt>
+<dd><p>Method used for the transaction (optional).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#finances.models.Transaction.description" title="Link to this definition">#</a></dt>
+<dd><p>Additional details about the transaction (optional).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Transaction.DoesNotExist">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#finances.models.Transaction.DoesNotExist" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Transaction.MultipleObjectsReturned">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#finances.models.Transaction.MultipleObjectsReturned" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="finances.models.Transaction.NotUpdated">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">NotUpdated</span></span><a class="headerlink" href="#finances.models.Transaction.NotUpdated" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectNotUpdated</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseError</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#id9" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#id10" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.category_id">
+<span class="sig-name descname"><span class="pre">category_id</span></span><a class="headerlink" href="#finances.models.Transaction.category_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#id11" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#id12" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Transaction.get_next_by_date">
+<span class="sig-name descname"><span class="pre">get_next_by_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Transaction.get_next_by_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Transaction.get_previous_by_date">
+<span class="sig-name descname"><span class="pre">get_previous_by_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Transaction.get_previous_by_date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finances.models.Transaction.get_type_display">
+<span class="sig-name descname"><span class="pre">get_type_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;django.db.models.fields.CharField:</span> <span class="pre">type&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finances.models.Transaction.get_type_display" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#finances.models.Transaction.id" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#id13" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#finances.models.Transaction.objects" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">payment_method</span></span><a class="headerlink" href="#id14" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#id15" title="Link to this definition">#</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#id16" title="Link to this definition">#</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finances.models.Transaction.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#finances.models.Transaction.user_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-finances.signals">
+<span id="finances-signals-module"></span><h2>finances.signals module<a class="headerlink" href="#module-finances.signals" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.signals.checkBudgetAmount">
+<span class="sig-prename descclassname"><span class="pre">finances.signals.</span></span><span class="sig-name descname"><span class="pre">checkBudgetAmount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/signals.html#checkBudgetAmount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.signals.checkBudgetAmount" title="Link to this definition">#</a></dt>
+<dd><p>Signal receiver triggered after a Transaction is saved.</p>
+<p>If the transaction is a new ‘expense’, this function:
+1. Checks if a budget exists for the transaction’s category.
+2. Calculates total spending within the current budget period.
+3. Compares spending against the ‘alert_threshold’.
+4. Generates a Notification if the threshold is met or exceeded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> (<em>Model</em>) – The model class (Transaction).</p></li>
+<li><p><strong>instance</strong> (<a class="reference internal" href="#finances.models.Transaction" title="finances.models.Transaction"><em>Transaction</em></a>) – The actual record being saved.</p></li>
+<li><p><strong>created</strong> (<em>bool</em>) – Indicates if the record was newly created.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-finances.tests">
+<span id="finances-tests-module"></span><h2>finances.tests module<a class="headerlink" href="#module-finances.tests" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-finances.urls">
+<span id="finances-urls-module"></span><h2>finances.urls module<a class="headerlink" href="#module-finances.urls" title="Link to this heading">#</a></h2>
+<section id="finances-urls-py">
+<h3>finances/urls.py<a class="headerlink" href="#finances-urls-py" title="Link to this heading">#</a></h3>
+<p>URL routing for the Finances module.</p>
+<p>All views use Django’s standard render/redirect pattern — no JSON endpoints.</p>
+<dl class="simple">
+<dt>Page views (GET):</dt><dd><p>/finances/transactions/          →  get_transactions_page
+/finances/budget/                →  get_budget_page
+/finances/reports/               →  get_reports_page</p>
+</dd>
+<dt>Form handlers (POST → redirect):</dt><dd><p>/finances/transactions/add/      →  add_transaction
+/finances/transactions/delete/&lt;id&gt;/  →  delete_transaction
+/finances/categories/add/        →  add_category</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="module-finances.views">
+<span id="finances-views-module"></span><h2>finances.views module<a class="headerlink" href="#module-finances.views" title="Link to this heading">#</a></h2>
+<section id="finances-views-py">
+<h3>finances/views.py<a class="headerlink" href="#finances-views-py" title="Link to this heading">#</a></h3>
+<p>Page views and form-handling views for the Finances module.</p>
+<p>All views follow the same render/redirect approach used by the dashboard:
+- Page views: compute context → render template
+- Form views: process POST → redirect back to the relevant page
+No JSON responses are used.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.add_category">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">add_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#add_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.add_category" title="Link to this definition">#</a></dt>
+<dd><p>Handle the Add Category form submission.</p>
+<p>Creates a new custom Category and, if a budget amount is provided,
+creates a Budget record covering the current calendar month.
+Redirects back to the budget page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – POST with form fields:
+<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">budget</span></code> (optional monthly amount)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects to <code class="docutils literal notranslate"><span class="pre">budget</span></code> page.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponseRedirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.add_transaction">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">add_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#add_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.add_transaction" title="Link to this definition">#</a></dt>
+<dd><p>Handle the Add Transaction form submission.</p>
+<p>Reads the posted form fields, creates a Transaction, then redirects
+back to the transactions page so the user sees the updated list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – POST with form fields:
+<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">amount</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">category</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects to <code class="docutils literal notranslate"><span class="pre">transactions</span></code> page.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponseRedirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.delete_transaction">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">delete_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#delete_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.delete_transaction" title="Link to this definition">#</a></dt>
+<dd><p>Delete a transaction owned by the current user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>HttpRequest</em>) – POST request (no body required).</p></li>
+<li><p><strong>transaction_id</strong> (<em>int</em>) – PK of the transaction to delete.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Redirects to <code class="docutils literal notranslate"><span class="pre">transactions</span></code> page.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponseRedirect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.get_budget_page">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">get_budget_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#get_budget_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.get_budget_page" title="Link to this definition">#</a></dt>
+<dd><p>Render the Budget page.</p>
+<p>Computes per-category spending within each budget’s date range, derives
+summary stats for the stat cards, and builds JSON-safe strings for the
+Budget vs Actual bar chart canvas data attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – Authenticated GET request.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl>
+<dt>Renders <code class="docutils literal notranslate"><span class="pre">finances/budget.html</span></code> with context:</dt><dd><ul class="simple">
+<li><p><strong>budget_categories</strong> – list of dicts:</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">{name,</span> <span class="pre">budget,</span> <span class="pre">spent,</span> <span class="pre">remaining,</span> <span class="pre">percent}</span></code>
+- <strong>total_budget</strong>, <strong>total_spent</strong>, <strong>total_remaining</strong> – floats
+- <strong>spent_percent</strong>, <strong>remaining_percent</strong> – ints (0–100)
+- <strong>current_month</strong> – e.g. <code class="docutils literal notranslate"><span class="pre">&quot;May</span> <span class="pre">2026&quot;</span></code>
+- <strong>budget_chart_labels</strong>, <strong>budget_chart_budgeted</strong>,</p>
+<blockquote>
+<div><p><strong>budget_chart_spent</strong> – JSON strings for the canvas data-attrs</p>
+</div></blockquote>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.get_reports_page">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">get_reports_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#get_reports_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.get_reports_page" title="Link to this definition">#</a></dt>
+<dd><p>Render the Reports page.</p>
+<p>Computes 6-month income/expense trends and a per-category spending
+breakdown for the current month, then passes JSON-safe strings as
+context variables so the template can embed them in canvas data-attrs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – Authenticated GET request.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl>
+<dt>Renders <code class="docutils literal notranslate"><span class="pre">reports/index.html</span></code> with context:</dt><dd><ul class="simple">
+<li><p><strong>monthly_labels</strong>, <strong>monthly_income</strong>, <strong>monthly_expenses</strong></p></li>
+</ul>
+<p>– JSON strings for the trend chart
+- <strong>category_labels</strong>, <strong>category_data</strong>
+– JSON strings for the breakdown chart
+- <strong>total_income</strong>, <strong>total_expenses</strong>, <strong>net_balance</strong> – floats</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finances.views.get_transactions_page">
+<span class="sig-prename descclassname"><span class="pre">finances.views.</span></span><span class="sig-name descname"><span class="pre">get_transactions_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/finances/views.html#get_transactions_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finances.views.get_transactions_page" title="Link to this definition">#</a></dt>
+<dd><p>Render the Transactions page.</p>
+<p>Fetches all transactions for the user, applies an optional <code class="docutils literal notranslate"><span class="pre">filter</span></code>
+query parameter (<code class="docutils literal notranslate"><span class="pre">income</span></code> / <code class="docutils literal notranslate"><span class="pre">expenses</span></code> / <code class="docutils literal notranslate"><span class="pre">all</span></code>), and passes the
+queryset to the template so the correct rows and filter button are shown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – Authenticated GET request.
+Query param <code class="docutils literal notranslate"><span class="pre">filter</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;income&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;expenses&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Renders <code class="docutils literal notranslate"><span class="pre">finances/transactions.html</span></code> with context:</dt><dd><ul class="simple">
+<li><p><strong>transactions</strong> – filtered, date-sorted QuerySet</p></li>
+<li><p><strong>active_filter</strong> – the current filter value</p></li>
+<li><p><strong>categories</strong> – all user categories, for the Add Transaction modal</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-finances">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finances" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="dashboard.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">dashboard package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="goals.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">goals package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.admin">finances.admin module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.apps">finances.apps module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig"><code class="docutils literal notranslate"><span class="pre">FinancesConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig.name"><code class="docutils literal notranslate"><span class="pre">FinancesConfig.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.apps.FinancesConfig.ready"><code class="docutils literal notranslate"><span class="pre">FinancesConfig.ready()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.models">finances.models module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget"><code class="docutils literal notranslate"><span class="pre">Budget</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.user"><code class="docutils literal notranslate"><span class="pre">Budget.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.category"><code class="docutils literal notranslate"><span class="pre">Budget.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.amount"><code class="docutils literal notranslate"><span class="pre">Budget.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.start_date"><code class="docutils literal notranslate"><span class="pre">Budget.start_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.end_date"><code class="docutils literal notranslate"><span class="pre">Budget.end_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Budget.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Budget.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Budget.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.alert_threshold"><code class="docutils literal notranslate"><span class="pre">Budget.alert_threshold</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">Budget.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">Budget.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.category_id"><code class="docutils literal notranslate"><span class="pre">Budget.category_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Budget.end_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_next_by_end_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_next_by_end_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_next_by_start_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_next_by_start_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_previous_by_end_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_previous_by_end_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.get_previous_by_start_date"><code class="docutils literal notranslate"><span class="pre">Budget.get_previous_by_start_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.id"><code class="docutils literal notranslate"><span class="pre">Budget.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.objects"><code class="docutils literal notranslate"><span class="pre">Budget.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Budget.start_date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Budget.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Budget.user_id"><code class="docutils literal notranslate"><span class="pre">Budget.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category"><code class="docutils literal notranslate"><span class="pre">Category</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.user"><code class="docutils literal notranslate"><span class="pre">Category.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.name"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.icon"><code class="docutils literal notranslate"><span class="pre">Category.icon</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.is_custom"><code class="docutils literal notranslate"><span class="pre">Category.is_custom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Category.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Category.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Category.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.budget_set"><code class="docutils literal notranslate"><span class="pre">Category.budget_set</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.budgeted"><code class="docutils literal notranslate"><span class="pre">Category.budgeted</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">Category.icon</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.id"><code class="docutils literal notranslate"><span class="pre">Category.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">Category.is_custom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.objects"><code class="docutils literal notranslate"><span class="pre">Category.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.spent"><code class="docutils literal notranslate"><span class="pre">Category.spent</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.transaction_set"><code class="docutils literal notranslate"><span class="pre">Category.transaction_set</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">Category.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Category.user_id"><code class="docutils literal notranslate"><span class="pre">Category.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Notification.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Notification.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Notification.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.created_at"><code class="docutils literal notranslate"><span class="pre">Notification.created_at</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.get_next_by_created_at"><code class="docutils literal notranslate"><span class="pre">Notification.get_next_by_created_at()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.get_previous_by_created_at"><code class="docutils literal notranslate"><span class="pre">Notification.get_previous_by_created_at()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.id"><code class="docutils literal notranslate"><span class="pre">Notification.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.is_read"><code class="docutils literal notranslate"><span class="pre">Notification.is_read</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.message"><code class="docutils literal notranslate"><span class="pre">Notification.message</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.objects"><code class="docutils literal notranslate"><span class="pre">Notification.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.user"><code class="docutils literal notranslate"><span class="pre">Notification.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Notification.user_id"><code class="docutils literal notranslate"><span class="pre">Notification.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.user"><code class="docutils literal notranslate"><span class="pre">Transaction.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.category"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.name"><code class="docutils literal notranslate"><span class="pre">Transaction.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.type"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.payment_method"><code class="docutils literal notranslate"><span class="pre">Transaction.payment_method</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Transaction.DoesNotExist</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Transaction.MultipleObjectsReturned</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.NotUpdated"><code class="docutils literal notranslate"><span class="pre">Transaction.NotUpdated</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.category_id"><code class="docutils literal notranslate"><span class="pre">Transaction.category_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_next_by_date"><code class="docutils literal notranslate"><span class="pre">Transaction.get_next_by_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_previous_by_date"><code class="docutils literal notranslate"><span class="pre">Transaction.get_previous_by_date()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.get_type_display"><code class="docutils literal notranslate"><span class="pre">Transaction.get_type_display()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.id"><code class="docutils literal notranslate"><span class="pre">Transaction.id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">Transaction.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.objects"><code class="docutils literal notranslate"><span class="pre">Transaction.objects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">Transaction.payment_method</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16"><code class="docutils literal notranslate"><span class="pre">Transaction.user</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.models.Transaction.user_id"><code class="docutils literal notranslate"><span class="pre">Transaction.user_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.signals">finances.signals module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.signals.checkBudgetAmount"><code class="docutils literal notranslate"><span class="pre">checkBudgetAmount()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.tests">finances.tests module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.urls">finances.urls module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances-urls-py">finances/urls.py</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances.views">finances.views module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances-views-py">finances/views.py</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.add_category"><code class="docutils literal notranslate"><span class="pre">add_category()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.add_transaction"><code class="docutils literal notranslate"><span class="pre">add_transaction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.delete_transaction"><code class="docutils literal notranslate"><span class="pre">delete_transaction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_budget_page"><code class="docutils literal notranslate"><span class="pre">get_budget_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_reports_page"><code class="docutils literal notranslate"><span class="pre">get_reports_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finances.views.get_transactions_page"><code class="docutils literal notranslate"><span class="pre">get_transactions_page()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-finances">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By F-S-Sh-M
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, F-S-Sh-M.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
