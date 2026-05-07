@@ -476,23 +476,56 @@ purple: isDark ? '#c084fc' : '#a855f7',
 function destroyChart(id) {
 if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
 }
-
-// ==== Dashboard Donut Chart & Report Trend Chart ==== 
 function initDashboardCharts() {
     const c = getColors();
-    const labels = budgetCategories.map(b => b.name);
-    const dataValues = budgetCategories.map(b => b.spent);
 
-    // Donut chart 
-    destroyChart('categoryDonutChart');
-    chartInstances['categoryDonutChart'] = new Chart(
-        document.getElementById('categoryDonutChart'),
-        {
+    const lineCanvas = document.getElementById('incomeExpenseChart');
+    if (lineCanvas) {
+        const lineLabels   = JSON.parse(lineCanvas.dataset.labels   || '[]');
+        const incomeData   = JSON.parse(lineCanvas.dataset.income   || '[]');
+        const expensesData = JSON.parse(lineCanvas.dataset.expenses || '[]');
+        destroyChart('incomeExpenseChart');
+        chartInstances['incomeExpenseChart'] = new Chart(lineCanvas, {
+            type: 'line',
+            data: {
+                labels: lineLabels.length ? lineLabels : ['No Data'],
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: incomeData,
+                        borderColor: c.green, backgroundColor: c.green + '20',
+                        tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: c.green,
+                    },
+                    {
+                        label: 'Expenses',
+                        data: expensesData,
+                        borderColor: c.red, backgroundColor: c.red + '15',
+                        tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: c.red,
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { color: c.text } } },
+                scales: {
+                    x: { grid: { color: c.grid }, ticks: { color: c.text } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, callback: v => '$' + v.toLocaleString() } }
+                }
+            }
+        });
+    }
+
+    const donutCanvas = document.getElementById('categoryDonutChart');
+    if (donutCanvas) {
+        const donutLabels = JSON.parse(donutCanvas.dataset.labels || '[]');
+        const donutValues = JSON.parse(donutCanvas.dataset.values || '[]');
+        destroyChart('categoryDonutChart');
+        chartInstances['categoryDonutChart'] = new Chart(donutCanvas, {
             type: 'doughnut',
             data: {
-                labels: labels.length ? labels : ['No Data'],
+                labels: donutLabels.length ? donutLabels : ['No Data'],
                 datasets: [{
-                    data: dataValues.length ? dataValues : [1],
+                    data: donutValues.length ? donutValues : [1],
                     backgroundColor: [c.orange, c.accent, c.blue, c.purple, c.green, '#94a3b8'],
                     borderWidth: 0,
                     hoverOffset: 8,
@@ -509,11 +542,10 @@ function initDashboardCharts() {
                     }
                 }
             }
-        }
-    );
+        });
     }
+}
 
-// ===== Trend Chart in Reports =====         
 function initReportCharts() {
     const c = getColors();
     const incomeData = transactions.filter(t => t.amount > 0).map(t => t.amount);
@@ -554,15 +586,20 @@ function initReportCharts() {
 
 function initBudgetChart() {
     const c = getColors();
+    const canvas = document.getElementById('budgetBarChart');
+    if (!canvas) return;
+    const labels   = JSON.parse(canvas.dataset.labels   || '[]');
+    const budgeted = JSON.parse(canvas.dataset.budgeted || '[]');
+    const spent    = JSON.parse(canvas.dataset.spent    || '[]');
     destroyChart('budgetBarChart');
-    chartInstances['budgetBarChart'] = new Chart(document.getElementById('budgetBarChart'), {
+    chartInstances['budgetBarChart'] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: budgetCategories.map(b => b.name),
+            labels: labels,
             datasets: [
                 {
                     label: 'Budgeted',
-                    data: budgetCategories.map(b => b.budgeted),
+                    data: budgeted,
                     backgroundColor: c.accent + '40',
                     borderColor: c.accent,
                     borderWidth: 2,
@@ -570,9 +607,9 @@ function initBudgetChart() {
                 },
                 {
                     label: 'Spent',
-                    data: budgetCategories.map(b => b.spent),
-                    backgroundColor: budgetCategories.map(b => b.spent > b.budgeted ? c.red + '99' : c.green + '99'),
-                    borderColor: budgetCategories.map(b => b.spent > b.budgeted ? c.red : c.green),
+                    data: spent,
+                    backgroundColor: spent.map((s, i) => s > budgeted[i] ? c.red + '99' : c.green + '99'),
+                    borderColor:     spent.map((s, i) => s > budgeted[i] ? c.red       : c.green),
                     borderWidth: 2,
                     borderRadius: 8,
                 }
