@@ -1,3 +1,9 @@
+"""
+URL routing configuration for the User Accounts application.
+
+This module defines the API endpoints for user authentication, including 
+signing up new users, logging in to existing accounts, and logging out.
+"""
 from django.urls import include, path
 from . import views
 

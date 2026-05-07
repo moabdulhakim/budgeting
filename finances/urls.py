@@ -1,7 +1,10 @@
+"""
+URL configuration for the finance API.
+Defines endpoints for dashboard data, category & budget  management, 
+and transaction CRUD operations.
+"""
 from django.urls import include, path
 from . import views
-
-
 urlpatterns = [
     path('api/dashboard/', views.dashboard_data, name='dashboard_data'),
     path('api/categories/add/', views.add_category, name='add_category'),

@@ -17,6 +17,15 @@ def getGoals(request):
 
 # create goal
 class GoalCreateView(LoginRequiredMixin, CreateView):
+    """
+    Creates a new savings goal for the logged-in user.
+    
+    Args:
+        request (HttpRequest): The HTTP request with goal details in JSON.
+        
+    Returns:
+        JsonResponse: Success status.
+    """
     model = Goal
     fields = [
         'name',
@@ -55,6 +64,15 @@ class GoalUpdateView(LoginRequiredMixin, UpdateView):
 
 @login_required
 def depositGoalAmount(request):
+    """
+    API endpoint to update the current saved amount of a specific goal.
+    
+    Args:
+        request (HttpRequest): Request object with 'goal_id' and 'amount'.
+        
+    Returns:
+        JsonResponse: Success status or error if goal not found.
+    """
     if request.method != 'PUT':
         return HttpResponseNotAllowed(['PUT'])
 
