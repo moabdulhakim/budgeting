@@ -19,7 +19,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('goals.urls'))
+    path('api/goals/', include('goals.urls')),
+    path('api/accounts/', include('accounts.urls')),
+    path('api/finances/', include('finances.urls')),
 ]
