@@ -28,14 +28,15 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'goals.apps.GoalsConfig',
+    'finances.apps.FinancesConfig',
+    'accounts.apps.AccountsConfig',
+    'dashboard.apps.DashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'finances',
-    'accounts', 
 ]
 
 MIDDLEWARE = [

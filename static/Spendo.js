@@ -239,15 +239,26 @@ return `
 }).join('');
 }
 
+<<<<<<< HEAD
+// ===== BUDGET CARDS =====
+=======
 function renderGoals() {
     const container = document.getElementById('goals-list');
+
     container.innerHTML = savingsGoals.map((g, index) => {
         const pct = Math.round((g.saved / g.target) * 100);
+
+        const displayImage = g.image
+            ? `<img src="${g.image}" class="goal-img-preview">`
+            : `<div class="goal-icon-placeholder">🎯</div>`;
+
         return `
         <div class="goal-item">
             <button class="edit-goal-btn" onclick="openEditGoalModal(${index})">✏️</button>
             <div class="goal-header">
-                <div class="goal-name-row"><span class="goal-name">${g.name}</span></div>
+                <div class="goal-name-row">
+                    ${displayImage} <span class="goal-name">${g.name}</span>
+                </div>
                 <span class="goal-pct">${pct}%</span>
             </div>
             <div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
@@ -259,6 +270,20 @@ function renderGoals() {
     }).join('');
 }
 
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'goal-image-input') {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('goal-image-url').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+
+>>>>>>> origin/frontendBranch
 function renderBudgetCards() {
 const container = document.getElementById('budget-cards');
 container.innerHTML = budgetCategories.map(b => {
@@ -299,34 +324,29 @@ async function saveCategory() {
     const name = document.getElementById("cat-name").value;
     const budgeted = document.getElementById("cat-budget").value;
 
-if (!name.trim()) {
-    showToast("Category name required", "error");
-    return;
+    if (!name || !budgeted) {
+        showToast("Please fill all fields", "error");
+        return;
+    }
+    try {
+        const response = await fetch('/api/categories/add/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+            body: JSON.stringify({ name, budgeted }) 
+        });
+        if (response.ok) {
+            showToast("Category added!", "success");
+            initApp(); 
+            closeCatModal();
+        }
+    } catch (e) {
+        showToast("Error saving category", "error");
+    }
 }
-
-if (budgeted <= 0) {
-    showToast("budgeted must be greater than 0", "error");
-    return;
-}
-
-budgetCategories.push({
-name,
-budgeted,
-spent: 0,
-color: "#6c63ff"
-});
-
-closeCatModal();
-
-renderBudgetOverview();
-renderBudgetCards();
-renderReportTable();
-checkBudgetLimits();
-showToast("Category saved successfully", "success")
-}
-
 
 // ===== GOAL MODAL =====
+<<<<<<< HEAD
+=======
 function addGoal() {
     document.getElementById("edit-goal-id").value = "";
     document.getElementById("goal-name").value = "";
@@ -342,24 +362,31 @@ function saveGoal() {
     const saved = Number(document.getElementById("goal-saved").value);
     const target = Number(document.getElementById("goal-target").value);
     const editId = document.getElementById("edit-goal-id").value;
+    const imageUrl = document.getElementById("goal-image-url").value;
 
     if (!name.trim()) {
-    showToast("Goal name required", "error");
-    return;
-}
+        showToast("Goal name required", "error");
+        return;
+    }
 
-if (target <= 0) {
-    showToast("target must be greater than 0", "error");
-    return;
-}
+    if (target <= 0) {
+        showToast("Target must be greater than 0", "error");
+        return;
+    }
 
+    const goalData = {
+        name: name,
+        target: target,
+        saved: saved,
+        image: imageUrl || null,
+        color: "#6c63ff"
+    };
 
     if (saved >= target && target > 0) {
         const duration = 3 * 1000;
         const end = Date.now() + duration;
 
         (function frame() {
-
             confetti({
                 particleCount: 5,
                 angle: 60,
@@ -367,7 +394,6 @@ if (target <= 0) {
                 origin: { x: 0, y: 0.7 },
                 colors: ['#6c63ff', '#a855f7', '#22c55e']
             });
-
             confetti({
                 particleCount: 5,
                 angle: 120,
@@ -375,7 +401,6 @@ if (target <= 0) {
                 origin: { x: 1, y: 0.7 },
                 colors: ['#6c63ff', '#a855f7', '#22c55e']
             });
-
             if (Date.now() < end) {
                 requestAnimationFrame(frame);
             }
@@ -386,24 +411,20 @@ if (target <= 0) {
         }, 1000);
     }
 
-
     if (editId !== "") {
-        savingsGoals[editId].name = name;
-        savingsGoals[editId].saved = saved;
-        savingsGoals[editId].target = target;
+        savingsGoals[editId] = goalData;
     } else {
-        savingsGoals.push({
-            name,
-            target,
-            saved: saved,
-            color: "#6c63ff"
-        });
+        savingsGoals.push(goalData);
     }
 
     closeGoalModal();
     renderGoals();
     initSavingsChart();
-    showToast("Goal saved successfully", "success")
+
+    document.getElementById("goal-image-input").value = "";
+    document.getElementById("goal-image-url").value = "";
+
+    showToast("Goal saved successfully", "success");
 }
 
 
@@ -411,6 +432,7 @@ function closeGoalModal() {
 document.getElementById("goal-modal").classList.remove("active");
 }
 
+>>>>>>> origin/frontendBranch
 function openEditGoalModal(index) {
     const goal = savingsGoals[index];
     document.getElementById("edit-goal-id").value = index;
@@ -692,7 +714,10 @@ function checkUpcomingPayments() {
 // current date
 function updateCurrentMonthDisplay() {
     const displayElement = document.getElementById('current-date-display');
-
+<<<<<<< HEAD
+=======
+    const budgetDateElement = document.getElementById('current-budget-date');
+>>>>>>> origin/frontendBranch
     if (!displayElement) return;
     const now = new Date();
     const options = { month: 'long', year: 'numeric' };
@@ -700,6 +725,87 @@ function updateCurrentMonthDisplay() {
     displayElement.textContent = `📅 ${dateString}`;
     if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
+
+<<<<<<< HEAD
+// ===== Save Transaction =====
+async function saveTransaction() {
+    const type = document.getElementById('tx-type').value;
+    const name = document.getElementById('tx-name').value;
+    const amount = document.getElementById('tx-amount').value;
+    const category = document.getElementById('tx-category').value;
+    try {
+        const response = await fetch('/api/transactions/add/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+            body: JSON.stringify({ type, name, amount: parseFloat(amount), category })
+        });
+        if (response.ok) {
+            showToast("Transaction added!", "success");
+            closeModal('tx-modal');
+            initApp(); // Refresh data immediately
+        }
+    } catch (e) {
+        showToast("Error saving transaction", "error");
+    }
+}
+
+async function initApp() {
+    try {
+        const response = await fetch('/api/dashboard/'); // Your Django URL
+        if (response.ok) {
+            const data = await response.json();
+                updateDashboardUI(data); 
+            transactions = data.transactions || [];
+            budgetCategories = data.categories || [];
+            savingsGoals = data.goals || [];
+            recurringPayments = data.upcoming || [];
+
+            renderTransactions('recent-tx', 6);
+            renderBudgetOverview();
+            renderGoals();
+            checkBudgetLimits();
+            checkUpcomingPayments();
+            updateCurrentMonthDisplay();
+            initDashboardCharts(); 
+        }
+    } catch (e) {
+        console.error("Error loading real data:", e);
+        showToast("Could not sync with database", "error");
+    }
+}
+
+// ===== Update Dashboard UI =====
+function updateDashboardUI(data) {
+    document.getElementById('total-balance').textContent = `$${(data.balance || 0).toLocaleString()}`;
+    document.getElementById('monthly-income').textContent = `$${(data.income || 0).toLocaleString()}`;
+    document.getElementById('monthly-expenses').textContent = `$${(data.expenses || 0).toLocaleString()}`;
+        const savingsRate = data.income > 0 ? 
+        (((data.income - data.expenses) / data.income) * 100).toFixed(1) : 0;
+    document.getElementById('savings-rate').textContent = `${savingsRate}%`;
+
+    // 3. Update Greeting Name (The name next to "Welcome back")
+    if (data.user && data.user.name) {
+        document.getElementById('greet-name').textContent = data.user.name.split(' ')[0];
+    }
+}
+
+// ===== LOGOUT =====
+async function doLogout() {
+    try {
+        const response = await fetch('/api/logout/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': CSRF_TOKEN }
+        });
+        if (response.ok) {
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+            showToast("Logged out successfully", "success");
+        }
+    } catch (e) {
+        showToast("Logout failed", "error");
+    }
+}
+=======
 // ===== INIT =====
 function initApp() {
 renderTransactions('recent-tx', 6);
@@ -712,8 +818,8 @@ checkBudgetLimits();
 checkUpcomingPayments();
 updateCurrentMonthDisplay();
 setTimeout(() => initDashboardCharts(), 100);
+if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
 
 Chart.defaults.font.family = 'Sora';
-
-
+>>>>>>> origin/frontendBranch
