@@ -8,7 +8,6 @@ from datetime import timedelta
 import calendar
 import json
 
-# check if logged in, if not redirect to login page
 @login_required
 def getDashboard(request):
     now = timezone.now()
@@ -35,11 +34,39 @@ def getDashboard(request):
 
     income_change = (monthly_income - prev_income) / prev_income * 100 if prev_income else 0
     expense_change = (monthly_expenses - prev_expense) / prev_expense * 100 if prev_expense else 0
-    
+
     balance_change = income_change - expense_change
+
+    if income_change > 0:
+        income_change = f"▲ +{income_change:.2f}% vs last month"
+    elif income_change < 0:
+        income_change = f"▼ {income_change:.2f}% vs last month"
+    else:
+        income_change = f"= 0% vs last month"
+    
+    if expense_change > 0:
+        expense_change = f"▲ +{expense_change:.2f}% vs last month"
+    elif expense_change < 0:
+        expense_change = f"▼ {expense_change:.2f}% vs last month"
+    else:
+        expense_change = f"= 0% vs last month"
+    
+    if balance_change > 0:
+        balance_change = f"▲ +{balance_change:.2f}% vs last month"
+    elif balance_change < 0:
+        balance_change = f"▼ {balance_change:.2f}% vs last month"
+    else:
+        balance_change = f"= 0% vs last month"
 
     prev_savings_rate = (prev_income - prev_expense) / prev_income * 100 if prev_income else 0
     savings_rate_change = savings_rate - prev_savings_rate
+
+    if savings_rate_change > 0:
+        savings_rate_change = f"▲ +{savings_rate_change:.2f}% this month"
+    elif savings_rate_change < 0:
+        savings_rate_change = f"▼ {savings_rate_change:.2f}% this month"
+    else:
+        savings_rate_change = f"= 0% this month"
 
 
     chart_income_data = []
@@ -97,13 +124,13 @@ def getDashboard(request):
     
     context = {
         'total_balance': float(total_balance),
-        'balance_change': round(balance_change, 2),
+        'balance_change': balance_change,
         'monthly_income': float(monthly_income),
-        'income_change': round(income_change, 2),
+        'income_change': income_change,
         'monthly_expenses': float(monthly_expenses),
-        'expenses_change': round(expense_change, 2),
+        'expenses_change': expense_change,
         'savings_rate': round(savings_rate, 2),
-        'savings_rate_change': round(savings_rate_change, 2),
+        'savings_rate_change': savings_rate_change,
         
         'chart_labels': json.dumps(chart_labels),
         'chart_income_data': json.dumps(chart_income_data),

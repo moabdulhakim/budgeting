@@ -4,19 +4,20 @@
   <p class="page-sub">Welcome back, {{ user.first_name }} 👋</p>
 </div>
 <div class="topbar-right">
-  <div class="month-selector">📅 {{ current_date }}</div>
-  <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+  <!-- <div class="month-selector">📅 {{ current_date }}</div> -->
+  <!-- <div class="notif-btn">🔔<span class="notif-dot"></span></div> --> <!-- TODO: build notification page notifications -->
 </div>
 {% endblock %} {% block content %} {% include 'includes/alerts.html' %}
 
 <!-- STAT CARDS -->
+ <!-- TODO: we need the status message that is mentioned in SRS -->
 <div class="stats-grid">
   <div class="stat-card accent-card">
     <div class="stat-header">
       <span class="stat-label">Total Balance</span>
     </div>
     <div class="stat-value">${{ total_balance }}</div>
-    <div class="stat-change up">▲ +{{ balance_change }}% this month</div>
+    <div class="stat-change up">{{ balance_change }}</div>
   </div>
 
   <div class="stat-card">
@@ -24,7 +25,7 @@
       <span class="stat-label">Monthly Income</span>
     </div>
     <div class="stat-value">${{ monthly_income }}</div>
-    <div class="stat-change up">▲ +{{ income_change }}% vs last month</div>
+    <div class="stat-change up">{{ income_change }}</div>
   </div>
 
   <div class="stat-card">
@@ -32,7 +33,7 @@
       <span class="stat-label">Monthly Expenses</span>
     </div>
     <div class="stat-value">${{ monthly_expenses }}</div>
-    <div class="stat-change down">▼ -{{ expenses_change }}% vs last month</div>
+    <div class="stat-change down">{{ expenses_change }}</div>
   </div>
 
   <div class="stat-card">
@@ -40,11 +41,12 @@
       <span class="stat-label">Savings Rate</span>
     </div>
     <div class="stat-value">{{ savings_rate }}%</div>
-    <div class="stat-change up">▲ +{{ savings_rate_change }}% this month</div>
+    <div class="stat-change up">{{ savings_rate_change }}</div>
   </div>
 </div>
 
 <!-- CHARTS ROW -->
+ <!-- TODO: charts do not appear, fix it -->
 <div class="charts-grid">
   <div class="chart-card">
     <div class="chart-header">
