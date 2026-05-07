@@ -1,0 +1,33 @@
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">💰</div>
+        <span>Spendo</span>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-label">Main</div>
+        <a class="nav-item {% block nav_dashboard %}{% endblock %}" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="nav-item {% block nav_reports %}{% endblock %}" href="{% url 'reports' %}">Reports</a>
+        <a class="nav-item {% block nav_budget %}{% endblock %}" href="{% url 'budget' %}">Budget</a>
+        <a class="nav-item {% block nav_transactions %}{% endblock %}" href="{% url 'transactions' %}">Transactions</a>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-label">Account</div>
+        <a class="nav-item {% block nav_goals %}{% endblock %}" href="{% url 'goals' %}">Goals</a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="theme-toggle">
+            <span>🌙 Dark Mode</span>
+            <button class="toggle-sw" id="theme-toggle" onclick="toggleTheme()"></button>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">{{ request.user.first_name|first|upper }}</div>
+            <div>
+                <div class="user-name">{{ request.user.get_full_name }}</div>
+                <div class="user-email">{{ request.user.email }}</div>
+            </div>
+        </div>
+    </div>
+</aside>

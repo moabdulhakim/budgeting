@@ -1,0 +1,38 @@
+<div id="goal-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="goal-modal-title">Add New Savings Goal</h3>
+      <button class="alert-close" onclick="document.getElementById('goal-modal').classList.remove('active')">×</button>
+    </div>
+
+    <form method="POST" action="{% url 'add_goal' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="goal_id" id="edit-goal-id" value="">
+
+      <div class="form-group">
+        <label for="goal-name">Goal Name</label>
+        <input type="text" id="goal-name" name="name" placeholder="e.g. Vacation to Japan" required>
+      </div>
+
+      <div class="form-group" id="saved-amount-group">
+        <label for="goal-saved">Current Saved Amount ($)</label>
+        <input type="number" id="goal-saved" name="saved" placeholder="0" min="0">
+      </div>
+
+      <div class="form-group">
+        <label for="goal-target">Target Amount ($)</label>
+        <input type="number" id="goal-target" name="target" placeholder="10000" required min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="goal-image-input">Goal Image (Optional)</label>
+        <input type="file" id="goal-image-input" name="image" accept="image/*">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('goal-modal').classList.remove('active')">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="save-goal-btn">Save Goal</button>
+      </div>
+    </form>
+  </div>
+</div>

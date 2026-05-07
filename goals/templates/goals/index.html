@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div>
+  <h1 class="page-title">Savings Goals</h1>
+  <p class="page-sub">Track your progress towards your goals</p>
+</div>
+<div class="topbar-right">
+  <button class="add-btn" onclick="document.getElementById('goal-modal').classList.add('active')">+ New Goal</button>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- STAT CARDS -->
+<div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+  <div class="stat-card accent-card">
+    <div class="stat-header"><span class="stat-label">Total Saved</span></div>
+    <div class="stat-value">${{ total_saved }}</div>
+    <div class="stat-change">Across {{ goals_count }} goals</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-header"><span class="stat-label">Total Target</span></div>
+    <div class="stat-value">${{ total_target }}</div>
+    <div class="stat-change up">{{ overall_percent }}% achieved</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-header"><span class="stat-label">Monthly Saved</span></div>
+    <div class="stat-value">${{ monthly_saved }}</div>
+    <div class="stat-change up">▲ +{{ monthly_saved_change }}% this month</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <!-- Goals Progress Chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">Goals Progress</div>
+      <div class="chart-sub">All goals overview</div>
+    </div>
+    <div style="height:200px">
+      <canvas id="savingsChart"
+        data-labels="{{ goals_chart_labels|safe }}"
+        data-saved="{{ goals_chart_saved|safe }}"
+        data-targets="{{ goals_chart_targets|safe }}">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Goals List -->
+  <div class="goals-card">
+    <div class="section-header">
+      <div class="section-title">Your Goals</div>
+    </div>
+    <div id="goals-list">
+      {% for goal in goals %}
+      <div class="goal-item">
+        <div class="goal-header">
+          <div class="goal-name-row">
+            {% if goal.image %}
+            <img src="{{ goal.image.url }}" class="goal-img-preview" alt="{{ goal.name }}">
+            {% else %}
+            <div class="goal-icon-placeholder">🎯</div>
+            {% endif %}
+            <span class="goal-name">{{ goal.name }}</span>
+          </div>
+          <span class="goal-pct">{{ goal.percent }}%</span>
+        </div>
+        <div class="goal-amounts">${{ goal.saved }} saved of ${{ goal.target }}</div>
+        <div class="goal-bar-bg">
+          <div class="goal-bar-fill" style="width:{{ goal.percent }}%; background:var(--accent);"></div>
+        </div>
+        <button class="edit-goal-btn" onclick="openEditGoal('{{ goal.id }}', '{{ goal.name }}', '{{ goal.saved }}', '{{ goal.target }}')">✏️</button>
+      </div>
+      {% empty %}
+      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No goals yet. Add your first goal!</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% include 'includes/modals/add_goal.html' %}
+
+{% endblock %}

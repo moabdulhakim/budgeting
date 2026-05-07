@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div>
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-sub">Welcome back, {{ user.first_name }} 👋</p>
+</div>
+<div class="topbar-right">
+  <div class="month-selector">📅 {{ current_date }}</div>
+  <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% include 'includes/alerts.html' %}
+
+<!-- STAT CARDS -->
+<div class="stats-grid">
+  <div class="stat-card accent-card">
+    <div class="stat-header">
+      <span class="stat-label">Total Balance</span>
+    </div>
+    <div class="stat-value">${{ total_balance }}</div>
+    <div class="stat-change up">▲ +{{ balance_change }}% this month</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-label">Monthly Income</span>
+    </div>
+    <div class="stat-value">${{ monthly_income }}</div>
+    <div class="stat-change up">▲ +{{ income_change }}% vs last month</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-label">Monthly Expenses</span>
+    </div>
+    <div class="stat-value">${{ monthly_expenses }}</div>
+    <div class="stat-change down">▼ -{{ expenses_change }}% vs last month</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-label">Savings Rate</span>
+    </div>
+    <div class="stat-value">{{ savings_rate }}%</div>
+    <div class="stat-change up">▲ +{{ savings_rate_change }}% this month</div>
+  </div>
+</div>
+
+<!-- CHARTS ROW -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Income vs Expenses</div>
+        <div class="chart-sub">Last 6 months overview</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Income</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Expenses</div>
+      </div>
+    </div>
+    <div class="chart-canvas">
+      <canvas id="incomeExpenseChart"
+        data-income="{{ chart_income_data|safe }}"
+        data-expenses="{{ chart_expenses_data|safe }}"
+        data-labels="{{ chart_labels|safe }}">
+      </canvas>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Spending by Category</div>
+        <div class="chart-sub">This month</div>
+      </div>
+    </div>
+    <div class="chart-canvas">
+      <canvas id="categoryDonutChart"
+        data-labels="{{ donut_labels|safe }}"
+        data-values="{{ donut_values|safe }}">
+      </canvas>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM ROW -->
+<div class="transactions-grid">
+  <!-- Recent Transactions -->
+  <div class="chart-card">
+    <div class="section-header">
+      <div class="section-title">Recent Transactions</div>
+      <a href="{% url 'transactions' %}" class="see-all">See all →</a>
+    </div>
+    <div class="tx-list">
+      {% for tx in recent_transactions %}
+      <div class="tx-item">
+        <div class="tx-info">
+          <div class="tx-name">{{ tx.name }}</div>
+          <div class="tx-date">{{ tx.date }}</div>
+        </div>
+        <div class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}">
+          {% if tx.type == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No transactions yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Budget Overview -->
+  <div class="chart-card">
+    <div class="section-header">
+      <div class="section-title">Budget Overview</div>
+      <a href="{% url 'budget' %}" class="see-all">See all →</a>
+    </div>
+    <div class="budget-list">
+      {% for item in budget_overview %}
+      <div>
+        <div class="budget-item-header">
+          <div class="budget-item-left">
+            <div class="budget-cat-name">{{ item.category }}</div>
+          </div>
+          <div class="budget-amounts">${{ item.spent }} / ${{ item.budget }}</div>
+        </div>
+        <div class="budget-bar-bg">
+          <div class="budget-bar-fill" style="width:{{ item.percent }}%; background:{% if item.percent >= 90 %}var(--red){% elif item.percent >= 70 %}var(--orange){% else %}var(--accent){% endif %};"></div>
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No budget categories yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
