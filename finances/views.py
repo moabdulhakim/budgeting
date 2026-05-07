@@ -9,6 +9,15 @@ from django.db.models import Sum
 
 @login_required
 def dashboard_data(request):
+    """
+    Retrieves and aggregates financial data for the dashboard.
+
+    Calculates total balance, income, expenses, and fetches recent 
+    transactions and savings goals.
+
+    Returns:
+        JsonResponse: A JSON object containing balance, income, expenses, goals, and recent transactions.
+    """
     from goals.models import Goal 
     user = request.user
     income = Transaction.objects.filter(user=user, type='income').aggregate(Sum('amount'))['amount__sum'] or 0
@@ -42,7 +51,16 @@ def dashboard_data(request):
 @csrf_exempt
 @login_required
 def add_category(request):
-    """Allows users to create their own spending categories[cite: 5]."""
+    """
+    API endpoint to allow users to create custom spending categories.
+
+    Args:
+        request (HttpRequest): Request with JSON body (name, icon).
+
+    Returns:
+        JsonResponse: Success or error message.
+    """
+    
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -59,6 +77,24 @@ def add_category(request):
 @csrf_exempt
 @login_required
 def set_budget(request):
+    """
+    Enables users to set or update their budget for a specific category and time period.
+
+    This view handles POST requests containing JSON data. It identifies the category 
+    by ID and either creates a new budget record or updates an existing one for the 
+    authenticated user.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing a JSON body with:
+            - category_id (int): The unique ID of the spending category.
+            - amount (decimal): The budgeted amount.
+            - start_date (date): The start date of the budget cycle.
+            - end_date (date): The end date of the budget cycle.
+
+    Returns:
+        JsonResponse: A success status on successful update/creation, or an error 
+        message if the process fails.
+    """
     if request.method == "POST":
         data = json.loads(request.body)
         category_obj = Category.objects.get(id=data["category_id"])
@@ -76,6 +112,15 @@ def set_budget(request):
 @csrf_exempt
 @login_required
 def add_transaction(request):
+    """
+    API endpoint to record a new financial transaction.
+    
+    Args:
+        request (HttpRequest): JSON with transaction details (name, amount, type, category).
+        
+    Returns:
+        JsonResponse: Confirmation of the created transaction.
+    """
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -97,7 +142,16 @@ def add_transaction(request):
 @csrf_exempt
 @login_required
 def update_transaction(request, transaction_id):
-    """Securely update a transaction's details."""
+    """
+    Securely update a transaction's details.
+
+    Args:
+        request (HttpRequest): The HTTP request containing updated transaction data.
+        transaction_id (int): The ID of the transaction to update.
+
+    Returns:
+        JsonResponse: Success status or error message.
+    """
     if request.method == "POST":
         transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
         data = json.loads(request.body)
@@ -112,7 +166,16 @@ def update_transaction(request, transaction_id):
 @csrf_exempt
 @login_required
 def delete_transaction(request, transaction_id):
-    """Securely delete a transaction belonging to the user."""
+    """
+    Removes a transaction from the user's records.
+
+    Args:
+        request (HttpRequest): The delete request.
+        transaction_id (int): ID of the transaction to delete.
+
+    Returns:
+        JsonResponse: Success status of the deletion.
+    """
     if request.method == "POST":
         transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
         transaction.delete()

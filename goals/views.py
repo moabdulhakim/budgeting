@@ -9,6 +9,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def add_goal(request):
+    """
+    Creates a new savings goal for the logged-in user.
+    
+    Args:
+        request (HttpRequest): The HTTP request with goal details in JSON.
+        
+    Returns:
+        JsonResponse: Success status.
+    """
     if request.method == "POST":
         data = json.loads(request.body)
         Goal.objects.create(
@@ -21,6 +30,15 @@ def add_goal(request):
 
 @csrf_exempt
 def deposit_goal(request):
+    """
+    API endpoint to update the current saved amount of a specific goal.
+    
+    Args:
+        request (HttpRequest): Request object with 'goal_id' and 'amount'.
+        
+    Returns:
+        JsonResponse: Success status or error if goal not found.
+    """
     if request.method == "POST":
         data = json.loads(request.body)
         try:

@@ -8,6 +8,17 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 @csrf_exempt
 def signup_view(request):
+    """
+    Registers a new user by creating a User instance in the database.
+    
+    Expected POST data: username (email), password, and full name.
+    
+    Args:
+        request (HttpRequest): The HTTP request containing user registration data.
+        
+    Returns:
+        JsonResponse: Success message with status 201 or error message with appropriate status.
+    """
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -36,6 +47,15 @@ def signup_view(request):
 
 @csrf_exempt
 def login_view(request):
+    """
+    Authenticates a user and starts a session.
+    
+    Args:
+        request (HttpRequest): The HTTP request containing login credentials.
+        
+    Returns:
+        JsonResponse: Success status with username or invalid credentials error.
+    """
     if request.method == "POST":
         data = json.loads(request.body)
         user = authenticate(username=data["username"], password=data["password"])
@@ -46,5 +66,14 @@ def login_view(request):
     
 @csrf_exempt
 def logout_view(request):
+    """
+    Logs out the user and terminates the current session.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        
+    Returns:
+        JsonResponse: Logout success confirmation.
+    """ 
     logout(request)
     return JsonResponse({"status": "success"})
