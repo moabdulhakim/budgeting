@@ -14,8 +14,8 @@ django.setup()
 
 # -- Project information -----------------------------------------------------
 project = 'Spendo'
-copyright = '2026, Fatma-Sama-Shimaa-Mohammed'
-author = 'Fatma-Sama-Shimaa-Mohammed'
+copyright = '2026, F-S-Sh-M'
+author = 'F-S-Sh-M'
 release = '.1'
 
 # -- General configuration ---------------------------------------------------
@@ -34,7 +34,19 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_book_theme'
 html_static_path = ['_static']
+
+
+html_theme_options = {
+    "repository_url": "https://github.com/moabdulhakim/budgeting", 
+    "use_repository_button": True,
+    "use_download_button": True,
+    "header_links_before_dropdown": 4,
+    "show_navbar_depth": 2,
+    "toc_title": "On this page", 
+}
+
+
 
 
