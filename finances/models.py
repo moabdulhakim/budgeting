@@ -14,8 +14,8 @@ class Category(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
-#    budgeted = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-#    spent = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    budgeted = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    spent = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     icon = models.CharField(max_length=50, blank=True, null=True)
     is_custom = models.BooleanField(default=False)
     
@@ -74,3 +74,11 @@ class Transaction(models.Model):
         return f"{self.user.username} - {self.name} ({self.amount})"
 
 
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Notification for {self.user.username}"

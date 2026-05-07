@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div>
+  <h1 class="page-title">Transactions</h1>
+  <p class="page-sub">All your income and expenses</p>
+</div>
+<div class="topbar-right">
+  <button class="add-btn" onclick="document.getElementById('tx-modal').classList.add('active')">+ Add Transaction</button>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="filter-bar">
+  <a href="?filter=all" class="filter-btn {% if active_filter == 'all' or not active_filter %}active{% endif %}">All</a>
+  <a href="?filter=income" class="filter-btn {% if active_filter == 'income' %}active{% endif %}">Income</a>
+  <a href="?filter=expenses" class="filter-btn {% if active_filter == 'expenses' %}active{% endif %}">Expenses</a>
+</div>
+
+<div class="chart-card">
+  <div class="tx-list">
+    {% for tx in transactions %}
+    <div class="tx-item">
+      <div class="tx-info">
+        <div class="tx-name">{{ tx.name }}</div>
+        <div class="tx-date">{{ tx.date }} · {{ tx.category }}</div>
+      </div>
+      <div class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}">
+        {% if tx.type == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
+      </div>
+    </div>
+    {% empty %}
+    <p style="color:var(--text2);font-size:13px;text-align:center;padding:30px 0;">No transactions found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% include 'includes/modals/add_transaction.html' %}
+
+{% endblock %}

@@ -25,6 +25,7 @@
 --radius-sm: 10px;
 --sidebar-w: 240px;
 --transition: 0.25s cubic-bezier(.4,0,.2,1);
+--text-muted: #6c757d;
 }
 [data-theme="dark"] {
 --bg: #0f1117;
@@ -342,6 +343,9 @@ margin-bottom: 7px;
 height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden;
 }
 .budget-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+.budget-bar-fill.bar-normal { background: var(--accent); }
+.budget-bar-fill.bar-warning { background: var(--orange); }
+.budget-bar-fill.bar-danger { background: var(--red); }
 
 .transactions-grid {
 display: grid; grid-template-columns: 3fr 2fr; gap: 16px;

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block nav_reports %}active{% endblock %}
+
+{% block page_header %}
+<div class="topbar">
+    <div>
+        <h1 class="page-title">Reports</h1>
+        <p class="page-sub">Detailed financial analytics</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="filter-bar">
+    <a class="filter-btn {% if period == 'month' %}active{% endif %}" href="?period=month">This Month</a>
+    <a class="filter-btn {% if period == '3months' %}active{% endif %}" href="?period=3months">Last 3 Months</a>
+</div>
+
+<div class="reports-charts">
+
+    <!-- Financial Trend - Full Width -->
+    <div class="chart-card report-chart-full">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Financial Trend</div>
+                <div class="chart-sub">Income, expenses and savings over time</div>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>Income</div>
+                <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Expenses</div>
+                <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Savings</div>
+            </div>
+        </div>
+        <div style="height:220px"><canvas id="trendChart"></canvas></div>
+        <script>const trendData = {{ trend_chart_data|safe }};</script>
+    </div>
+
+    <!-- Expense Breakdown Pie -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Expense Breakdown</div>
+                <div class="chart-sub">Where your money goes</div>
+            </div>
+        </div>
+        <div style="height:200px"><canvas id="reportPieChart"></canvas></div>
+        <script>const pieData = {{ pie_chart_data|safe }};</script>
+    </div>
+
+    <!-- Weekly Spending Bar -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Weekly Spending</div>
+                <div class="chart-sub">Current month by week</div>
+            </div>
+        </div>
+        <div style="height:200px"><canvas id="weeklyChart"></canvas></div>
+        <script>const weeklyData = {{ weekly_chart_data|safe }};</script>
+    </div>
+
+</div>
+
+<!-- Category Breakdown Table -->
+<div class="chart-card">
+    <div class="section-header">
+        <div class="section-title">Category Breakdown</div>
+    </div>
+    <table class="spending-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Budgeted</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in category_breakdown %}
+            <tr>
+                <td>{{ row.category }}</td>
+                <td>${{ row.budgeted }}</td>
+                <td>${{ row.spent }}</td>
+                <td>${{ row.remaining }}</td>
+                <td>
+                    <span class="status-badge {% if row.percent >= 100 %}over{% elif row.percent >= 80 %}warning{% else %}ok{% endif %}">
+                        {% if row.percent >= 100 %}Over Budget{% elif row.percent >= 80 %}Near Limit{% else %}On Track{% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No data available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

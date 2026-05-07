@@ -182,3 +182,19 @@ def delete_transaction(request, transaction_id):
         return JsonResponse({"status": "success", "message": "Transaction deleted"})
     return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
     
+
+@login_required 
+def get_transactions_page(request):
+    render("")
+
+
+@login_required     
+def get_reports_page(request):
+    render("")
+
+
+@login_required     
+def get_budget_page(request):
+    render("")
+
+

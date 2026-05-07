@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -8,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 @csrf_exempt
 def signup_view(request):
+    if request.method == "GET":
+        return render(request, "auth/signup.html")
     """
     Registers a new user by creating a User instance in the database.
     
@@ -47,6 +50,8 @@ def signup_view(request):
 
 @csrf_exempt
 def login_view(request):
+    if request.method == "GET":
+        return render(request, "auth/login.html")
     """
     Authenticates a user and starts a session.
     
@@ -61,10 +66,9 @@ def login_view(request):
         user = authenticate(username=data["username"], password=data["password"])
         if user:
             login(request, user)
-            return JsonResponse({"status": "success", "name": user.username})
+            return redirect("dashboard")
         return JsonResponse({"message": "Invalid credentials"}, status=400) 
     
-@csrf_exempt
 def logout_view(request):
     """
     Logs out the user and terminates the current session.
@@ -76,4 +80,4 @@ def logout_view(request):
         JsonResponse: Logout success confirmation.
     """ 
     logout(request)
-    return JsonResponse({"status": "success"})
+    return redirect("login")

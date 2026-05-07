@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spendo - Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'Spendo.css' %}">
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-container">
+
+    <div class="auth-logo">
+      <div class="logo-icon">💰</div>
+      <span>Spendo</span>
+    </div>
+
+    <div class="auth-card">
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-sub">Sign in to your account to continue</p>
+
+      <div class="auth-tabs">
+        <a href="{% url 'login' %}" class="auth-tab active">Sign In</a>
+        <a href="{% url 'signup' %}" class="auth-tab" onclick="switchTab()">Sign Up</a>
+      </div>
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert-banner" style="margin-bottom:16px;">
+        <div class="alert-content">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-msg">{{ message }}</div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="login-email">Email address</label>
+          <input type="email" id="login-email" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" name="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="auth-btn">Sign In →</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'Spendo.js' %}"></script>
+</body>
+</html>
