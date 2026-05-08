@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
+{% block nav_transactions %}active{% endblock %}
+
 {% block page_header %}
 <div>
   <h1 class="page-title">Transactions</h1>
   <p class="page-sub">All your income and expenses</p>
 </div>
-<div class="topbar-right">
-  <button class="add-btn" onclick="document.getElementById('tx-modal').classList.add('active')">+ Add Transaction</button>
-</div>
+<button type="button" class="add-btn" onclick="openNewTransactionModal()">Add Transaction</button>
 {% endblock %}
 
 {% block content %}
@@ -21,13 +21,21 @@
 <div class="chart-card">
   <div class="tx-list">
     {% for tx in transactions %}
-    <div class="tx-item">
+    <div class="tx-item tx-item-with-actions">
       <div class="tx-info">
         <div class="tx-name">{{ tx.name }}</div>
-        <div class="tx-date">{{ tx.date }} · {{ tx.category }}</div>
+        <div class="tx-date">{{ tx.date }} · {{ tx.category }}{% if tx.is_upcoming and tx.due_date %} · Due {{ tx.due_date }}{% endif %}</div>
       </div>
       <div class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}">
         {% if tx.type == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
+      </div>
+      <div class="tx-row-actions">
+        <button type="button" class="tx-action-btn" title="Edit" aria-label="Edit" data-tx-json="{{ tx.tx_json|escape }}"
+          onclick="openEditTransactionModalFromBtn(this)">Edit</button>
+        <form method="post" action="{% url 'delete_transaction' tx.id %}" class="inline-delete-form" onsubmit="return confirm('Delete this transaction?');">
+          {% csrf_token %}
+          <button type="submit" class="tx-action-btn tx-action-danger" title="Delete" aria-label="Delete">Delete</button>
+        </form>
       </div>
     </div>
     {% empty %}
@@ -35,7 +43,5 @@
     {% endfor %}
   </div>
 </div>
-
-{% include 'includes/modals/add_transaction.html' %}
 
 {% endblock %}

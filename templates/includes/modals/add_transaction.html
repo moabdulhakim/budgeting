@@ -1,10 +1,10 @@
 <div id="tx-modal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 style="font-size: 1.25rem; font-weight: 700;">Add Transaction</h2>
+      <h2 id="tx-modal-title" style="font-size: 1.25rem; font-weight: 700;">Add Transaction</h2>
     </div>
 
-    <form method="POST" action="{% url 'add_transaction' %}">
+    <form method="POST" action="{% url 'add_transaction' %}" id="tx-form">
       {% csrf_token %}
 
       <div class="form-group">
@@ -30,9 +30,27 @@
         <input type="text" id="tx-category" name="category" placeholder="e.g. Food" required>
       </div>
 
+      <div class="form-group">
+        <label for="tx-date">Transaction date</label>
+        <input type="date" id="tx-date" name="tx_date">
+      </div>
+
+      <div class="form-group form-group-inline">
+        <label class="checkbox-label">
+          <input type="checkbox" name="is_upcoming" value="1" id="tx-upcoming">
+          Upcoming (bill / planned payment)
+        </label>
+      </div>
+
+      <div class="form-group" id="tx-due-wrap" style="display:none;">
+        <label for="tx-due-date">Due date</label>
+        <input type="date" id="tx-due-date" name="due_date">
+        <p class="form-hint">When marked upcoming, a blue alert shows on the Dashboard if the due date is within 10 days (today through due date).</p>
+      </div>
+
       <div class="modal-actions">
-        <button type="button" class="modal-cancel" onclick="document.getElementById('tx-modal').classList.remove('active')">Cancel</button>
-        <button type="submit" class="modal-save">Add Transaction</button>
+        <button type="button" class="modal-cancel" onclick="closeTransactionModal()">Cancel</button>
+        <button type="submit" class="modal-save" id="tx-submit-btn">Add Transaction</button>
       </div>
     </form>
   </div>
