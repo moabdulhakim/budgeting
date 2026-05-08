@@ -1,11 +1,12 @@
 <div id="category-modal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 style="font-size: 1.25rem; font-weight: 700;">Add Budget Category</h2>
+      <h2 id="category-modal-title" style="font-size: 1.25rem; font-weight: 700;">Add Budget Category</h2>
     </div>
 
-    <form method="POST" action="{% url 'add_category' %}">
+    <form method="POST" action="{% url 'add_category' %}" id="category-form">
       {% csrf_token %}
+      <input type="hidden" name="category_id" id="cat-id" value="">
 
       <div class="form-group">
         <label for="cat-name">Category Name</label>
@@ -18,8 +19,8 @@
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="modal-cancel" onclick="document.getElementById('category-modal').classList.remove('active')">Cancel</button>
-        <button type="submit" class="modal-save">Save Category</button>
+        <button type="button" class="modal-cancel" onclick="closeCategoryModal()">Cancel</button>
+        <button type="submit" class="modal-save" id="category-save-btn">Save Category</button>
       </div>
     </form>
   </div>

@@ -1,8 +1,18 @@
 let recurringPayments = []; // تعريف المتغير لمنع الخطأ
 
+// ===== CSRF =====
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+const CSRF_TOKEN = window.CSRF_TOKEN || getCookie('csrftoken') || '';
+
 // ===== TOAST NOTIFICATIONS =====
 function showToast(message, type = "info") {
     const container = document.getElementById("toast-container");
+    if (!container) return;
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
     toast.textContent = message;
@@ -11,6 +21,21 @@ function showToast(message, type = "info") {
         toast.style.opacity = "0";
         setTimeout(() => toast.remove(), 300);
     }, 3000);
+}
+
+function _normalizeToastLevel(level) {
+    const l = String(level || '').toLowerCase();
+    if (l.includes('error') || l.includes('danger')) return 'error';
+    if (l.includes('success')) return 'success';
+    if (l.includes('warning')) return 'error';
+    return 'info';
+}
+
+function showServerToasts() {
+    const msgs = window.__DJANGO_MESSAGES__ || [];
+    if (!Array.isArray(msgs) || !msgs.length) return;
+    msgs.forEach(m => showToast(m.text, _normalizeToastLevel(m.level)));
+    window.__DJANGO_MESSAGES__ = [];
 }
 
 // ===== NAVIGATION =====
@@ -39,14 +64,16 @@ function toggleTheme() {
     const newTheme = isDark ? 'light' : 'dark';
     html.dataset.theme = newTheme;
     localStorage.setItem('spendo-theme', newTheme); 
-    document.getElementById('theme-toggle').classList.toggle('on', !isDark);
+    const toggle = document.getElementById('theme-toggle');
+    if (toggle) toggle.classList.toggle('on', !isDark);
     setTimeout(() => refreshCharts(), 100);
 }
 function applySavedTheme() {
     const savedTheme = localStorage.getItem('spendo-theme') || 'light';
     document.documentElement.dataset.theme = savedTheme;
     if (savedTheme === 'dark') {
-        document.getElementById('theme-toggle').classList.add('on');
+        const toggle = document.getElementById('theme-toggle');
+        if (toggle) toggle.classList.add('on');
     }
 }
 
@@ -94,10 +121,17 @@ async function depositToGoal(goalId, amount) {
             },
             body: JSON.stringify({ goal_id: goalId, amount: amount })
         });
-        
-        if (response.ok) {
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.success) {
             showToast("Deposit successful!", "success");
+            if (result.celebrate) {
+                try { runGoalCelebration(); } catch (e) { console.error(e); }
+            }
             initApp();
+        } else {
+            showToast(result.error || "Deposit failed", "error");
         }
     } catch (e) {
         showToast("Error processing deposit", "error");
@@ -149,6 +183,8 @@ function switchTab(tab) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const tabs = document.querySelectorAll('.auth-tab');
+    // Auth pages are separate templates now; keep function harmless
+    if (!loginForm || !signupForm || !tabs?.length) return;
     if (tab === 'login') {
         loginForm.style.display = 'block';
         signupForm.style.display = 'none';
@@ -160,6 +196,20 @@ function switchTab(tab) {
         tabs[1].classList.add('active');
         tabs[0].classList.remove('active');
     }
+}
+
+function openEditGoal(goalId, name, saved, target) {
+    const modal = document.getElementById('goal-modal');
+    if (!modal) return;
+    document.getElementById("edit-goal-id").value = goalId || "";
+    document.getElementById("goal-name").value = name || "";
+    document.getElementById("goal-saved").value = saved || "0";
+    document.getElementById("goal-target").value = target || "";
+    const title = document.getElementById("goal-modal-title");
+    const btn = document.getElementById("save-goal-btn");
+    if (title) title.textContent = "Edit Savings Goal";
+    if (btn) btn.textContent = "Save Changes";
+    modal.classList.add("active");
 }
 
 // ===== UI RENDERING =====
@@ -480,13 +530,17 @@ if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id
 // ==== Dashboard Donut Chart & Report Trend Chart ==== 
 function initDashboardCharts() {
     const c = getColors();
-    const labels = budgetCategories.map(b => b.name);
-    const dataValues = budgetCategories.map(b => b.spent);
+    const donutCanvas = document.getElementById('categoryDonutChart');
+    const labelsAttr = donutCanvas?.dataset?.labels;
+    const valuesAttr = donutCanvas?.dataset?.values;
+    const labels = labelsAttr ? _safeJsonParse(labelsAttr, []) : budgetCategories.map(b => b.name);
+    const dataValues = valuesAttr ? _safeJsonParse(valuesAttr, []) : budgetCategories.map(b => b.spent);
 
     // Donut chart 
+    if (!donutCanvas || typeof Chart === 'undefined') return;
     destroyChart('categoryDonutChart');
     chartInstances['categoryDonutChart'] = new Chart(
-        document.getElementById('categoryDonutChart'),
+        donutCanvas,
         {
             type: 'doughnut',
             data: {
@@ -513,56 +567,184 @@ function initDashboardCharts() {
     );
     }
 
-// ===== Trend Chart in Reports =====         
-function initReportCharts() {
+function initIncomeExpenseChart() {
+    const canvas = document.getElementById('incomeExpenseChart');
+    if (!canvas || typeof Chart === 'undefined') return;
     const c = getColors();
-    const incomeData = transactions.filter(t => t.amount > 0).map(t => t.amount);
-    const expenseData = transactions.filter(t => t.amount < 0).map(t => Math.abs(t.amount));
-    const labels = transactions.map(t => t.date);
-    destroyChart('trendChart');
-    chartInstances['trendChart'] = new Chart(document.getElementById('trendChart'), {
+    const labels = _safeJsonParse(canvas.dataset.labels || '', []);
+    const income = _safeJsonParse(canvas.dataset.income || '', []);
+    const expenses = _safeJsonParse(canvas.dataset.expenses || '', []);
+    destroyChart('incomeExpenseChart');
+    chartInstances['incomeExpenseChart'] = new Chart(canvas, {
         type: 'line',
         data: {
             labels: labels.length ? labels : ['No Data'],
             datasets: [
                 {
                     label: 'Income',
-                    data: incomeData,
-                    borderColor: c.green, backgroundColor: c.green + '20',
-                    tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: c.green,
+                    data: income,
+                    borderColor: c.accent,
+                    backgroundColor: c.accent + '20',
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: c.accent,
                 },
                 {
                     label: 'Expenses',
-                    data: expenseData,
-                    borderColor: c.red, backgroundColor: c.red + '15',
-                    tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: c.red,
-                }
-            ]
+                    data: expenses,
+                    borderColor: c.red,
+                    backgroundColor: c.red + '15',
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: c.red,
+                },
+            ],
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: true, labels: { color: c.text } } },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
                 x: { grid: { color: c.grid }, ticks: { color: c.text } },
-                y: { grid: { color: c.grid }, ticks: { color: c.text, callback: v => '$' + v.toLocaleString() } }
-            }
-        }
+                y: {
+                    grid: { color: c.grid },
+                    ticks: { color: c.text, callback: v => '$' + Number(v).toLocaleString() },
+                },
+            },
+        },
     });
-        initReportPieChart(c);
+}
+
+// ===== Trend Chart in Reports =====         
+function initReportCharts() {
+    const c = getColors();
+    if (typeof Chart === 'undefined') return;
+
+    // Template-rendered reports page defines globals: trendData, pieData, weeklyData
+    const trendCanvas = document.getElementById('trendChart');
+    if (trendCanvas && window.trendData) {
+        destroyChart('trendChart');
+        chartInstances['trendChart'] = new Chart(trendCanvas, {
+            type: 'line',
+            data: {
+                labels: window.trendData.labels || [],
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: window.trendData.income || [],
+                        borderColor: c.green,
+                        backgroundColor: c.green + '20',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: c.green,
+                    },
+                    {
+                        label: 'Expenses',
+                        data: window.trendData.expenses || [],
+                        borderColor: c.red,
+                        backgroundColor: c.red + '15',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: c.red,
+                    },
+                    {
+                        label: 'Savings',
+                        data: window.trendData.savings || [],
+                        borderColor: c.accent,
+                        backgroundColor: c.accent + '12',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: c.accent,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { color: c.text } } },
+                scales: {
+                    x: { grid: { color: c.grid }, ticks: { color: c.text } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, callback: v => '$' + Number(v).toLocaleString() } },
+                },
+            },
+        });
+    }
+
+    const pieCanvas = document.getElementById('reportPieChart');
+    if (pieCanvas && window.pieData) {
+        destroyChart('reportPieChart');
+        chartInstances['reportPieChart'] = new Chart(pieCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: window.pieData.labels || [],
+                datasets: [
+                    {
+                        data: window.pieData.values || [],
+                        backgroundColor: [c.orange, c.accent, c.blue, c.purple, c.green, '#94a3b8'],
+                        borderWidth: 0,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: { legend: { position: 'bottom', labels: { color: c.text, boxWidth: 10 } } },
+            },
+        });
+    }
+
+    const weeklyCanvas = document.getElementById('weeklyChart');
+    if (weeklyCanvas && window.weeklyData) {
+        destroyChart('weeklyChart');
+        chartInstances['weeklyChart'] = new Chart(weeklyCanvas, {
+            type: 'bar',
+            data: {
+                labels: window.weeklyData.labels || [],
+                datasets: [
+                    {
+                        label: 'Spent',
+                        data: window.weeklyData.values || [],
+                        backgroundColor: c.red + '90',
+                        borderRadius: 8,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: c.text } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, callback: v => '$' + Number(v).toLocaleString() } },
+                },
+            },
+        });
+    }
 }
 
 
 function initBudgetChart() {
     const c = getColors();
+    const canvas = document.getElementById('budgetBarChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+    const labels = _safeJsonParse(canvas.dataset.labels || '', []);
+    const budgeted = _safeJsonParse(canvas.dataset.budgeted || '', []);
+    const spent = _safeJsonParse(canvas.dataset.spent || '', []);
     destroyChart('budgetBarChart');
-    chartInstances['budgetBarChart'] = new Chart(document.getElementById('budgetBarChart'), {
+    chartInstances['budgetBarChart'] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: budgetCategories.map(b => b.name),
+            labels: labels.length ? labels : budgetCategories.map(b => b.name),
             datasets: [
                 {
                     label: 'Budgeted',
-                    data: budgetCategories.map(b => b.budgeted),
+                    data: budgeted.length ? budgeted : budgetCategories.map(b => b.budgeted),
                     backgroundColor: c.accent + '40',
                     borderColor: c.accent,
                     borderWidth: 2,
@@ -570,9 +752,15 @@ function initBudgetChart() {
                 },
                 {
                     label: 'Spent',
-                    data: budgetCategories.map(b => b.spent),
-                    backgroundColor: budgetCategories.map(b => b.spent > b.budgeted ? c.red + '99' : c.green + '99'),
-                    borderColor: budgetCategories.map(b => b.spent > b.budgeted ? c.red : c.green),
+                    data: spent.length ? spent : budgetCategories.map(b => b.spent),
+                    backgroundColor: (spent.length ? spent : budgetCategories.map(b => b.spent)).map((v, i) => {
+                        const b = budgeted.length ? budgeted[i] : budgetCategories[i]?.budgeted;
+                        return Number(v) > Number(b) ? c.red + '99' : c.green + '99';
+                    }),
+                    borderColor: (spent.length ? spent : budgetCategories.map(b => b.spent)).map((v, i) => {
+                        const b = budgeted.length ? budgeted[i] : budgetCategories[i]?.budgeted;
+                        return Number(v) > Number(b) ? c.red : c.green;
+                    }),
                     borderWidth: 2,
                     borderRadius: 8,
                 }
@@ -592,15 +780,20 @@ function initBudgetChart() {
 // ===== Savings Chart in Goals =====
 function initSavingsChart() {
     const c = getColors();
+    const canvas = document.getElementById('savingsChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+    const labels = _safeJsonParse(canvas.dataset.labels || '', []);
+    const saved = _safeJsonParse(canvas.dataset.saved || '', []);
+    const targets = _safeJsonParse(canvas.dataset.targets || '', []);
     destroyChart('savingsChart');
-    chartInstances['savingsChart'] = new Chart(document.getElementById('savingsChart'), {
+    chartInstances['savingsChart'] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: savingsGoals.map(g => g.name),
+            labels: labels.length ? labels : savingsGoals.map(g => g.name),
             datasets: [
                 {
                     label: 'Target',
-                    data: savingsGoals.map(g => g.target),
+                    data: targets.length ? targets : savingsGoals.map(g => g.target),
                     backgroundColor: c.accent + '30',
                     borderColor: c.accent,
                     borderWidth: 2,
@@ -608,7 +801,7 @@ function initSavingsChart() {
                 },
                 {
                     label: 'Saved',
-                    data: savingsGoals.map(g => g.saved),
+                    data: saved.length ? saved : savingsGoals.map(g => g.saved),
                     backgroundColor: c.green + '99',
                     borderColor: c.green,
                     borderWidth: 2,
@@ -704,16 +897,196 @@ function checkUpcomingPayments() {
     }
 }
 
-// current date
+function _safeJsonParse(raw, fallback) {
+    try {
+        return raw ? JSON.parse(raw) : fallback;
+    } catch (e) {
+        console.warn('JSON parse failed', e);
+        return fallback;
+    }
+}
+
+// current date (full weekday + date)
 function updateCurrentMonthDisplay() {
     const displayElement = document.getElementById('current-date-display');
     const budgetDateElement = document.getElementById('current-budget-date');
     if (!displayElement) return;
     const now = new Date();
-    const options = { month: 'long', year: 'numeric' };
-    const dateString = now.toLocaleDateString('en-US', options);
-    displayElement.textContent = `📅 ${dateString}`;
-    if (budgetDateElement) budgetDateElement.textContent = dateString;
+    const dateString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+    displayElement.textContent = dateString;
+    if (budgetDateElement) {
+        const monthYear = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        budgetDateElement.textContent = monthYear;
+    }
+}
+
+function scheduleTimedDashboardAlerts() {
+    document.querySelectorAll('.js-timed-dashboard-alert').forEach((el) => {
+        window.setTimeout(() => {
+            el.classList.add('dashboard-alert--fadeout');
+            const hide = () => {
+                el.style.display = 'none';
+                el.removeEventListener('transitionend', onEnd);
+            };
+            const onEnd = (ev) => {
+                if (ev.propertyName === 'opacity') hide();
+            };
+            el.addEventListener('transitionend', onEnd);
+            window.setTimeout(hide, 600);
+        }, 120000);
+    });
+}
+
+function syncTxDueVisibility() {
+    const cb = document.getElementById('tx-upcoming');
+    const wrap = document.getElementById('tx-due-wrap');
+    const due = document.getElementById('tx-due-date');
+    if (!cb || !wrap) return;
+    wrap.style.display = cb.checked ? 'block' : 'none';
+    if (!cb.checked && due) due.value = '';
+}
+
+function resetTransactionModal() {
+    const form = document.getElementById('tx-form');
+    const title = document.getElementById('tx-modal-title');
+    const btn = document.getElementById('tx-submit-btn');
+    if (form && window.__TX_ADD_URL__) form.action = window.__TX_ADD_URL__;
+    if (title) title.textContent = 'Add Transaction';
+    if (btn) btn.textContent = 'Add Transaction';
+    const name = document.getElementById('tx-name');
+    const amt = document.getElementById('tx-amount');
+    const typ = document.getElementById('tx-type');
+    const cat = document.getElementById('tx-category');
+    const dt = document.getElementById('tx-date');
+    const due = document.getElementById('tx-due-date');
+    const cb = document.getElementById('tx-upcoming');
+    if (name) name.value = '';
+    if (amt) amt.value = '';
+    if (typ) typ.value = 'expense';
+    if (cat) cat.value = '';
+    if (dt) dt.value = '';
+    if (due) due.value = '';
+    if (cb) cb.checked = false;
+    syncTxDueVisibility();
+}
+
+function closeTransactionModal() {
+    const m = document.getElementById('tx-modal');
+    if (m) m.classList.remove('active');
+    resetTransactionModal();
+}
+
+function openNewTransactionModal() {
+    resetTransactionModal();
+    document.getElementById('tx-modal')?.classList.add('active');
+}
+
+function openEditTransactionModalFromBtn(btn) {
+    const raw = btn.getAttribute('data-tx-json');
+    if (!raw) return;
+    let tx;
+    try {
+        tx = JSON.parse(raw);
+    } catch (e) {
+        console.error(e);
+        return;
+    }
+    openEditTransactionModal(tx);
+}
+
+function openEditTransactionModal(tx) {
+    const form = document.getElementById('tx-form');
+    const title = document.getElementById('tx-modal-title');
+    const btn = document.getElementById('tx-submit-btn');
+    const tmpl = window.__TX_UPDATE_TMPL__ || '';
+    if (form && tmpl) form.action = tmpl.replace('888888888', String(tx.id));
+    if (title) title.textContent = 'Edit Transaction';
+    if (btn) btn.textContent = 'Save Changes';
+    document.getElementById('tx-name').value = tx.name || '';
+    document.getElementById('tx-amount').value = tx.amount ?? '';
+    document.getElementById('tx-type').value = tx.type || 'expense';
+    document.getElementById('tx-category').value = tx.category || '';
+    document.getElementById('tx-date').value = tx.date_iso || '';
+    document.getElementById('tx-upcoming').checked = !!tx.is_upcoming;
+    document.getElementById('tx-due-date').value = tx.due_iso || '';
+    syncTxDueVisibility();
+    document.getElementById('tx-modal')?.classList.add('active');
+}
+
+function resetCategoryModal() {
+    const title = document.getElementById('category-modal-title');
+    const bid = document.getElementById('cat-id');
+    const btn = document.getElementById('category-save-btn');
+    if (bid) bid.value = '';
+    if (title) title.textContent = 'Add Budget Category';
+    if (btn) btn.textContent = 'Save Category';
+    const n = document.getElementById('cat-name');
+    const b = document.getElementById('cat-budget');
+    if (n) n.value = '';
+    if (b) b.value = '';
+}
+
+function closeCategoryModal() {
+    document.getElementById('category-modal')?.classList.remove('active');
+    resetCategoryModal();
+}
+
+function openNewCategoryModal() {
+    resetCategoryModal();
+    document.getElementById('category-modal')?.classList.add('active');
+}
+
+function openEditCategoryFromBtn(btn) {
+    const id = btn.getAttribute('data-cat-id');
+    const name = btn.getAttribute('data-cat-name') || '';
+    const budget = btn.getAttribute('data-cat-budget') || '';
+    openEditCategoryModal(id, name, budget);
+}
+
+function openEditCategoryModal(id, name, budget) {
+    const title = document.getElementById('category-modal-title');
+    const bid = document.getElementById('cat-id');
+    const btn = document.getElementById('category-save-btn');
+    if (title) title.textContent = 'Edit Budget Category';
+    if (btn) btn.textContent = 'Save Changes';
+    if (bid) bid.value = id || '';
+    document.getElementById('cat-name').value = name || '';
+    document.getElementById('cat-budget').value = budget || '';
+    document.getElementById('category-modal')?.classList.add('active');
+}
+
+function runGoalCelebration() {
+    if (typeof confetti !== 'function') {
+        showToast('Congratulations! Goal completed!', 'success');
+        return;
+    }
+    const end = Date.now() + 1600;
+    (function frame() {
+        confetti({
+            particleCount: 4,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.65 },
+            colors: ['#6c63ff', '#a855f7', '#22c55e'],
+        });
+        confetti({
+            particleCount: 4,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.65 },
+            colors: ['#6c63ff', '#a855f7', '#22c55e'],
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+    showToast('Congratulations! You reached your savings goal!', 'success');
+    try {
+        history.replaceState(null, '', window.location.pathname);
+    } catch (e) { /* ignore */ }
 }
 
 // ===== INIT =====
@@ -728,7 +1101,37 @@ checkBudgetLimits();
 checkUpcomingPayments();
 updateCurrentMonthDisplay();
 setTimeout(() => initDashboardCharts(), 100);
-if (budgetDateElement) budgetDateElement.textContent = dateString;
 }
 
-Chart.defaults.font.family = 'Sora';
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.font.family = 'Sora';
+}
+
+// ===== PAGE BOOTSTRAP (template pages) =====
+document.addEventListener('DOMContentLoaded', () => {
+    try { applySavedTheme(); } catch { /* ignore */ }
+    try { showServerToasts(); } catch { /* ignore */ }
+    try {
+        updateCurrentMonthDisplay();
+        window.setInterval(updateCurrentMonthDisplay, 60000);
+    } catch { /* ignore */ }
+    try { scheduleTimedDashboardAlerts(); } catch { /* ignore */ }
+    try {
+        document.getElementById('tx-upcoming')?.addEventListener('change', syncTxDueVisibility);
+    } catch { /* ignore */ }
+    if (window.__CELEBRATE_GOAL__) {
+        try { runGoalCelebration(); } catch (e) { console.error(e); }
+        delete window.__CELEBRATE_GOAL__;
+    }
+    // Charts (only initialize if canvas exists on that page)
+    try {
+        initIncomeExpenseChart();
+        initDashboardCharts();
+        initBudgetChart();
+        initSavingsChart();
+        initReportCharts();
+    } catch (e) {
+        // Avoid breaking the whole page if a single chart fails
+        console.error(e);
+    }
+});

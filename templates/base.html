@@ -18,7 +18,18 @@
 
   <main class="main">
     <div class="topbar">
-      {% block page_header %}{% endblock %}
+      <div class="topbar-left">
+        {% block page_header %}{% endblock %}
+      </div>
+      <div class="topbar-right">
+        <div class="month-selector" id="current-date-display"></div>
+        {% if request.resolver_match.url_name == 'dashboard' %}
+        <a class="notif-btn" href="{% url 'notifications' %}" aria-label="Notifications">
+          🔔
+          {% if show_notification_badge %}<span class="notif-dot" aria-hidden="true"></span>{% endif %}
+        </a>
+        {% endif %}
+      </div>
     </div>
 
     {% block content %}
@@ -28,6 +39,29 @@
 </div>
 
 <div id="toast-container"></div>
+
+{% if user.is_authenticated %}
+{% include 'includes/modals/add_transaction.html' %}
+{% include 'includes/modals/add_goal.html' %}
+{% include 'includes/modals/add_category.html' %}
+{% endif %}
+
+{% if messages %}
+<script>
+  window.__DJANGO_MESSAGES__ = [
+    {% for message in messages %}
+      { "level": "{{ message.tags|escapejs }}", "text": "{{ message|escapejs }}" },
+    {% endfor %}
+  ];
+</script>
+{% endif %}
+
+{% if user.is_authenticated %}
+<script>
+  window.__TX_ADD_URL__ = "{% url 'add_transaction' %}";
+  window.__TX_UPDATE_TMPL__ = "{% url 'update_transaction' 888888888 %}";
+</script>
+{% endif %}
 
 <script src="{% static 'Spendo.js' %}"></script>
 </body>

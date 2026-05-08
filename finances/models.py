@@ -68,6 +68,8 @@ class Transaction(models.Model):
     date = models.DateTimeField(default=timezone.now)
     payment_method = models.CharField(max_length=50, blank=True, null=True) # From Blueprint
     description = models.TextField(blank=True, null=True)
+    is_upcoming = models.BooleanField(default=False)
+    due_date = models.DateField(null=True, blank=True)
     
     def __str__(self):
         """Returns a string representation of the transaction with user, name, and amount.""" 
@@ -75,8 +77,21 @@ class Transaction(models.Model):
 
 
 class Notification(models.Model):
+    ALERT_GENERAL = "general"
+    ALERT_BUDGET = "budget"
+    ALERT_UPCOMING = "upcoming"
+    ALERT_CHOICES = [
+        (ALERT_GENERAL, "General"),
+        (ALERT_BUDGET, "Budget"),
+        (ALERT_UPCOMING, "Upcoming"),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
+    reference_key = models.CharField(max_length=320, blank=True, db_index=True)
+    alert_type = models.CharField(
+        max_length=16, choices=ALERT_CHOICES, default=ALERT_GENERAL
+    )
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     

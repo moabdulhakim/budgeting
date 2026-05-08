@@ -1,12 +1,12 @@
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <div class="logo-icon">💰</div>
         <span>Spendo</span>
     </div>
 
     <div class="sidebar-section">
         <div class="sidebar-label">Main</div>
         <a class="nav-item {% block nav_dashboard %}{% endblock %}" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="nav-item {% block nav_notifications %}{% endblock %}" href="{% url 'notifications' %}">Notifications</a>
         <a class="nav-item {% block nav_reports %}{% endblock %}" href="{% url 'reports' %}">Reports</a>
         <a class="nav-item {% block nav_budget %}{% endblock %}" href="{% url 'budget' %}">Budget</a>
         <a class="nav-item {% block nav_transactions %}{% endblock %}" href="{% url 'transactions' %}">Transactions</a>
@@ -18,9 +18,13 @@
     </div>
 
     <div class="sidebar-bottom">
+        <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
+            {% csrf_token %}
+            <button type="submit" class="nav-item sidebar-logout">Log out</button>
+        </form>
         <div class="theme-toggle">
-            <span>🌙 Dark Mode</span>
-            <button class="toggle-sw" id="theme-toggle" onclick="toggleTheme()"></button>
+            <span>Dark Mode</span>
+            <button type="button" class="toggle-sw" id="theme-toggle" onclick="toggleTheme()"></button>
         </div>
         <div class="user-info">
             <div class="user-avatar">{{ request.user.first_name|first|upper }}</div>

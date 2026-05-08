@@ -61,12 +61,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'finances.context_processors.notification_badge',
             ],
         },
     },
 ]
 
 LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
@@ -124,4 +126,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # AUTH
-LOGIN_URL = '/auth/login'
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
