@@ -23,6 +23,8 @@ def _body_or_post(request):
 # Create your views here.
 @csrf_exempt
 def signup_view(request):
+    if request.method == "GET":
+        return render(request, "auth/signup.html")
     """
     Registers a new user by creating a User instance in the database.
     
@@ -32,26 +34,25 @@ def signup_view(request):
         request (HttpRequest): The HTTP request containing user registration data.
         
     Returns:
-        HttpResponse: Redirects to dashboard on successful registration or renders signup page with error messages on failure.
+        JsonResponse: Success message with status 201 or error message with appropriate status.
     """
-    if request.method == "GET":
-        return render(request, "auth/signup.html")
-        
     if request.method == 'POST':
         try:
             data = _body_or_post(request)
-            email = (data.get('email') or "").strip()
+            email = (data.get('username') or data.get('email') or "").strip()
             password = data.get('password')
             full_name = (data.get('name') or data.get('full_name') or "").strip()
 
-            if User.objects.filter(email=email).exists():
+            if User.objects.filter(username=email).exists():
                 msg = 'This email is already registered.'
                 if _is_json(request):
                     return JsonResponse({'status': 'error', 'message': msg}, status=400)
                 messages.error(request, msg)
                 return redirect("signup")
 
-            user = User.objects.create_user(email=email, username=email, first_name=full_name, password=password)
+            user = User.objects.create_user(username=email, password=password)
+            user.first_name = full_name
+            user.email = email
             user.save()
 
             if _is_json(request):
@@ -67,6 +68,8 @@ def signup_view(request):
 
 @csrf_exempt
 def login_view(request):
+    if request.method == "GET":
+        return render(request, "auth/login.html")
     """
     Authenticates a user and starts a session.
     
@@ -74,16 +77,13 @@ def login_view(request):
         request (HttpRequest): The HTTP request containing login credentials.
         
     Returns:
-        HttpResponse: Redirects to dashboard on successful login or renders login page with error messages on failure.
+        JsonResponse: Success status with username or invalid credentials error.
     """
-    if request.method == "GET":
-        return render(request, "auth/login.html")
-        
     if request.method == "POST":
         data = _body_or_post(request)
-        email = (data.get("email") or "").strip()
+        username = (data.get("username") or data.get("email") or "").strip()
         password = data.get("password") or ""
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
         if user:
             login(request, user)
             if _is_json(request):
@@ -99,12 +99,12 @@ def login_view(request):
 def logout_view(request):
     """
     Logs out the user and terminates the current session.
-
+    
     Args:
         request (HttpRequest): The HTTP request object.
         
     Returns:
-        HttpResponse: Redirects to the login page after logging out.
+        HttpResponseRedirect: Redirect to login.
     """ 
     logout(request)
     return redirect("login")

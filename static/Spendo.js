@@ -107,14 +107,13 @@ async function doSignup() {
             showToast(result.message, "error");
         }
     } catch (e) {
-        showToast("Server error. Check terminal.", "error");
+        showToast("Server error. Check terminal.", "error"); // Fixes the generic failure msg
     }
 }
-
 // ===== Deposit to Goal =====
 async function depositToGoal(goalId, amount) {
     try {
-        const response = await fetch('/api/goals/deposit/', { 
+        const response = await fetch('/api/goals/deposit/', { //
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json', 
@@ -146,8 +145,8 @@ function validateEmail(email) {
         .match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 }
 function launchApp(userData) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
+    document.getElementById('auth-screen').style.display = 'none'; // إخفاء اللوجين
+    document.getElementById('app').style.display = 'flex'; // إظهار التطبيق
     document.getElementById('user-email-sidebar').textContent = userData.email;
     initApp(); 
 }
@@ -184,6 +183,7 @@ function switchTab(tab) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const tabs = document.querySelectorAll('.auth-tab');
+    // Auth pages are separate templates now; keep function harmless
     if (!loginForm || !signupForm || !tabs?.length) return;
     if (tab === 'login') {
         loginForm.style.display = 'block';
@@ -216,51 +216,43 @@ function openEditGoal(goalId, name, saved, target) {
 function renderGoals() {
     const container = document.getElementById('goals-list');
     container.innerHTML = savingsGoals.map((g, index) => {
-        const pct = Math.round((g.saved / g.target) * 100);
-        const displayImage = g.image
-            ? `<img src="${g.image}" class="goal-img-preview">`
-            : `<div class="goal-icon-placeholder">🎯</div>`;
-
+        const pct = Math.min(Math.round((g.saved / g.target) * 100), 100);
         return `
         <div class="goal-item">
-            <button class="edit-goal-btn" onclick="openEditGoalModal(${index})">✏️</button>
             <div class="goal-header">
-                <div class="goal-name-row">
-                    ${displayImage} <span class="goal-name">${g.name}</span>
-                </div>
+                <span class="goal-name">${g.name}</span>
                 <span class="goal-pct">${pct}%</span>
             </div>
-            <div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
+            <div class="goal-amounts">$${g.saved} of $${g.target}</div>
             <div class="goal-bar-bg">
-                <div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${g.color || '#6c63ff'},${g.color || '#6c63ff'}99)"></div>
+                <div class="goal-bar-fill" style="width:${pct}%; background:${g.color || '#6c63ff'}"></div>
             </div>
-        </div>
-        `;
+        </div>`;
     }).join('');
 }
 
 // ===== RENDER COMPONENTS =====
 function renderTransactions(containerId, limit) {
-    const container = document.getElementById(containerId);
-    let data = [...transactions];
-    if(currentFilter === "income"){
-        data = data.filter(t => t.amount > 0);
-    }
-    else if(currentFilter === "expenses"){
-        data = data.filter(t => t.amount < 0);
-    }
-    const list = limit ? data.slice(0, limit):data;
-    container.innerHTML = list.map(tx => `
-    <div class="tx-item">
-    <div class="tx-info">
-    <div class="tx-name">${tx.name}</div>
-    <div class="tx-date">${tx.category} · ${tx.date}</div>
-    </div>
-    <div class="tx-amount ${tx.amount < 0 ? 'expense' : 'income'}">
-    ${tx.amount < 0 ? '-' : '+'}$${Math.abs(tx.amount).toFixed(2)}
-    </div>
-    </div>
-    `).join('');
+const container = document.getElementById(containerId);
+let data = [...transactions];
+if(currentFilter === "income"){
+    data = data.filter(t => t.amount > 0);
+}
+else if(currentFilter === "expenses"){
+    data = data.filter(t => t.amount < 0);
+}
+const list = limit ? data.slice(0, limit):data;
+container.innerHTML = list.map(tx => `
+<div class="tx-item">
+<div class="tx-info">
+<div class="tx-name">${tx.name}</div>
+<div class="tx-date">${tx.category} · ${tx.date}</div>
+</div>
+<div class="tx-amount ${tx.amount < 0 ? 'expense' : 'income'}">
+${tx.amount < 0 ? '-' : '+'}$${Math.abs(tx.amount).toFixed(2)}
+</div>
+</div>
+`).join('');
 }
 
 // ===== Filter buttons behavior =====
@@ -277,23 +269,51 @@ function closeTxModal() {
 
 // ===== BUDGET COMPONENTS =====
 function renderBudgetOverview() {
-    const container = document.getElementById('budget-overview');
-    container.innerHTML = budgetCategories.slice(0, 5).map(b => {
-    const pct = Math.min((b.spent / b.budgeted) * 100, 100);
-    const over = b.spent > b.budgeted;
-    return `
-    <div class="budget-item">
-    <div class="budget-item-header">
-    <div class="budget-item-left">
-    <div class="budget-cat-name">${b.name}</div>
-    </div>
-    <div class="budget-amounts">$${b.spent} / $${b.budgeted}</div>
-    </div>
-    <div class="budget-bar-bg">
-    <div class="budget-bar-fill" style="width:${pct}%;background:${over ? 'var(--red)' : b.color}"></div>
-    </div>
-    </div>
-    `;
+const container = document.getElementById('budget-overview');
+container.innerHTML = budgetCategories.slice(0, 5).map(b => {
+const pct = Math.min((b.spent / b.budgeted) * 100, 100);
+const over = b.spent > b.budgeted;
+return `
+<div class="budget-item">
+<div class="budget-item-header">
+<div class="budget-item-left">
+<div class="budget-cat-name">${b.name}</div>
+</div>
+<div class="budget-amounts">$${b.spent} / $${b.budgeted}</div>
+</div>
+<div class="budget-bar-bg">
+<div class="budget-bar-fill" style="width:${pct}%;background:${over ? 'var(--red)' : b.color}"></div>
+</div>
+</div>
+`;
+}).join('');
+}
+
+function renderGoals() {
+    const container = document.getElementById('goals-list');
+
+    container.innerHTML = savingsGoals.map((g, index) => {
+        const pct = Math.round((g.saved / g.target) * 100);
+
+        const displayImage = g.image
+            ? `<img src="${g.image}" class="goal-img-preview">`
+            : `<div class="goal-icon-placeholder">🎯</div>`;
+
+        return `
+        <div class="goal-item">
+            <button class="edit-goal-btn" onclick="openEditGoalModal(${index})">✏️</button>
+            <div class="goal-header">
+                <div class="goal-name-row">
+                    ${displayImage} <span class="goal-name">${g.name}</span>
+                </div>
+                <span class="goal-pct">${pct}%</span>
+            </div>
+            <div class="goal-amounts">$${g.saved.toLocaleString()} of $${g.target.toLocaleString()}</div>
+            <div class="goal-bar-bg">
+                <div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${g.color},${g.color}99)"></div>
+            </div>
+        </div>
+        `;
     }).join('');
 }
 
@@ -311,40 +331,40 @@ document.addEventListener('change', function(e) {
 });
 
 function renderBudgetCards() {
-    const container = document.getElementById('budget-cards');
-    container.innerHTML = budgetCategories.map(b => {
-    const pct = Math.min(Math.round((b.spent / b.budgeted) * 100), 100);
-    const over = b.spent > b.budgeted;
-    const remaining = b.budgeted - b.spent;
-    return `
-    <div class="stat-card">
-    <div class="stat-header">
-    <div style="display:flex;align-items:center;gap:10px">
-    <div>
-    <div style="font-size:13px;font-weight:600">${b.name}</div>
-    <div style="font-size:11px;color:var(--text3)">${pct}% used</div>
-    </div>
-    </div>
-    <span class="status-pill ${over ? 'status-over' : pct > 80 ? 'status-warn' : 'status-ok'}">${over ? 'Over' : pct > 80 ? 'Near' : 'OK'}</span>
-    </div>
-    <div class="budget-bar-bg" style="margin:12px 0 8px">
-    <div class="budget-bar-fill" style="width:${pct}%;background:${over ? 'var(--red)' : b.color}"></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)">
-    <span>$${b.spent} spent</span>
-    <span>${over ? '<span style=color:var(--red)>$'+Math.abs(remaining)+' over</span>' : '$'+remaining+' left'}</span>
-    </div>
-    </div>
-    `;
-    }).join('');
+const container = document.getElementById('budget-cards');
+container.innerHTML = budgetCategories.map(b => {
+const pct = Math.min(Math.round((b.spent / b.budgeted) * 100), 100);
+const over = b.spent > b.budgeted;
+const remaining = b.budgeted - b.spent;
+return `
+<div class="stat-card">
+<div class="stat-header">
+<div style="display:flex;align-items:center;gap:10px">
+<div>
+<div style="font-size:13px;font-weight:600">${b.name}</div>
+<div style="font-size:11px;color:var(--text3)">${pct}% used</div>
+</div>
+</div>
+<span class="status-pill ${over ? 'status-over' : pct > 80 ? 'status-warn' : 'status-ok'}">${over ? 'Over' : pct > 80 ? 'Near' : 'OK'}</span>
+</div>
+<div class="budget-bar-bg" style="margin:12px 0 8px">
+<div class="budget-bar-fill" style="width:${pct}%;background:${over ? 'var(--red)' : b.color}"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)">
+<span>$${b.spent} spent</span>
+<span>${over ? '<span style=color:var(--red)>$'+Math.abs(remaining)+' over</span>' : '$'+remaining+' left'}</span>
+</div>
+</div>
+`;
+}).join('');
 }
 
 // ===== CATEGORY MODAL =====
 function addCategory() {
-    document.getElementById("category-modal").classList.add("active");
+document.getElementById("category-modal").classList.add("active");
 }
 function closeCatModal() {
-    document.getElementById("category-modal").classList.remove("active");
+document.getElementById("category-modal").classList.remove("active");
 }
 async function saveCategory() {
     const name = document.getElementById("cat-name").value;
@@ -453,7 +473,7 @@ function saveGoal() {
 
 
 function closeGoalModal() {
-    document.getElementById("goal-modal").classList.remove("active");
+document.getElementById("goal-modal").classList.remove("active");
 }
 
 function openEditGoalModal(index) {
@@ -469,44 +489,45 @@ function openEditGoalModal(index) {
 
 // ===== REPORTS =====
 function renderReportTable() {
-    const tbody = document.getElementById('report-table');
-    tbody.innerHTML = budgetCategories.map(b => {
-    const remaining = b.budgeted - b.spent;
-    const over = b.spent > b.budgeted;
-    const pct = Math.round((b.spent / b.budgeted) * 100);
-    return `
-    <tr>
-    <td> ${b.name}</td>
-    <td style="font-family:'JetBrains Mono',monospace">$${b.budgeted.toLocaleString()}</td>
-    <td style="font-family:'JetBrains Mono',monospace">$${b.spent.toLocaleString()}</td>
-    <td style="font-family:'JetBrains Mono',monospace;color:${over ? 'var(--red)' : 'var(--green)'}">
-    ${over ? '-' : '+'}$${Math.abs(remaining).toLocaleString()}
-    </td>
-    <td><span class="status-pill ${over ? 'status-over' : pct > 80 ? 'status-warn' : 'status-ok'}">${over ? 'Over Budget' : pct > 80 ? 'Near Limit' : 'On Track'}</span></td>
-    </tr>
-    `;
-    }).join('');
+const tbody = document.getElementById('report-table');
+tbody.innerHTML = budgetCategories.map(b => {
+const remaining = b.budgeted - b.spent;
+const over = b.spent > b.budgeted;
+const pct = Math.round((b.spent / b.budgeted) * 100);
+return `
+<tr>
+<td> ${b.name}</td>
+<td style="font-family:'JetBrains Mono',monospace">$${b.budgeted.toLocaleString()}</td>
+<td style="font-family:'JetBrains Mono',monospace">$${b.spent.toLocaleString()}</td>
+<td style="font-family:'JetBrains Mono',monospace;color:${over ? 'var(--red)' : 'var(--green)'}">
+${over ? '-' : '+'}$${Math.abs(remaining).toLocaleString()}
+</td>
+<td><span class="status-pill ${over ? 'status-over' : pct > 80 ? 'status-warn' : 'status-ok'}">${over ? 'Over Budget' : pct > 80 ? 'Near Limit' : 'On Track'}</span></td>
+</tr>
+`;
+}).join('');
 }
 
 // ===== CHARTS =====
 const chartInstances = {};
 function getColors() {
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    return {
-        grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-        text: isDark ? '#9ba3c0' : '#6b7090',
-        accent: '#6c63ff',
-        red: isDark ? '#f87171' : '#ef4444',
-        green: isDark ? '#34d399' : '#22c55e',
-        blue: isDark ? '#60a5fa' : '#3b82f6',
-        orange: isDark ? '#fbbf24' : '#f59e0b',
-        purple: isDark ? '#c084fc' : '#a855f7',
-    };
+const isDark = document.documentElement.dataset.theme === 'dark';
+return {
+grid: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+text: isDark ? '#9ba3c0' : '#6b7090',
+accent: '#6c63ff',
+red: isDark ? '#f87171' : '#ef4444',
+green: isDark ? '#34d399' : '#22c55e',
+blue: isDark ? '#60a5fa' : '#3b82f6',
+orange: isDark ? '#fbbf24' : '#f59e0b',
+purple: isDark ? '#c084fc' : '#a855f7',
+};
 }
 function destroyChart(id) {
-    if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
 }
 
+// ==== Dashboard Donut Chart & Report Trend Chart ==== 
 function initDashboardCharts() {
     const c = getColors();
     const donutCanvas = document.getElementById('categoryDonutChart');
@@ -542,8 +563,9 @@ function initDashboardCharts() {
                     }
                 }
             }
-        });
-}
+        }
+    );
+    }
 
 function initIncomeExpenseChart() {
     const canvas = document.getElementById('incomeExpenseChart');
@@ -595,7 +617,7 @@ function initIncomeExpenseChart() {
     });
 }
 
-// ===== Trend Chart in Reports =====          
+// ===== Trend Chart in Reports =====         
 function initReportCharts() {
     const c = getColors();
     if (typeof Chart === 'undefined') return;
@@ -1069,16 +1091,16 @@ function runGoalCelebration() {
 
 // ===== INIT =====
 function initApp() {
-    renderTransactions('recent-tx', 6);
-    renderTransactions('all-transactions');
-    renderBudgetOverview();
-    renderGoals();
-    renderBudgetCards();
-    renderReportTable();
-    checkBudgetLimits();
-    checkUpcomingPayments();
-    updateCurrentMonthDisplay();
-    setTimeout(() => initDashboardCharts(), 100);
+renderTransactions('recent-tx', 6);
+renderTransactions('all-transactions');
+renderBudgetOverview();
+renderGoals();
+renderBudgetCards();
+renderReportTable();
+checkBudgetLimits();
+checkUpcomingPayments();
+updateCurrentMonthDisplay();
+setTimeout(() => initDashboardCharts(), 100);
 }
 
 if (typeof Chart !== 'undefined') {

@@ -95,38 +95,3 @@
 {% endif %}
 
 {% endblock %}
-
-<!-- 
-We need these variables:
-total_saved
-total_target
-overall_percent
-monthly_saved
-monthly_saved_change
-goals_chart_labels
-goals_chart_saved
-goals_chart_targets
-goals
-goals_count
--->
-<!-- 
-Total Saved
-: مجموع كل المبالغ في جميع الأهداف اللي اتسجلت (sum of all goal.saved)
-
-Total Target
-: مجموع كل الأهداف المالية المطلوبة (sum of all goal.target)
-
-Overall Percent
-: النسبة الكلية المحققة = (Total Saved / Total Target) * 100
-
-Monthly Saved
-: مجموع المبالغ المضافة للأهداف هذا الشهر بس
-
-Monthly Saved Change
-: نسبة التغيير في المبلغ الشهري مقارنة بالشهر اللي فات (ممكن تعملها ببساطة عن طريق حفظ قيمة الشهر اللي فات في Session أو DB)
-
-goals_chart_labels: قائمة بأسماء الأهداف (['Car', 'Laptop', 'Travel'])
-goals_chart_saved: قائمة بالمبالغ المحققة لكل هدف (ممكن تجيبها من goals.values_list('saved', flat=True))
-goals_chart_targets: قائمة بالأهداف المطلوبة لكل هدف (ممكن تجيبها من goals.values_list('target', flat=True))
-goals: قائمة كاملة بكل أهداف المستخدم
-goals_count: عدد الأهداف الكلي

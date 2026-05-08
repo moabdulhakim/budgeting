@@ -7,20 +7,6 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=Transaction)
 def checkBudgetAmount(sender, instance, created, **kwargs):
-    """
-    Signal receiver triggered after a Transaction is saved.
-
-    If the transaction is a new 'expense', this function:
-    1. Checks if a budget exists for the transaction's category.
-    2. Calculates total spending within the current budget period.
-    3. Compares spending against the 'alert_threshold'.
-    4. Generates a Notification if the threshold is met or exceeded.
-
-    Args:
-        sender (Model): The model class (Transaction).
-        instance (Transaction): The actual record being saved.
-        created (bool): Indicates if the record was newly created.
-    """
     if created and instance.type == "expense":
         budget = Budget.objects.filter(user=instance.user, category=instance.category).first()
         

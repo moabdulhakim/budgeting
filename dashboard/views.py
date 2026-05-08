@@ -48,23 +48,6 @@ def _persist_dashboard_notifications(user, today, budget_categories_90, upcoming
 
 @login_required
 def getDashboard(request):
-    """
-    Primary view for the financial dashboard.
-
-    Calculates and aggregates the following metrics:
-    - Total Balance: Cumulative income minus expenses.
-    - Monthly Performance: Current month's income and expenses vs previous month.
-    - Savings Rate: Percentage of income saved.
-    - Data Visualizations: Prepares JSON data for income/expense charts and category distribution.
-    - Budget Progress: Tracks spending against set budget limits.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        HttpResponse: Renders the 'dashboard/index.html' template with a complex 
-        context dictionary containing all calculated financial data.
-    """
     ensure_user_mock_data(request.user)
     now = timezone.now()
     start_of_current_month = now.replace(day=1, hour=0, minute=0, second=0)

@@ -1,10 +1,11 @@
 """
 URL Routing for the Goals application.
 
-This module defines the URL patterns for the Goals application, mapping each URL to its corresponding view function or class-based view.
+Defines API endpoints for adding goals and depositing money into them.
 """
 from django.urls import path
 from . import views
+
 
 urlpatterns = [
     path('', views.getGoals, name='goals'), # GET
