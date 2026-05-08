@@ -17,6 +17,8 @@ from django.views.decorators.http import require_http_methods
 
 @login_required
 def getGoals(request):
+    """View function to display all savings goals for the logged-in user.
+    """
     goals = Goal.objects.filter(author=request.user)
 
     goals_list = []
@@ -141,10 +143,10 @@ class GoalCreateView(LoginRequiredMixin, CreateView):
     Creates a new savings goal for the logged-in user.
     
     Args:
-        request (HttpRequest): The HTTP request with goal details in JSON.
+        request (HttpRequest): The HTTP request with goal details.
         
     Returns:
-        JsonResponse: Success status.
+        HttpResponse: The rendered template with the list of goals.
     """
     model = Goal
     fields = [
@@ -159,11 +161,14 @@ class GoalCreateView(LoginRequiredMixin, CreateView):
     success_url = '/goals'
 
     def form_valid(self, form):
+        """Sets the author of the goal to the current user before saving."""
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 # update goal
 class GoalUpdateView(LoginRequiredMixin, UpdateView):
+    """Updates an existing savings goal for the logged-in user."""
+ 
     model = Goal
     fields = [
         'name',
@@ -185,13 +190,13 @@ class GoalUpdateView(LoginRequiredMixin, UpdateView):
 @login_required
 def depositGoalAmount(request):
     """
-    API endpoint to update the current saved amount of a specific goal.
+    View function to update the current saved amount of a specific goal.
     
     Args:
         request (HttpRequest): Request object with 'goal_id' and 'amount'.
         
     Returns:
-        JsonResponse: Success status or error if goal not found.
+        HttpResponse or JsonResponse: JSON response with success status and new current amount, or error message.
     """
     # Support both PUT (API) and POST (simple fetch/form)
     if request.method not in ("PUT", "POST"):
@@ -238,6 +243,8 @@ def depositGoalAmount(request):
 # get specific goal
 @login_required
 def getGoal(request, goalId):
+    """View function to retrieve and display details of a specific savings goal.
+    """
     try:
         goal = Goal.objects.get(id=goalId, author=request.user)
     except Goal.DoesNotExist:

@@ -32,7 +32,7 @@ def signup_view(request):
         request (HttpRequest): The HTTP request containing user registration data.
         
     Returns:
-        JsonResponse: Success message with status 201 or error message with appropriate status.
+        HttpResponse: Redirects to dashboard on successful registration or renders signup page with error messages on failure.
     """
     if request.method == "GET":
         return render(request, "auth/signup.html")
@@ -74,7 +74,7 @@ def login_view(request):
         request (HttpRequest): The HTTP request containing login credentials.
         
     Returns:
-        JsonResponse: Success status with username or invalid credentials error.
+        HttpResponse: Redirects to dashboard on successful login or renders login page with error messages on failure.
     """
     if request.method == "GET":
         return render(request, "auth/login.html")
@@ -104,7 +104,7 @@ def logout_view(request):
         request (HttpRequest): The HTTP request object.
         
     Returns:
-        HttpResponseRedirect: Redirect to login.
+        HttpResponse: Redirects to the login page after logging out.
     """ 
     logout(request)
     return redirect("login")
