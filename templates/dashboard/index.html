@@ -1,13 +1,37 @@
-{% extends 'base.html' %} {% block page_header %}
+{% extends 'base.html' %}
+
+{% block nav_dashboard %}active{% endblock %}
+
+{% block page_header %}
 <div>
   <h1 class="page-title">Dashboard</h1>
   <p class="page-sub">Welcome back, {{ user.first_name }} 👋</p>
 </div>
-<div class="topbar-right">
-  <!-- <div class="month-selector">📅 {{ current_date }}</div> -->
-  <!-- <div class="notif-btn">🔔<span class="notif-dot"></span></div> --> <!-- TODO: build notification page notifications -->
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-alerts-stack">
+{% for a in dashboard_alerts %}
+  {% if a.kind == 'budget' %}
+  <div class="alert-banner alert-banner--critical js-timed-dashboard-alert" role="alert">
+    <div class="alert-content">
+      <div class="alert-msg">Warning: 90% of {{ a.category }} budget used!</div>
+    </div>
+    <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
+  </div>
+  {% else %}
+  <div class="alert-banner alert-banner--upcoming js-timed-dashboard-alert" role="alert">
+    <div class="alert-content">
+      <div class="alert-msg">
+        Upcoming: &ldquo;{{ a.name }}&rdquo; (${{ a.amount|floatformat:2 }}) is due on {{ a.due_display }}{% if a.days_until == 0 %} (today){% elif a.days_until == 1 %} (in 1 day){% else %} (in {{ a.days_until }} days){% endif %}.
+      </div>
+    </div>
+    <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
+  </div>
+  {% endif %}
+{% endfor %}
 </div>
-{% endblock %} {% block content %} {% include 'includes/alerts.html' %}
 
 <!-- STAT CARDS -->
  <!-- TODO: we need the status message that is mentioned in SRS -->
@@ -22,15 +46,15 @@
 
   <div class="stat-card">
     <div class="stat-header">
-      <span class="stat-label">Monthly Income</span>
+      <span class="stat-label">Total Budget</span>
     </div>
-    <div class="stat-value">${{ monthly_income }}</div>
-    <div class="stat-change up">{{ income_change }}</div>
+    <div class="stat-value">${{ total_budget }}</div>
+    <div class="stat-change up">Current month</div>
   </div>
 
   <div class="stat-card">
     <div class="stat-header">
-      <span class="stat-label">Monthly Expenses</span>
+      <span class="stat-label">Total Expenses</span>
     </div>
     <div class="stat-value">${{ monthly_expenses }}</div>
     <div class="stat-change down">{{ expenses_change }}</div>
@@ -38,10 +62,10 @@
 
   <div class="stat-card">
     <div class="stat-header">
-      <span class="stat-label">Savings Rate</span>
+      <span class="stat-label">Remaining Balance</span>
     </div>
-    <div class="stat-value">{{ savings_rate }}%</div>
-    <div class="stat-change up">{{ savings_rate_change }}</div>
+    <div class="stat-value">${{ remaining_balance }}</div>
+    <div class="stat-change up">Budget left</div>
   </div>
 </div>
 
@@ -86,8 +110,8 @@
     <div class="chart-canvas">
       <canvas
         id="categoryDonutChart"
-        data-labels="{{ donut_labels|safe }}"
-        data-values="{{ donut_values|safe }}"
+        data-labels='{{ donut_labels|safe }}'
+        data-values='{{ donut_values|safe }}'
       >
       </canvas>
     </div>
@@ -171,22 +195,3 @@
 </div>
 
 {% endblock %}
-
-<!-- 
-variables needed to pass here as a backend:
-total_balance,
-balance_change,
-monthly_income, 
-income_change, 
-monthly_expenses, 
-expenses_change, 
-savings_rate, 
-savings_rate_change, 
-chart_income_data, 
-chart_expenses_data, 
-chart_labels, 
-donut_labels, 
-donut_values, 
-recent_transactions, 
-budget_overview
--->

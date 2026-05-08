@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
+{% block nav_goals %}active{% endblock %}
+
 {% block page_header %}
 <div>
   <h1 class="page-title">Savings Goals</h1>
   <p class="page-sub">Track your progress towards your goals</p>
 </div>
-<div class="topbar-right">
-  <button class="add-btn" onclick="document.getElementById('goal-modal').classList.add('active')">+ New Goal</button>
-</div>
+<button type="button" class="add-btn" onclick="document.getElementById('goal-modal').classList.add('active')">Add Goal</button>
 {% endblock %}
 
 {% block content %}
@@ -25,9 +25,9 @@
     <div class="stat-change up">{{ overall_percent }}% achieved</div>
   </div>
   <div class="stat-card">
-    <div class="stat-header"><span class="stat-label">Monthly Saved</span></div>
-    <div class="stat-value">${{ monthly_saved }}</div>
-    <div class="stat-change up">▲ +{{ monthly_saved_change }}% this month</div>
+    <div class="stat-header"><span class="stat-label">Active Goals</span></div>
+    <div class="stat-value">{{ goals_count }}</div>
+    <div class="stat-change up">Keep going</div>
   </div>
 </div>
 
@@ -40,9 +40,9 @@
     </div>
     <div style="height:200px">
       <canvas id="savingsChart"
-        data-labels="{{ goals_chart_labels|safe }}"
-        data-saved="{{ goals_chart_saved|safe }}"
-        data-targets="{{ goals_chart_targets|safe }}">
+        data-labels='{{ goals_chart_labels|safe }}'
+        data-saved='{{ goals_chart_saved|safe }}'
+        data-targets='{{ goals_chart_targets|safe }}'>
       </canvas>
     </div>
   </div>
@@ -54,7 +54,7 @@
     </div>
     <div id="goals-list">
       {% for goal in goals %}
-      <div class="goal-item">
+      <div class="goal-item {% if goal.completed %}goal-item--completed{% endif %}">
         <div class="goal-header">
           <div class="goal-name-row">
             {% if goal.image %}
@@ -63,14 +63,25 @@
             <div class="goal-icon-placeholder">🎯</div>
             {% endif %}
             <span class="goal-name">{{ goal.name }}</span>
+            {% if goal.completed %}
+            <span class="goal-done-pill" title="Completed">Done ✓</span>
+            {% endif %}
           </div>
+          {% if not goal.completed %}
           <span class="goal-pct">{{ goal.percent }}%</span>
+          {% endif %}
         </div>
         <div class="goal-amounts">${{ goal.saved }} saved of ${{ goal.target }}</div>
         <div class="goal-bar-bg">
-          <div class="goal-bar-fill" style="width:{{ goal.percent }}%; background:var(--accent);"></div>
+          <div class="goal-bar-fill" style="width:{{ goal.percent }}%; {% if goal.completed %}background:linear-gradient(90deg,var(--green),#16a34a);{% else %}background:var(--accent);{% endif %}"></div>
         </div>
-        <button class="edit-goal-btn" onclick="openEditGoal('{{ goal.id }}', '{{ goal.name }}', '{{ goal.saved }}', '{{ goal.target }}')">✏️</button>
+        <div class="goal-item-actions">
+          <button type="button" class="edit-goal-btn" onclick="openEditGoal('{{ goal.id }}', '{{ goal.name|escapejs }}', '{{ goal.saved }}', '{{ goal.target }}')">✏️ Edit</button>
+          <form method="post" action="{% url 'delete_goal' goal.id %}" class="inline-delete-form" onsubmit="return confirm('Delete this goal?');">
+            {% csrf_token %}
+            <button type="submit" class="tx-action-btn tx-action-danger goal-delete-btn">Delete</button>
+          </form>
+        </div>
       </div>
       {% empty %}
       <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No goals yet. Add your first goal!</p>
@@ -79,6 +90,43 @@
   </div>
 </div>
 
-{% include 'includes/modals/add_goal.html' %}
+{% if celebrate_goal %}
+<script>window.__CELEBRATE_GOAL__ = true;</script>
+{% endif %}
 
 {% endblock %}
+
+<!-- 
+We need these variables:
+total_saved
+total_target
+overall_percent
+monthly_saved
+monthly_saved_change
+goals_chart_labels
+goals_chart_saved
+goals_chart_targets
+goals
+goals_count
+-->
+<!-- 
+Total Saved
+: مجموع كل المبالغ في جميع الأهداف اللي اتسجلت (sum of all goal.saved)
+
+Total Target
+: مجموع كل الأهداف المالية المطلوبة (sum of all goal.target)
+
+Overall Percent
+: النسبة الكلية المحققة = (Total Saved / Total Target) * 100
+
+Monthly Saved
+: مجموع المبالغ المضافة للأهداف هذا الشهر بس
+
+Monthly Saved Change
+: نسبة التغيير في المبلغ الشهري مقارنة بالشهر اللي فات (ممكن تعملها ببساطة عن طريق حفظ قيمة الشهر اللي فات في Session أو DB)
+
+goals_chart_labels: قائمة بأسماء الأهداف (['Car', 'Laptop', 'Travel'])
+goals_chart_saved: قائمة بالمبالغ المحققة لكل هدف (ممكن تجيبها من goals.values_list('saved', flat=True))
+goals_chart_targets: قائمة بالأهداف المطلوبة لكل هدف (ممكن تجيبها من goals.values_list('target', flat=True))
+goals: قائمة كاملة بكل أهداف المستخدم
+goals_count: عدد الأهداف الكلي
