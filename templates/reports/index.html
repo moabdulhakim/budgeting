@@ -3,11 +3,9 @@
 {% block nav_reports %}active{% endblock %}
 
 {% block page_header %}
-<div class="topbar">
-    <div>
-        <h1 class="page-title">Reports</h1>
-        <p class="page-sub">Detailed financial analytics</p>
-    </div>
+<div>
+    <h1 class="page-title">Reports</h1>
+    <p class="page-sub">Detailed financial analytics</p>
 </div>
 {% endblock %}
 
@@ -15,6 +13,7 @@
 
 <div class="filter-bar">
     <a class="filter-btn {% if period == 'month' %}active{% endif %}" href="?period=month">This Month</a>
+    <a class="filter-btn {% if period == 'lastmonth' %}active{% endif %}" href="?period=lastmonth">Last Month</a>
     <a class="filter-btn {% if period == '3months' %}active{% endif %}" href="?period=3months">Last 3 Months</a>
 </div>
 
@@ -34,7 +33,7 @@
             </div>
         </div>
         <div style="height:220px"><canvas id="trendChart"></canvas></div>
-        <script>const trendData = {{ trend_chart_data|safe }};</script>
+        <script>window.trendData = {{ trend_chart_data|safe }};</script>
     </div>
 
     <!-- Expense Breakdown Pie -->
@@ -46,7 +45,7 @@
             </div>
         </div>
         <div style="height:200px"><canvas id="reportPieChart"></canvas></div>
-        <script>const pieData = {{ pie_chart_data|safe }};</script>
+        <script>window.pieData = {{ pie_chart_data|safe }};</script>
     </div>
 
     <!-- Weekly Spending Bar -->
@@ -58,7 +57,7 @@
             </div>
         </div>
         <div style="height:200px"><canvas id="weeklyChart"></canvas></div>
-        <script>const weeklyData = {{ weekly_chart_data|safe }};</script>
+        <script>window.weeklyData = {{ weekly_chart_data|safe }};</script>
     </div>
 
 </div>
