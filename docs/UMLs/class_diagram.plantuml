@@ -4,257 +4,209 @@ title Personal Budgeting System - Class Diagram
 skinparam classAttributeIconSize 0
 skinparam monochrome true
 skinparam packageStyle rectangle
-skinparam linetype ortho
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam ArrowColor #555555
+skinparam ClassBorderColor #333333
 
-' Layout hints to force packages into a vertical stack
-package "View (UI Layer)" as LayerUI {
-    class UI {
-      + showSignUp()
-      + showLogin()
-      + showDashboard()
-      + showAddIncomeForm()
-      + showAddExpenseForm()
-      + showBudgetScreen()
-      + showCategoryScreen()
-      + submit()
-      + login()
+' ===================== View Layer (accounts app) =====================
+package "accounts (Auth Views)" as LayerAuth {
+    class signup_view {
+        + GET(): render signup page
+        + POST(username, password, name): create User
+    }
+    class login_view {
+        + GET(): render login page
+        + POST(username, password): authenticate
+    }
+    class logout_view {
+        + POST(): end session
     }
 }
 
-package "Controllers (Service Layer)" as LayerService {
-
-    class GoalView {
-        + getGoals(request)
-        + depositGoalAmount(request)
-        + getGoal(request, goalId)
+' ===================== View Layer (dashboard app) =====================
+package "dashboard (Dashboard Views)" as LayerDashboard {
+    class getDashboard {
+        + GET(): aggregate stats & render
     }
-    
-    class GoalCreateView {
+    class getNotifications {
+        + GET(): list user notifications
+    }
+}
+
+' ===================== View Layer (finances app) =====================
+package "finances (Finance Views)" as LayerFinances {
+    class CategoryViews {
+        + add_category(name, budget)
+        + delete_category(category_id)
+    }
+    class BudgetViews {
+        + set_budget(category_id, amount, start_date, end_date)
+        + get_budget_page()
+    }
+    class TransactionViews {
+        + add_transaction(name, amount, type, ...)
+        + update_transaction(transaction_id, ...)
+        + delete_transaction(transaction_id)
+        + get_transactions_page(filter)
+    }
+    class ReportViews {
+        + get_reports_page(period)
+        + dashboard_data()
+    }
+}
+
+' ===================== View Layer (goals app) =====================
+package "goals (Goal Views)" as LayerGoals {
+    class GoalFunctionViews {
+        + getGoals()
+        + getGoal(goalId)
+        + add_goal(name, target, saved, image)
+        + delete_goal(goal_id)
+        + depositGoalAmount(goalId, amount)
+    }
+    class GoalCreateView <<CreateView>> {
         + model: Goal
-        + fields: string[]
+        + fields: list
         + template_name: string
         + success_url: string
-        
-        + form_valid()
+        + form_valid(form)
     }
-    
-    class GoalUpdateView {
-        + fields: string[]
+    class GoalUpdateView <<UpdateView>> {
+        + model: Goal
+        + fields: list
         + template_name: string
         + success_url: string
         + slug_field: string
         + slug_url_kwarg: string
-        + form_valid()
-    }
-
-    class AuthService {
-      + signUp(name, email, password)
-      + login(email, password)
-      + validateCredentials()
-    }
-    
-    class TransactionService {
-      + addIncome()
-      + addExpense()
-      + getTransactions()
-    }
-    
-    class CategoryService {
-      + createCategory()
-      + editCategory()
-      + deleteCategory()
-    }
-    
-    class BudgetService {
-      + createBudget()
-      + calculateRemainingBudget()
-      + checkBudgetLimit()
-      + trackBudgetUsage()
-    }
-    
-    interface IReportStrategy <<Interface>> {
-        + generate()
-    }
-    
-    class ReportService {
-        - reportStrategy: IReportStrategy
-        + ReportService(reportStrategy: IReportStrategy)
-        + generateMonthlyReport()
-    }
-    
-    class PDFReportStrategy {
-        + generate()
-    }
-    class ScreenReportStrategy {
-        + generate()
-    }
-    
-    class NotificationService {
-      + sendBudgetAlert()
-    }
-    
-    interface IObserver {
-        + update(data: Object)
+        + form_valid(form)
     }
 }
 
-package "Database Layer" as LayerDB {
-    interface IDatabase <<Interface>> {
-      + save()
-      + update()
-      + delete()
-      + fetch()
-    }
-    
-    class Database <<Singleton>> {
-      - instance: Database
-      - Database()
-      + getInstance(): Database 
-      + save()
-      + update()
-      + delete()
-      + fetch()
-    }
-}
-
+' ===================== Models (Entity Layer) =====================
 package "Models (Entity Layer)" as LayerModel {
-    class User {
-      - userId: int
-      - name: String
-      - email: String
-      - password: String
-      - balance: BigDecimal
-      + signUp()
-      + login()
-      + updateProfile()
+
+    class User <<Django Built-in>> {
+        - id: int
+        - username: string
+        - email: string
+        - password: string
+        - first_name: string
+        - is_staff: bool
     }
-    
-    class Admin {
-      + createDefaultCategory()
-      + manageUserAccount()
-      + generateSystemReport()
-    }
-    
-    abstract class Transaction {
-      - transactionId: int
-      - amount: BigDecimal
-      - date: Date
-      - note: String
-      + getDetails()
-    }
-    
-    class Income {
-      - source: String
-      + addIncome()
-    }
-    
-    class Expense {
-      - categoryId: int
-      + addExpense()
-    }
-    
+
     class Category {
-      - categoryId: int
-      - name: String
-      - type: String
-      + createCategory()
-      + editCategory()
-      + deleteCategory()
+        - id: int
+        - name: string
+        - budgeted: Decimal
+        - spent: Decimal
+        - icon: string
+        - is_custom: bool
     }
-    
+
     class Budget {
-      - budgetId: int
-      - month: String
-      - totalLimit: BigDecimal
-      + createBudget()
-      + updateBudget()
-      + calculateRemaining()
-      + checkBudgetStatus()
+        - id: int
+        - amount: Decimal
+        - start_date: Date
+        - end_date: Date
+        - alert_threshold: int
     }
-    
+
+    class Transaction {
+        - id: int
+        - name: string
+        - amount: Decimal
+        - type: string <<income|expense>>
+        - date: DateTime
+        - payment_method: string
+        - description: string
+        - is_upcoming: bool
+        - due_date: Date
+    }
+
+    class Notification {
+        - id: int
+        - message: string
+        - reference_key: string
+        - alert_type: string <<general|budget|upcoming>>
+        - is_read: bool
+        - created_at: DateTime
+    }
+
     class Goal {
-    + id: uuid
-    + author: User
-    + name: string
-    + description: string
-    + dueDate: Date
-    + image: string
-    + target: BigDecimal
-    + current: BigDecimal
-    + createdAt: Date
-    + updatedAt: Date
-    
-    + getProgress()
+        - id: UUID
+        - name: string
+        - description: string
+        - dueDate: Date
+        - target: Decimal
+        - current: Decimal
+        - image: ImageField
+        - createdAt: DateTime
+        - updatedAt: DateTime
+        + getProgress(): float
     }
-    
-    class Report {
-      - reportId: int
-      - month: String
-      + generateReport()
-      + showSummary()
-    }
-    
-    class Dashboard {
-      + viewTotalIncome()
-      + viewTotalExpense()
-      + viewBalance()
-      + viewRecentTransactions()
+
+    class checkBudgetAmount <<Signal: post_save>> {
+        + triggered on: Transaction save
+        + reads: Budget
+        + creates: Notification
     }
 }
 
-' Forcing the vertical layout of layers (Hidden lines)
-LayerUI -[hidden]down-> LayerService
-LayerService -[hidden]down-> LayerModel
-LayerService -[hidden]down-> LayerDB
+' ===================== Layout hints =====================
+LayerAuth -[hidden]right-> LayerDashboard
+LayerDashboard -[hidden]right-> LayerFinances
+LayerFinances -[hidden]right-> LayerGoals
+LayerAuth -[hidden]down-> LayerModel
+LayerDashboard -[hidden]down-> LayerModel
+LayerFinances -[hidden]down-> LayerModel
+LayerGoals -[hidden]down-> LayerModel
 
-' ================= Relationships =================
+' ===================== View → Model Dependencies =====================
 
-' UI to Services
-UI --> AuthService
-UI --> TransactionService
-UI --> BudgetService
-UI --> CategoryService
-UI --> ReportService
+' Auth
+signup_view ..> User
+login_view ..> User
 
-' Services to Database
-AuthService ..> IDatabase
-TransactionService ..> IDatabase
-CategoryService ..> IDatabase
-BudgetService ..> IDatabase
-ReportService ..> IDatabase
-Database ..|> IDatabase : implements
+' Dashboard
+getDashboard ..> Transaction
+getDashboard ..> Category
+getDashboard ..> Notification
+getDashboard ..> Goal
+getNotifications ..> Notification
 
-' Design Patterns Connections (Observer & Strategy)
-BudgetService o--> IObserver
-NotificationService ..|> IObserver : implements
-ReportService ..> IReportStrategy
-PDFReportStrategy ..|> IReportStrategy : implements
-ScreenReportStrategy ..|> IReportStrategy : implements
+' Finance
+CategoryViews ..> Category
+CategoryViews ..> Notification
+BudgetViews ..> Budget
+BudgetViews ..> Category
+BudgetViews ..> Transaction
+TransactionViews ..> Transaction
+TransactionViews ..> Category
+TransactionViews ..> Notification
+ReportViews ..> Transaction
+ReportViews ..> Category
+ReportViews ..> Goal
 
-' Services to Models Dependencies (Uses)
-TransactionService ..> Transaction
+' Goals
+GoalFunctionViews ..> Goal
+GoalFunctionViews ..> Notification
 GoalCreateView ..> Goal
-GoalView ..> Goal
 GoalUpdateView ..> Goal
-CategoryService ..> Category
-BudgetService ..> Budget
-AuthService ..> User
-BudgetService --> Expense
-TransactionService --> Income
-TransactionService --> Expense
 
-' Models Inheritance
-User <|-- Admin
-Transaction <|-- Income
-Transaction <|-- Expense
+' ===================== Signal =====================
+checkBudgetAmount ..> Transaction : listens (post_save)
+checkBudgetAmount ..> Budget : reads
+checkBudgetAmount ..> Notification : creates
 
-' Models Composition & Associations
-User "1" o-- "0..*" Transaction : records
-User "1" o-- "0..*" Category : defines
-Category "1" <-- "0..*" Expense : used in
-User "1" o-- "0..*" Budget
-Budget "1" o-- "1..*" Category : limits per category
-User "1" o-- "0..*" Goal
-User ..> Dashboard
-User ..> Report
+' ===================== Model FK Associations =====================
+User "1" o-- "0..*" Transaction : owns
+User "1" o-- "0..*" Category : owns
+User "1" o-- "0..*" Budget : owns
+User "1" o-- "0..*" Goal : authors
+User "1" o-- "0..*" Notification : receives
+
+Transaction "0..*" --> "1" Category : categorized by
+Budget "0..*" --> "1" Category : limits
+
 @enduml
