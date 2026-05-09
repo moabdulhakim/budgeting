@@ -43,6 +43,7 @@ urlpatterns = [
     path('api/transactions/update/<int:transaction_id>/', finance_views.update_transaction, name='api_update_transaction'),
     path('api/transactions/delete/<int:transaction_id>/', finance_views.delete_transaction, name='api_delete_transaction'),
     path('api/goals/deposit/', goal_views.depositGoalAmount, name='api_goals_deposit'),
+    path('api/chatbot/', finance_views.chatbot_reply, name='api_chatbot'),
 ]
 
 if settings.DEBUG:

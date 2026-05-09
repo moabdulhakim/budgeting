@@ -1134,4 +1134,90 @@ document.addEventListener('DOMContentLoaded', () => {
         // Avoid breaking the whole page if a single chart fails
         console.error(e);
     }
+
+    // ===== CHATBOT WIDGET =====
+    initChatbot();
 });
+
+// ===== Chatbot Widget =====
+function initChatbot() {
+    const fab      = document.getElementById('chatbot-fab');
+    const panel    = document.getElementById('chatbot-panel');
+    const closeBtn = document.getElementById('chatbot-close');
+    const input    = document.getElementById('chatbot-input');
+    const send     = document.getElementById('chatbot-send');
+    const msgs     = document.getElementById('chatbot-messages');
+    const chips    = document.querySelectorAll('.chat-chip');
+
+    if (!fab || !panel) return; // widget not in DOM (unauthenticated pages)
+
+    let isOpen = false;
+
+    function togglePanel() {
+        isOpen = !isOpen;
+        panel.classList.toggle('open', isOpen);
+        if (isOpen) {
+            if (msgs.children.length === 0) {
+                appendBot("👋 Hi! I'm Spendo Assistant. Ask me about your balance, spending, goals, bills, or tips!");
+            }
+            setTimeout(() => input.focus(), 150);
+        }
+    }
+
+    function appendMsg(text, role) {
+        const div = document.createElement('div');
+        div.className = `chat-msg ${role}`;
+        div.textContent = text;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+        return div;
+    }
+
+    function appendBot(text)  { return appendMsg(text, 'bot'); }
+    function appendUser(text) { return appendMsg(text, 'user'); }
+
+    async function sendMessage(text) {
+        text = (text || '').trim();
+        if (!text) return;
+
+        appendUser(text);
+        input.value = '';
+        send.disabled = true;
+
+        const typing = appendMsg('Thinking…', 'typing');
+
+        try {
+            const res = await fetch('/api/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN,
+                },
+                body: JSON.stringify({ message: text }),
+            });
+            const data = await res.json();
+            typing.remove();
+            appendBot(data.reply || 'Sorry, I had trouble answering that.');
+        } catch {
+            typing.remove();
+            appendBot('⚠️ Connection error. Please try again.');
+        } finally {
+            send.disabled = false;
+            input.focus();
+        }
+    }
+
+    fab.addEventListener('click', togglePanel);
+    closeBtn.addEventListener('click', togglePanel);
+    send.addEventListener('click', () => sendMessage(input.value));
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage(input.value);
+        }
+    });
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => sendMessage(chip.dataset.msg));
+    });
+}
+
