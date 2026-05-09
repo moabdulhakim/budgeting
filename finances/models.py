@@ -97,3 +97,49 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"Notification for {self.user.username}"
+
+
+class ReceiptScan(models.Model):
+    """
+    Stores a receipt image uploaded by the user, the raw OCR text extracted
+    from it, the fields parsed out of that text, and (optionally) the
+    Transaction that was created from it.
+
+    Attributes:
+        user        : owner of the scan
+        image       : the uploaded receipt image file
+        raw_text    : full text returned by Tesseract
+        merchant    : parsed merchant / store name
+        total       : parsed total amount
+        receipt_date: parsed transaction date
+        status      : 'pending' | 'done' | 'failed'
+        transaction : the Transaction created from this scan (may be null)
+        created_at  : when the scan was submitted
+    """
+
+    STATUS_PENDING = "pending"
+    STATUS_DONE    = "done"
+    STATUS_FAILED  = "failed"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_DONE,    "Done"),
+        (STATUS_FAILED,  "Failed"),
+    ]
+
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receipt_scans")
+    image        = models.ImageField(upload_to="receipts/%Y/%m/")
+    raw_text     = models.TextField(blank=True, default="")
+    merchant     = models.CharField(max_length=200, blank=True, default="")
+    total        = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    receipt_date = models.DateField(null=True, blank=True)
+    status       = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    transaction  = models.OneToOneField(
+        Transaction,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="receipt_scan",
+    )
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Receipt #{self.pk} by {self.user.username} [{self.status}]"

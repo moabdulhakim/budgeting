@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block page_header %}
+<div>
+  <h1 class="page-title">Confirm Receipt</h1>
+  <p class="page-sub">Review and adjust the extracted details before saving</p>
+</div>
+<a href="{% url 'upload_receipt' %}" class="add-btn" style="background:var(--surface2);color:var(--text);border:1.5px solid var(--border);">← Back</a>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="ocr-alert ocr-alert-{{ msg.tags }}">{{ msg }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="ocr-confirm-grid">
+
+  <!-- ── Receipt image preview ──────────────────────────────────────────────── -->
+  <div class="chart-card ocr-img-card">
+    <h3 class="section-title" style="margin-bottom:12px;">Receipt Image</h3>
+    <img src="{{ scan.image.url }}" alt="Receipt" class="ocr-confirm-img">
+
+    {% if scan.raw_text %}
+    <details class="ocr-raw-details">
+      <summary>Raw OCR Text</summary>
+      <pre class="ocr-raw-pre">{{ scan.raw_text }}</pre>
+    </details>
+    {% endif %}
+  </div>
+
+  <!-- ── Editable form ─────────────────────────────────────────────────────── -->
+  <div class="chart-card">
+    <h3 class="section-title" style="margin-bottom:20px;">Transaction Details</h3>
+
+    <form method="post" action="{% url 'confirm_receipt' scan.pk %}">
+      {% csrf_token %}
+
+      <!-- Name -->
+      <div class="form-group">
+        <label class="form-label">Transaction Name</label>
+        <input type="text" name="name" class="form-input"
+               value="{{ scan.merchant|default:'' }}" placeholder="e.g. Supermarket" required>
+      </div>
+
+      <!-- Amount -->
+      <div class="form-group">
+        <label class="form-label">Amount ($)</label>
+        <input type="number" name="amount" class="form-input" step="0.01" min="0.01"
+               value="{{ scan.total|default:'' }}" placeholder="0.00" required>
+        {% if not scan.total %}
+          <p class="form-hint">⚠️ Couldn't auto-detect total — please enter manually.</p>
+        {% endif %}
+      </div>
+
+      <!-- Date -->
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-input"
+               value="{{ scan.receipt_date|date:'Y-m-d'|default:'' }}">
+        {% if not scan.receipt_date %}
+          <p class="form-hint">⚠️ Couldn't auto-detect date — defaults to today.</p>
+        {% endif %}
+      </div>
+
+      <!-- Type -->
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select name="type" class="form-input">
+          <option value="expense" selected>Expense</option>
+          <option value="income">Income</option>
+        </select>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label class="form-label">Category <span style="color:var(--text3)">(optional)</span></label>
+        <select name="category_id" class="form-input">
+          <option value="">— None —</option>
+          {% for cat in categories %}
+            <option value="{{ cat.pk }}">{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="add-btn" style="width:100%;margin-top:8px;">
+        ✅ Save Transaction
+      </button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
