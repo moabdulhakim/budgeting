@@ -557,3 +557,184 @@ def get_budget_page(request):
     )
 
 
+@csrf_exempt
+@login_required
+@require_http_methods(["POST"])
+def chatbot_reply(request):
+    """
+    Simple rule-based AI assistant that answers questions about the user's finances.
+
+    Reads real data (transactions, budgets, goals) from the DB and returns
+    a plain-text reply based on keyword matching.
+
+    Returns:
+        JsonResponse: { "reply": "<string>" }
+    """
+    from goals.models import Goal
+
+    try:
+        data = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"reply": "I couldn't understand that. Try again?"}, status=400)
+
+    message = (data.get("message") or "").strip().lower()
+    user = request.user
+
+    if not message:
+        return JsonResponse({"reply": "Please type something so I can help you! 😊"})
+
+    # ── Fetch user financial data ──────────────────────────────────────────────
+    income_total = (
+        Transaction.objects.filter(user=user, type="income")
+        .aggregate(Sum("amount"))["amount__sum"] or 0
+    )
+    expense_total = (
+        Transaction.objects.filter(user=user, type="expense")
+        .aggregate(Sum("amount"))["amount__sum"] or 0
+    )
+    balance = float(income_total) - float(expense_total)
+
+    now = timezone.now()
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    monthly_income = (
+        Transaction.objects.filter(user=user, type="income", date__gte=month_start)
+        .aggregate(Sum("amount"))["amount__sum"] or 0
+    )
+    monthly_expense = (
+        Transaction.objects.filter(user=user, type="expense", date__gte=month_start)
+        .aggregate(Sum("amount"))["amount__sum"] or 0
+    )
+
+    goals_qs = Goal.objects.filter(author=user)
+    categories_qs = Category.objects.filter(user=user)
+
+    # Top spending category this month
+    top_cat = (
+        Transaction.objects.filter(user=user, type="expense", date__gte=month_start)
+        .values("category__name")
+        .annotate(total=Sum("amount"))
+        .order_by("-total")
+        .first()
+    )
+
+    # Recent transactions (last 5)
+    recent_txs = list(
+        Transaction.objects.filter(user=user)
+        .order_by("-date")
+        .values("name", "amount", "type", "date")[:5]
+    )
+
+    # Upcoming bills
+    upcoming = list(
+        Transaction.objects.filter(user=user, is_upcoming=True, due_date__gte=now.date())
+        .order_by("due_date")
+        .values("name", "amount", "due_date")[:3]
+    )
+
+    # ── Response generation ────────────────────────────────────────────────────
+    def fmt(n):
+        return f"${float(n):,.2f}"
+
+    reply = None
+
+    # Greetings
+    if any(w in message for w in ("hi", "hello", "hey", "howdy", "greetings")):
+        reply = (
+            f"Hey {user.first_name or user.username}! 👋 I'm Spendo AI, your personal finance assistant. "
+            "Ask me about your balance, spending, budgets, goals, or tips!"
+        )
+
+    # Balance
+    elif any(w in message for w in ("balance", "net worth", "total", "how much do i have")):
+        sign = "positive" if balance >= 0 else "negative"
+        reply = (
+            f"Your current net balance is {fmt(balance)} ({sign}). "
+            f"All-time income: {fmt(income_total)} | All-time expenses: {fmt(expense_total)}."
+        )
+
+    # Income
+    elif any(w in message for w in ("income", "earn", "salary", "revenue", "earned")):
+        reply = (
+            f"This month you've earned {fmt(monthly_income)}. "
+            f"Your all-time total income is {fmt(income_total)}."
+        )
+
+    # Spending / expenses
+    elif any(w in message for w in ("spend", "spent", "expense", "cost", "paid", "spending")):
+        top_info = (
+            f" Your top spending category this month is {top_cat['category__name']} ({fmt(top_cat['total'])})."
+            if top_cat else ""
+        )
+        reply = (
+            f"This month you've spent {fmt(monthly_expense)}.{top_info} "
+            f"All-time expenses total {fmt(expense_total)}."
+        )
+
+    # Budget
+    elif any(w in message for w in ("budget", "limit", "budgeted", "over budget", "allowance")):
+        over_budget = []
+        for cat in categories_qs:
+            spent = (
+                Transaction.objects.filter(user=user, type="expense", category=cat, date__gte=month_start)
+                .aggregate(Sum("amount"))["amount__sum"] or 0
+            )
+            if cat.budgeted and float(spent) > float(cat.budgeted):
+                over_budget.append(f"{cat.name} ({fmt(spent)} / {fmt(cat.budgeted)})")
+        if over_budget:
+            reply = f"⚠️ You're over budget in: {', '.join(over_budget)}. Consider cutting back in those areas."
+        elif categories_qs.exists():
+            reply = "Great news — you're within budget across all your categories this month! 🎉"
+        else:
+            reply = "You haven't set up any budget categories yet. Head to the Budget page to get started!"
+
+    # Goals / savings
+    elif any(w in message for w in ("goal", "saving", "savings", "target", "dream", "achieve")):
+        if not goals_qs.exists():
+            reply = "You haven't created any savings goals yet. Go to Goals to add one!"
+        else:
+            lines = []
+            for g in goals_qs[:4]:
+                pct = min(round(float(g.current) / float(g.target) * 100, 1), 100) if g.target else 0
+                lines.append(f"• {g.name}: {fmt(g.current)} / {fmt(g.target)} ({pct}%)")
+            reply = "Here are your savings goals:\n" + "\n".join(lines)
+
+    # Upcoming / bills
+    elif any(w in message for w in ("upcoming", "bill", "bills", "due", "payment", "scheduled")):
+        if not upcoming:
+            reply = "You have no upcoming bills — you're all clear! ✅"
+        else:
+            lines = [f"• {u['name']} — {fmt(u['amount'])} due {u['due_date'].strftime('%b %d')}" for u in upcoming]
+            reply = "Upcoming payments:\n" + "\n".join(lines)
+
+    # Recent transactions
+    elif any(w in message for w in ("recent", "last", "transaction", "latest", "history")):
+        if not recent_txs:
+            reply = "No transactions found yet. Add some to get started!"
+        else:
+            lines = []
+            for t in recent_txs:
+                sign = "+" if t["type"] == "income" else "-"
+                lines.append(f"• {t['name']}: {sign}{fmt(t['amount'])} ({t['date'].strftime('%b %d')})")
+            reply = "Your 5 most recent transactions:\n" + "\n".join(lines)
+
+    # Tips / advice
+    elif any(w in message for w in ("tip", "advice", "suggest", "help", "recommend", "how to save")):
+        import random
+        tips = [
+            "💡 Follow the 50/30/20 rule: 50% needs, 30% wants, 20% savings.",
+            "💡 Review your subscriptions — cancel unused ones to free up cash.",
+            "💡 Set up automatic savings transfers right after payday.",
+            "💡 Track every expense, even small ones — they add up fast.",
+            "💡 Build a 3-6 month emergency fund before investing.",
+        ]
+        reply = random.choice(tips)
+
+    # Fallback
+    else:
+        reply = (
+            "I can help with: balance, income, spending, budgets, "
+            "goals, upcoming bills, recent transactions, or saving tips. "
+            "What would you like to know? 😊"
+        )
+
+    return JsonResponse({"reply": reply})
