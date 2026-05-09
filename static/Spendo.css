@@ -1235,3 +1235,131 @@ min-height: 32px;
 }
 .sub-empty-icon { font-size: 30px; }
 .sub-empty p { font-size: 13px; color: var(--text2); line-height: 1.6; margin: 0; }
+
+/* ===== Voice Transaction ===== */
+.voice-mic-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.voice-mic-btn:hover { border-color: var(--accent); background: var(--accent-glow); }
+.voice-mic-btn.mic-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  animation: mic-pulse 1.2s ease-in-out infinite;
+}
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108,99,255,0.45); }
+  50%       { box-shadow: 0 0 0 10px rgba(108,99,255,0); }
+}
+
+.voice-overlay {
+  position: fixed;
+  bottom: 100px; left: 50%; transform: translateX(-50%);
+  z-index: 4000;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  pointer-events: auto;
+}
+
+.voice-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 600;
+  backdrop-filter: blur(12px);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s;
+}
+.voice-pill--listening { border-color: var(--accent); color: var(--accent); }
+.voice-pill--processing { border-color: #f59e0b; color: #f59e0b; }
+.voice-pill--success    { border-color: #22c55e; color: #22c55e; }
+.voice-pill--error      { border-color: #ef4444; color: #ef4444; }
+
+.voice-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor;
+  animation: dot-blink 1s ease-in-out infinite;
+}
+.voice-pill--processing .voice-dot,
+.voice-pill--success    .voice-dot,
+.voice-pill--error      .voice-dot { animation: none; }
+
+@keyframes dot-blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
+}
+
+.voice-transcript {
+  max-width: 340px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 10px;
+  min-height: 36px;
+  backdrop-filter: blur(8px);
+}
+
+.voice-cancel-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  color: var(--text2);
+  font-size: 12px; font-weight: 600;
+  font-family: inherit;
+  padding: 6px 18px; border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.voice-cancel-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+/* ===== Currency Selector (Transaction Modal) ===== */
+.fx-amount-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.fx-amount-input {
+  flex: 1;
+  min-width: 0;
+}
+.fx-currency-select {
+  width: 130px;
+  flex-shrink: 0;
+  padding: 10px 8px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.fx-currency-select:focus { border-color: var(--accent); }
+
+.fx-preview {
+  margin-top: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent);
+  font-size: 12px;
+  color: var(--text);
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fx-preview strong { color: var(--accent); font-weight: 700; }
+.fx-eq  { font-size: 15px; color: var(--accent); font-weight: 700; }
+.fx-rate { color: var(--text3); font-size: 11px; }

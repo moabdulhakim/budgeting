@@ -21,5 +21,11 @@ urlpatterns = [
     # Receipt OCR
     path('receipts/', views.upload_receipt, name='upload_receipt'),
     path('receipts/<int:scan_id>/confirm/', views.confirm_receipt, name='confirm_receipt'),
+
+    # Voice Transaction
+    path('api/voice-transaction/', views.voice_transaction, name='voice_transaction'),
+
+    # Currency / FX
+    path('api/fx-rates/', views.get_fx_rates, name='get_fx_rates'),
 ]   
 
