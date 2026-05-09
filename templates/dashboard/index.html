@@ -11,27 +11,35 @@
 
 {% block content %}
 
+{% if dashboard_alerts or top_subscription %}
 <div class="dashboard-alerts-stack">
+
+{% if top_subscription %}
+  <div class="alert-banner alert-banner--insight js-timed-dashboard-alert" role="alert">
+    <div class="alert-content">
+      <div class="alert-msg">💡 Smart Insight: We noticed a recurring payment for <strong>{{ top_subscription.name }}</strong> (${{ top_subscription.amount }}). Would you like to track it as a fixed subscription?</div>
+    </div>
+    <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
+  </div>
+{% endif %}
+
 {% for a in dashboard_alerts %}
   {% if a.kind == 'budget' %}
   <div class="alert-banner alert-banner--critical js-timed-dashboard-alert" role="alert">
-    <div class="alert-content">
-      <div class="alert-msg">Warning: 90% of {{ a.category }} budget used!</div>
-    </div>
+    <div class="alert-content"><div class="alert-msg">⚠️ {{ a.category }} budget is 90% used</div></div>
     <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
   </div>
   {% else %}
   <div class="alert-banner alert-banner--upcoming js-timed-dashboard-alert" role="alert">
-    <div class="alert-content">
-      <div class="alert-msg">
-        Upcoming: &ldquo;{{ a.name }}&rdquo; (${{ a.amount|floatformat:2 }}) is due on {{ a.due_display }}{% if a.days_until == 0 %} (today){% elif a.days_until == 1 %} (in 1 day){% else %} (in {{ a.days_until }} days){% endif %}.
-      </div>
-    </div>
+    <div class="alert-content"><div class="alert-msg">📅 "{{ a.name }}" (${{ a.amount|floatformat:2 }}) due {{ a.due_display }}{% if a.days_until == 0 %} today{% elif a.days_until == 1 %} in 1 day{% else %} in {{ a.days_until }} days{% endif %}</div></div>
     <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
   </div>
   {% endif %}
 {% endfor %}
+
 </div>
+{% endif %}
+
 
 <!-- STAT CARDS -->
  <!-- TODO: we need the status message that is mentioned in SRS -->
@@ -140,16 +148,7 @@
         </div>
       </div>
       {% empty %}
-      <p
-        style="
-          color: var(--text2);
-          font-size: 13px;
-          text-align: center;
-          padding: 20px 0;
-        "
-      >
-        No transactions yet.
-      </p>
+      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No transactions yet.</p>
       {% endfor %}
     </div>
   </div>
@@ -179,16 +178,7 @@
         </div>
       </div>
       {% empty %}
-      <p
-        style="
-          color: var(--text2);
-          font-size: 13px;
-          text-align: center;
-          padding: 20px 0;
-        "
-      >
-        No budget categories yet.
-      </p>
+      <p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0;">No budget categories yet.</p>
       {% endfor %}
     </div>
   </div>

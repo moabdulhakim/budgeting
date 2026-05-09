@@ -1,5 +1,6 @@
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Count, Max
+from django.db.models.functions import TruncMonth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from datetime import timedelta
@@ -216,6 +217,24 @@ def getDashboard(request):
     for bill in upcoming_bills:
         dashboard_alerts.append({"kind": "upcoming", **bill})
 
+    # ── Top Detected Subscription (for the Smart Insight banner) ──────────────
+    # Find the expense that repeats in the most distinct calendar months.
+    # Only the single top result is needed for the one-line alert banner.
+    top_row = (
+        Transaction.objects
+        .filter(user=request.user, type="expense")
+        .annotate(month=TruncMonth("date"))
+        .values("name", "amount")
+        .annotate(month_count=Count("month", distinct=True))
+        .filter(month_count__gte=2)
+        .order_by("-month_count", "name")
+        .first()
+    )
+    top_subscription = (
+        {"name": top_row["name"], "amount": float(top_row["amount"])}
+        if top_row else None
+    )
+
     context = {
         'total_balance': float(total_balance),
         'balance_change': balance_change,
@@ -241,6 +260,7 @@ def getDashboard(request):
         'budget_threshold_alerts': budget_threshold_alerts,
         'upcoming_bills': upcoming_bills,
         'dashboard_alerts': dashboard_alerts,
+        'top_subscription': top_subscription,
     }
     
     return render(request, 'dashboard/index.html', context)
