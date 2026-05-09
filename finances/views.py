@@ -738,3 +738,195 @@ def chatbot_reply(request):
         )
 
     return JsonResponse({"reply": reply})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Receipt OCR
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _ocr_parse(image_file):
+    """
+    Run Tesseract OCR on an uploaded image and extract:
+      - raw_text   : full OCR output
+      - merchant   : first non-empty line (usually the store name)
+      - total      : largest monetary value found in the text
+      - receipt_date: first date pattern found
+
+    Returns a dict with those four keys.
+    """
+    import re
+    import pytesseract
+    from PIL import Image
+
+    img = Image.open(image_file)
+    # Upscale small images for better accuracy
+    w, h = img.size
+    if w < 800:
+        scale = 800 / w
+        img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+
+    raw = pytesseract.image_to_string(img, config="--psm 6")
+
+    # ── Merchant ──────────────────────────────────────────────────────────────
+    merchant = ""
+    for line in raw.splitlines():
+        stripped = line.strip()
+        if stripped and len(stripped) > 2:
+            merchant = stripped[:100]
+            break
+
+    # ── Total amount ──────────────────────────────────────────────────────────
+    # Match patterns like: TOTAL 12.50  /  Total: $12.50  /  Amount: 12.50
+    total = None
+    total_pattern = re.compile(
+        r'(?:total|amount|grand\s*total|subtotal|due|balance)[^\d]*(\d{1,6}[.,]\d{2})',
+        re.IGNORECASE,
+    )
+    matches = total_pattern.findall(raw)
+    if matches:
+        try:
+            total = Decimal(matches[-1].replace(',', '.'))
+        except Exception:
+            pass
+    # Fallback: take the largest dollar figure in the text
+    if total is None:
+        all_amounts = re.findall(r'\$?\s*(\d{1,6}[.,]\d{2})', raw)
+        if all_amounts:
+            try:
+                total = max(Decimal(a.replace(',', '.')) for a in all_amounts)
+            except Exception:
+                pass
+
+    # ── Date ─────────────────────────────────────────────────────────────────
+    receipt_date = None
+    date_patterns = [
+        r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',          # 09/05/2025 or 9-5-25
+        r'(\d{4}[/-]\d{2}[/-]\d{2})',                  # 2025-05-09
+        r'(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4})',  # 9 May 2025
+    ]
+    for pat in date_patterns:
+        m = re.search(pat, raw, re.IGNORECASE)
+        if m:
+            raw_date = m.group(1)
+            for fmt in ('%d/%m/%Y', '%d-%m-%Y', '%Y-%m-%d', '%d/%m/%y', '%d-%m-%y',
+                        '%d %B %Y', '%d %b %Y', '%m/%d/%Y'):
+                try:
+                    from datetime import datetime as _dt
+                    receipt_date = _dt.strptime(raw_date, fmt).date()
+                    break
+                except ValueError:
+                    continue
+            if receipt_date:
+                break
+
+    return {
+        "raw_text":     raw,
+        "merchant":     merchant,
+        "total":        total,
+        "receipt_date": receipt_date,
+    }
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def upload_receipt(request):
+    """
+    GET  → render the receipt upload page.
+    POST → accept an image, run OCR, store a ReceiptScan, redirect to confirm.
+    """
+    from .models import ReceiptScan
+
+    if request.method == "GET":
+        scans = ReceiptScan.objects.filter(user=request.user).order_by("-created_at")[:10]
+        return render(request, "finances/receipt_ocr.html", {"scans": scans})
+
+    image = request.FILES.get("receipt_image")
+    if not image:
+        messages.error(request, "Please choose an image to upload.")
+        return redirect("upload_receipt")
+
+    # Basic type check
+    if not image.content_type.startswith("image/"):
+        messages.error(request, "Only image files are accepted (JPG, PNG, WEBP…).")
+        return redirect("upload_receipt")
+
+    scan = ReceiptScan.objects.create(user=request.user, image=image, status=ReceiptScan.STATUS_PENDING)
+
+    try:
+        parsed = _ocr_parse(scan.image)
+        scan.raw_text     = parsed["raw_text"]
+        scan.merchant     = parsed["merchant"]
+        scan.total        = parsed["total"]
+        scan.receipt_date = parsed["receipt_date"]
+        scan.status       = ReceiptScan.STATUS_DONE
+        scan.save()
+    except Exception as exc:
+        scan.status   = ReceiptScan.STATUS_FAILED
+        scan.raw_text = str(exc)
+        scan.save()
+        messages.error(request, f"OCR failed: {exc}")
+        return redirect("upload_receipt")
+
+    return redirect("confirm_receipt", scan_id=scan.pk)
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def confirm_receipt(request, scan_id):
+    """
+    GET  → show the parsed receipt data in an editable form.
+    POST → create a Transaction from the (possibly corrected) data, link it to the scan.
+    """
+    from .models import ReceiptScan
+
+    scan = get_object_or_404(ReceiptScan, pk=scan_id, user=request.user)
+    categories = Category.objects.filter(user=request.user)
+
+    if request.method == "GET":
+        return render(request, "finances/receipt_confirm.html", {
+            "scan": scan,
+            "categories": categories,
+        })
+
+    # ── Build the transaction from submitted form data ────────────────────────
+    name   = request.POST.get("name", scan.merchant or "Receipt expense").strip() or "Receipt expense"
+    amount = request.POST.get("amount", str(scan.total or "0")).strip()
+    date   = request.POST.get("date", str(scan.receipt_date or timezone.now().date())).strip()
+    cat_id = request.POST.get("category_id", "")
+    tx_type = request.POST.get("type", "expense")
+
+    try:
+        amount = Decimal(amount)
+        if amount <= 0:
+            raise ValueError
+    except Exception:
+        messages.error(request, "Please enter a valid positive amount.")
+        return render(request, "finances/receipt_confirm.html", {"scan": scan, "categories": categories})
+
+    category = None
+    if cat_id:
+        try:
+            category = Category.objects.get(pk=cat_id, user=request.user)
+        except Category.DoesNotExist:
+            pass
+
+    from datetime import datetime as _dt
+    try:
+        tx_date = _dt.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        tx_date = timezone.now().date()
+
+    tx = Transaction.objects.create(
+        user=request.user,
+        category=category,
+        name=name,
+        amount=amount,
+        type=tx_type,
+        date=timezone.make_aware(_dt.combine(tx_date, _dt.min.time())),
+    )
+    scan.transaction = tx
+    scan.save()
+
+    messages.success(request, f'✅ Transaction "{name}" (${amount}) added from receipt!')
+    return redirect("transactions")
+

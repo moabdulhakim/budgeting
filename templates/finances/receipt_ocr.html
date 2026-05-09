@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block nav_receipt_ocr %}active{% endblock %}
+
+{% block page_header %}
+<div>
+  <h1 class="page-title">Receipt Scanner</h1>
+  <p class="page-sub">Upload a receipt photo — we'll extract the details for you</p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="ocr-alert ocr-alert-{{ msg.tags }}">{{ msg }}</div>
+  {% endfor %}
+{% endif %}
+
+<!-- ── Upload card ──────────────────────────────────────────────────────────── -->
+<div class="chart-card ocr-upload-card">
+
+  <form method="post" action="{% url 'upload_receipt' %}" enctype="multipart/form-data" id="ocr-upload-form">
+    {% csrf_token %}
+
+    <div class="ocr-drop-zone" id="ocr-drop-zone">
+      <div class="ocr-drop-icon">🧾</div>
+      <p class="ocr-drop-title">Drop your receipt here</p>
+      <p class="ocr-drop-sub">JPG · PNG · WEBP · max 10 MB</p>
+      <input type="file" id="receipt_image" name="receipt_image"
+             accept="image/*" class="ocr-file-input" required>
+      <span class="add-btn ocr-choose-btn">Choose File</span>
+    </div>
+
+    <!-- Preview strip (hidden until file chosen) -->
+    <div class="ocr-preview-wrap" id="ocr-preview-wrap">
+      <img id="ocr-preview-img" src="" alt="Receipt preview" class="ocr-preview-img">
+      <div class="ocr-preview-meta">
+        <span id="ocr-preview-name" class="ocr-preview-name"></span>
+        <button type="button" class="ocr-clear-btn" id="ocr-clear-btn">✕ Remove</button>
+      </div>
+    </div>
+
+    <button type="submit" class="add-btn ocr-submit-btn" id="ocr-submit-btn" disabled>
+      <span class="ocr-submit-idle">✨ Scan Receipt</span>
+      <span class="ocr-submit-busy" style="display:none;">⏳ Scanning…</span>
+    </button>
+  </form>
+
+  <!-- Steps hint -->
+  <div class="ocr-steps">
+    <div class="ocr-step"><span class="ocr-step-num">1</span>Upload receipt</div>
+    <div class="ocr-step-arrow">→</div>
+    <div class="ocr-step"><span class="ocr-step-num">2</span>AI extracts data</div>
+    <div class="ocr-step-arrow">→</div>
+    <div class="ocr-step"><span class="ocr-step-num">3</span>Review &amp; save</div>
+  </div>
+</div>
+
+<!-- ── Recent scans ─────────────────────────────────────────────────────────── -->
+{% if scans %}
+<div class="chart-card" style="margin-top:24px;">
+  <h3 class="section-title" style="margin-bottom:16px;">Recent Scans</h3>
+  <div class="tx-list">
+    {% for scan in scans %}
+    <div class="tx-item tx-item-with-actions">
+      <div class="tx-info">
+        <div class="tx-name">
+          {% if scan.merchant %}{{ scan.merchant }}{% else %}Receipt #{{ scan.pk }}{% endif %}
+          <span class="ocr-status-badge ocr-status-{{ scan.status }}">{{ scan.status }}</span>
+        </div>
+        <div class="tx-date">
+          {{ scan.created_at|date:"M d, Y · H:i" }}{% if scan.total %} · ${{ scan.total }}{% endif %}
+        </div>
+      </div>
+      <div class="tx-row-actions">
+        {% if scan.transaction %}
+          <a href="{% url 'transactions' %}" class="tx-action-btn">View Tx →</a>
+        {% elif scan.status == 'done' %}
+          <a href="{% url 'confirm_receipt' scan.pk %}" class="tx-action-btn">Confirm →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<script>
+(function () {
+  const input   = document.getElementById('receipt_image');
+  const dropZ   = document.getElementById('ocr-drop-zone');
+  const preview = document.getElementById('ocr-preview-wrap');
+  const preImg  = document.getElementById('ocr-preview-img');
+  const preName = document.getElementById('ocr-preview-name');
+  const clearBtn= document.getElementById('ocr-clear-btn');
+  const submit  = document.getElementById('ocr-submit-btn');
+  const form    = document.getElementById('ocr-upload-form');
+
+  function showPreview(file) {
+    preImg.src = URL.createObjectURL(file);
+    preName.textContent = file.name;
+    preview.style.display = 'flex';
+    submit.disabled = false;
+    dropZ.classList.add('has-file');
+  }
+
+  function clearPreview() {
+    input.value = '';
+    preImg.src = '';
+    preName.textContent = '';
+    preview.style.display = 'none';
+    submit.disabled = true;
+    dropZ.classList.remove('has-file');
+  }
+
+  input.addEventListener('change', () => { if (input.files[0]) showPreview(input.files[0]); });
+  clearBtn.addEventListener('click', clearPreview);
+
+  dropZ.addEventListener('dragover',  e => { e.preventDefault(); dropZ.classList.add('drag-over'); });
+  dropZ.addEventListener('dragleave', () => dropZ.classList.remove('drag-over'));
+  dropZ.addEventListener('drop', e => {
+    e.preventDefault(); dropZ.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+      showPreview(file);
+    }
+  });
+
+  form.addEventListener('submit', () => {
+    document.querySelector('.ocr-submit-idle').style.display = 'none';
+    document.querySelector('.ocr-submit-busy').style.display = 'inline';
+    submit.disabled = true;
+  });
+})();
+</script>
+{% endblock %}

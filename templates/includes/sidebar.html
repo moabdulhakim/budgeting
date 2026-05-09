@@ -17,6 +17,11 @@
         <a class="nav-item {% block nav_goals %}{% endblock %}" href="{% url 'goals' %}">Goals</a>
     </div>
 
+    <div class="sidebar-section">
+        <div class="sidebar-label">Tools</div>
+        <a class="nav-item {% block nav_receipt_ocr %}{% endblock %}" href="{% url 'upload_receipt' %}">📷 Receipt OCR</a>
+    </div>
+
     <div class="sidebar-bottom">
         <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
             {% csrf_token %}

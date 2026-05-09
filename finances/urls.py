@@ -17,5 +17,9 @@ urlpatterns = [
     path('transactions/', views.get_transactions_page, name='transactions'),
     path('reports/', views.get_reports_page, name='reports'),
     path('budget/', views.get_budget_page, name='budget'),
+
+    # Receipt OCR
+    path('receipts/', views.upload_receipt, name='upload_receipt'),
+    path('receipts/<int:scan_id>/confirm/', views.confirm_receipt, name='confirm_receipt'),
 ]   
 
