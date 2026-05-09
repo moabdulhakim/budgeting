@@ -12,9 +12,18 @@
         <input type="text" id="tx-name" name="name" placeholder="e.g. Grocery Store" required>
       </div>
 
+      <!-- Amount + Currency side-by-side -->
       <div class="form-group">
         <label for="tx-amount">Amount</label>
-        <input type="number" id="tx-amount" name="amount" placeholder="0.00" step="0.01" min="0" required>
+        <div class="fx-amount-row">
+          <input type="number" id="tx-amount" name="amount" placeholder="0.00"
+                 step="0.01" min="0" required class="fx-amount-input">
+          <select id="tx-currency" name="currency" class="fx-currency-select">
+            <option value="USD">🇺🇸 USD</option>
+          </select>
+        </div>
+        <!-- Live conversion preview -->
+        <div id="fx-preview" class="fx-preview" style="display:none;"></div>
       </div>
 
       <div class="form-group">
@@ -55,3 +64,59 @@
     </form>
   </div>
 </div>
+
+<script>
+(function () {
+  const FX_URL  = "{% url 'get_fx_rates' %}";
+  const select  = document.getElementById('tx-currency');
+  const amtIn   = document.getElementById('tx-amount');
+  const preview = document.getElementById('fx-preview');
+
+  let rates = {};   // { EUR: 0.92, EGP: 49.1, ... }
+
+  // ── Populate dropdown from API ────────────────────────────────────────────
+  fetch(FX_URL, { credentials: 'same-origin' })
+    .then(r => r.json())
+    .then(data => {
+      rates = data.rates || {};
+      const currencies = data.currencies || {};
+
+      // Clear placeholder, rebuild options
+      select.innerHTML = '';
+      Object.entries(currencies).forEach(([code, label]) => {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = label;
+        if (code === 'USD') opt.selected = true;
+        select.appendChild(opt);
+      });
+    })
+    .catch(() => {
+      // Leave "USD" placeholder if API fails — still works
+    });
+
+  // ── Live conversion preview ───────────────────────────────────────────────
+  function updatePreview() {
+    const currency = select.value;
+    const amount   = parseFloat(amtIn.value);
+
+    if (!amount || isNaN(amount) || currency === 'USD') {
+      preview.style.display = 'none';
+      return;
+    }
+
+    const rate = rates[currency];
+    if (!rate) { preview.style.display = 'none'; return; }
+
+    const usd = (amount / rate).toFixed(2);
+    preview.style.display = 'flex';
+    preview.innerHTML =
+      `<span class="fx-eq">≈</span>` +
+      `<strong>$${usd} USD</strong>` +
+      `<span class="fx-rate">@ 1 ${currency} = ${(1 / rate).toFixed(4)} USD</span>`;
+  }
+
+  select.addEventListener('change', updatePreview);
+  amtIn.addEventListener('input',   updatePreview);
+})();
+</script>

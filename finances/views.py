@@ -184,15 +184,21 @@ def set_budget(request):
 def add_transaction(request):
     """
     API endpoint to record a new financial transaction.
-    
+
+    Accepts an optional `currency` field (e.g. "EGP"). If provided and
+    not "USD", the amount is converted to USD via a live exchange-rate
+    API before being stored. The original currency and amount are
+    appended to the description for transparency.
+
     Args:
-        request (HttpRequest): JSON with transaction details (name, amount, type, category).
-        
+        request (HttpRequest): JSON or form-encoded transaction details.
+
     Returns:
-        JsonResponse: Confirmation of the created transaction.
+        JsonResponse or redirect: Confirmation of the created transaction.
     """
     if request.method == "POST":
         try:
+            from .currency import to_usd
             data = _parse_body(request)
             category_name = (data.get("category") or "General").strip() or "General"
             category_obj, _ = Category.objects.get_or_create(name=category_name, user=request.user)
@@ -222,14 +228,29 @@ def add_transaction(request):
             if not is_upcoming:
                 due_date = None
 
+            # ── Currency conversion ───────────────────────────────────────────
+            raw_amount = Decimal(str(data.get("amount") or 0))
+            currency   = (data.get("currency") or "USD").upper().strip()
+            usd_amount, rate = to_usd(raw_amount, currency)
+
+            base_description = data.get("description") or ""
+            if currency != "USD":
+                fx_note = (
+                    f"[Originally {raw_amount} {currency}"
+                    f" @ {float(rate):.4f} {currency}/USD]"
+                )
+                description = f"{base_description} {fx_note}".strip()
+            else:
+                description = base_description
+
             t = Transaction.objects.create(
                 user=request.user,
                 category=category_obj,
                 name=(data.get("name") or "Untitled").strip() or "Untitled",
-                amount=data.get("amount") or 0,
+                amount=usd_amount,
                 type=tx_type,
                 payment_method=data.get("payment_method") or "Cash",
-                description=data.get("description") or "",
+                description=description,
                 date=tx_dt,
                 is_upcoming=is_upcoming,
                 due_date=due_date,
@@ -239,7 +260,13 @@ def add_transaction(request):
                 message=f"Transaction added: {t.name} (${float(t.amount):.2f})",
             )
             if _wants_json(request):
-                return JsonResponse({"status": "success", "message": "Transaction added!"})
+                return JsonResponse({
+                    "status": "success",
+                    "message": "Transaction added!",
+                    "usd_amount": float(usd_amount),
+                    "currency": currency,
+                    "rate": float(rate),
+                })
             messages.success(request, "Transaction added successfully.")
             return redirect("transactions")
         except Exception as e:
@@ -247,6 +274,7 @@ def add_transaction(request):
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
             messages.error(request, "Failed to add transaction.")
             return redirect("transactions")
+
 
 @csrf_exempt
 @login_required
@@ -557,10 +585,29 @@ def get_budget_page(request):
     )
 
 
+@login_required
+@require_http_methods(["GET"])
+def get_fx_rates(request):
+    """
+    Returns the current USD-based exchange rates and the supported currency list.
+    Used by the frontend to show a live conversion preview in the transaction modal.
+
+    Returns:
+        JsonResponse: { "base": "USD", "rates": {...}, "currencies": {...} }
+    """
+    from .currency import get_rates, SUPPORTED_CURRENCIES
+    return JsonResponse({
+        "base": "USD",
+        "rates": get_rates(),
+        "currencies": SUPPORTED_CURRENCIES,
+    })
+
+
 @csrf_exempt
 @login_required
 @require_http_methods(["POST"])
 def chatbot_reply(request):
+
     """
     Simple rule-based AI assistant that answers questions about the user's finances.
 
@@ -930,3 +977,92 @@ def confirm_receipt(request, scan_id):
     messages.success(request, f'✅ Transaction "{name}" (${amount}) added from receipt!')
     return redirect("transactions")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Voice Transaction
+# ─────────────────────────────────────────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+@require_http_methods(["POST"])
+def voice_transaction(request):
+    """
+    Parse a natural-language voice transcript and create a Transaction.
+
+    Expected JSON: { "transcript": "spent 45 dollars on groceries" }
+
+    Parsing rules
+    - Amount   : first number found in the transcript
+    - Type     : 'income' if income keyword present, else 'expense'
+    - Name     : text after 'on' / 'for' / 'called'; fallback = cleaned remainder
+    - Category : fuzzy-match transcript words against user's category names
+    """
+    import re
+
+    try:
+        data = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"ok": False, "error": "Invalid JSON body."}, status=400)
+
+    transcript = (data.get("transcript") or "").strip()
+    if not transcript:
+        return JsonResponse({"ok": False, "error": "Empty transcript."})
+
+    text = transcript.lower()
+
+    # Amount
+    amount_match = re.search(r'(\d+(?:[.,]\d{1,2})?)', text)
+    if not amount_match:
+        return JsonResponse({"ok": False, "error": f'No amount found in: "{transcript}"'})
+    try:
+        amount = Decimal(amount_match.group(1).replace(',', '.'))
+    except Exception:
+        return JsonResponse({"ok": False, "error": "Could not parse amount."})
+
+    # Type
+    income_kw = {"income", "earned", "earn", "received", "receive", "salary",
+                 "revenue", "deposited", "got paid"}
+    tx_type = "income" if any(kw in text for kw in income_kw) else "expense"
+
+    # Name
+    name = ""
+    m = re.search(r'\b(?:on|for|called|named)\s+([^,.]+)', text)
+    if m:
+        name = m.group(1).strip()
+    if not name:
+        noise = re.sub(
+            r'\b(?:spent|spend|paid|pay|bought|buy|added|got|received|earned|'
+            r'income|expense|dollars?|dollar|usd|for|on|a|an|the|and|i|my|of)\b',
+            ' ', text,
+        )
+        noise = re.sub(r'\d+(?:[.,]\d{1,2})?', ' ', noise)
+        name = ' '.join(noise.split()).title()
+    name = (name or "Voice Transaction")[:200]
+
+    # Category – fuzzy match
+    category = None
+    for cat in Category.objects.filter(user=request.user):
+        if cat.name.lower() in text:
+            category = cat
+            break
+
+    # Create
+    tx = Transaction.objects.create(
+        user=request.user,
+        name=name,
+        amount=amount,
+        type=tx_type,
+        category=category,
+        date=timezone.now(),
+    )
+
+    return JsonResponse({
+        "ok": True,
+        "transaction": {
+            "id":       tx.pk,
+            "name":     tx.name,
+            "amount":   float(tx.amount),
+            "type":     tx.type,
+            "category": category.name if category else None,
+        },
+    })

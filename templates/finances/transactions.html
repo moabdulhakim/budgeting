@@ -7,10 +7,131 @@
   <h1 class="page-title">Transactions</h1>
   <p class="page-sub">All your income and expenses</p>
 </div>
-<button type="button" class="add-btn" onclick="openNewTransactionModal()">Add Transaction</button>
+<div style="display:flex;gap:10px;align-items:center;">
+  <button type="button" id="voice-mic-btn" class="voice-mic-btn" title="Add transaction by voice" aria-label="Voice input">
+    🎙️
+  </button>
+  <button type="button" class="add-btn" onclick="openNewTransactionModal()">Add Transaction</button>
+</div>
 {% endblock %}
 
 {% block content %}
+
+<!-- Voice UI overlay -->
+<div id="voice-overlay" class="voice-overlay" style="display:none;">
+  <div class="voice-pill" id="voice-pill">
+    <span class="voice-dot" id="voice-dot"></span>
+    <span id="voice-status-text">Listening…</span>
+  </div>
+  <div id="voice-transcript" class="voice-transcript"></div>
+  <button type="button" id="voice-cancel-btn" class="voice-cancel-btn">Cancel</button>
+</div>
+
+<script>
+(function () {
+  const VOICE_URL = "{% url 'voice_transaction' %}";
+  const CSRF     = document.cookie.match(/csrftoken=([^;]+)/)?.[1] ?? '';
+
+  const micBtn    = document.getElementById('voice-mic-btn');
+  const overlay   = document.getElementById('voice-overlay');
+  const pill      = document.getElementById('voice-pill');
+  const dot       = document.getElementById('voice-dot');
+  const statusTxt = document.getElementById('voice-status-text');
+  const txDisplay = document.getElementById('voice-transcript');
+  const cancelBtn = document.getElementById('voice-cancel-btn');
+
+  // Check support
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    micBtn.title = 'Voice input not supported in this browser';
+    micBtn.style.opacity = '0.4';
+    micBtn.addEventListener('click', () =>
+      alert('Voice input requires Chrome or Edge.')
+    );
+    return;
+  }
+
+  const recog = new SpeechRecognition();
+  recog.lang = 'en-US';
+  recog.interimResults = true;
+  recog.maxAlternatives = 1;
+
+  let finalTranscript = '';
+  let listening = false;
+
+  function setStatus(text, state) {
+    // state: 'listening' | 'processing' | 'success' | 'error'
+    statusTxt.textContent = text;
+    pill.className = 'voice-pill voice-pill--' + state;
+  }
+
+  function open() {
+    listening = true;
+    finalTranscript = '';
+    txDisplay.textContent = '';
+    overlay.style.display = 'flex';
+    micBtn.classList.add('mic-active');
+    setStatus('Listening…', 'listening');
+    recog.start();
+  }
+
+  function close() {
+    listening = false;
+    overlay.style.display = 'none';
+    micBtn.classList.remove('mic-active');
+    try { recog.stop(); } catch(_) {}
+  }
+
+  micBtn.addEventListener('click', () => { if (!listening) open(); });
+  cancelBtn.addEventListener('click', close);
+
+  recog.addEventListener('result', e => {
+    let interim = '';
+    finalTranscript = '';
+    for (const res of e.results) {
+      if (res.isFinal) finalTranscript += res[0].transcript;
+      else interim += res[0].transcript;
+    }
+    txDisplay.textContent = finalTranscript || interim;
+  });
+
+  recog.addEventListener('end', async () => {
+    if (!finalTranscript) {
+      setStatus('Nothing heard. Try again.', 'error');
+      setTimeout(close, 1800);
+      return;
+    }
+    setStatus('Processing…', 'processing');
+    try {
+      const res  = await fetch(VOICE_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+        body:    JSON.stringify({ transcript: finalTranscript }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        const t = data.transaction;
+        const sign = t.type === 'income' ? '+' : '-';
+        setStatus(`✅ Added: ${t.name} (${sign}$${t.amount})`, 'success');
+        txDisplay.textContent = `Type: ${t.type}${t.category ? ' · ' + t.category : ''}`;
+        setTimeout(() => { close(); location.reload(); }, 2000);
+      } else {
+        setStatus('⚠️ ' + data.error, 'error');
+        setTimeout(close, 2500);
+      }
+    } catch (err) {
+      setStatus('⚠️ Network error', 'error');
+      setTimeout(close, 2000);
+    }
+  });
+
+  recog.addEventListener('error', e => {
+    setStatus('⚠️ ' + (e.error === 'not-allowed' ? 'Mic permission denied' : e.error), 'error');
+    setTimeout(close, 2000);
+  });
+})();
+</script>
+
 
 <div class="filter-bar">
   <a href="?filter=all" class="filter-btn {% if active_filter == 'all' or not active_filter %}active{% endif %}">All</a>
