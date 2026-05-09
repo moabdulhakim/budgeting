@@ -28,6 +28,7 @@ package "accounts (Auth Views)" as LayerAuth {
 package "dashboard (Dashboard Views)" as LayerDashboard {
     class getDashboard {
         + GET(): aggregate stats & render
+        - detect_top_subscription(): dict|None
     }
     class getNotifications {
         + GET(): list user notifications
@@ -45,14 +46,26 @@ package "finances (Finance Views)" as LayerFinances {
         + get_budget_page()
     }
     class TransactionViews {
-        + add_transaction(name, amount, type, ...)
+        + add_transaction(name, amount, currency, type, ...)
         + update_transaction(transaction_id, ...)
         + delete_transaction(transaction_id)
         + get_transactions_page(filter)
+        + voice_transaction(transcript): Transaction
     }
     class ReportViews {
         + get_reports_page(period)
         + dashboard_data()
+    }
+    class ChatbotViews {
+        + chatbot_reply(message): JsonResponse
+    }
+    class ReceiptOCRViews {
+        + upload_receipt(image): redirect
+        + confirm_receipt(scan_id): Transaction
+        - _ocr_parse(image_file): dict
+    }
+    class CurrencyViews {
+        + get_fx_rates(): JsonResponse
     }
 }
 
@@ -80,6 +93,19 @@ package "goals (Goal Views)" as LayerGoals {
         + slug_field: string
         + slug_url_kwarg: string
         + form_valid(form)
+    }
+}
+
+' ===================== Service Layer =====================
+package "Services" as LayerServices {
+    class CurrencyService {
+        - BASE_URL: string
+        - CACHE_KEY: string
+        - CACHE_TTL: int = 3600
+        - SUPPORTED_CURRENCIES: dict
+        + get_rates(): dict
+        + to_usd(amount: Decimal, currency: str): tuple
+        - _fetch_rates(): dict
     }
 }
 
@@ -146,6 +172,17 @@ package "Models (Entity Layer)" as LayerModel {
         + getProgress(): float
     }
 
+    class ReceiptScan {
+        - id: int
+        - image: ImageField
+        - raw_text: string
+        - merchant: string
+        - total: Decimal
+        - receipt_date: Date
+        - status: string <<pending|done|failed>>
+        - created_at: DateTime
+    }
+
     class checkBudgetAmount <<Signal: post_save>> {
         + triggered on: Transaction save
         + reads: Budget
@@ -161,6 +198,7 @@ LayerAuth -[hidden]down-> LayerModel
 LayerDashboard -[hidden]down-> LayerModel
 LayerFinances -[hidden]down-> LayerModel
 LayerGoals -[hidden]down-> LayerModel
+LayerServices -[hidden]down-> LayerModel
 
 ' ===================== View → Model Dependencies =====================
 
@@ -173,6 +211,7 @@ getDashboard ..> Transaction
 getDashboard ..> Category
 getDashboard ..> Notification
 getDashboard ..> Goal
+
 getNotifications ..> Notification
 
 ' Finance
@@ -184,9 +223,17 @@ BudgetViews ..> Transaction
 TransactionViews ..> Transaction
 TransactionViews ..> Category
 TransactionViews ..> Notification
+TransactionViews ..> CurrencyService
 ReportViews ..> Transaction
 ReportViews ..> Category
 ReportViews ..> Goal
+ChatbotViews ..> Transaction
+ChatbotViews ..> Category
+ChatbotViews ..> Goal
+ReceiptOCRViews ..> ReceiptScan
+ReceiptOCRViews ..> Transaction
+ReceiptOCRViews ..> Category
+CurrencyViews ..> CurrencyService
 
 ' Goals
 GoalFunctionViews ..> Goal
@@ -205,8 +252,10 @@ User "1" o-- "0..*" Category : owns
 User "1" o-- "0..*" Budget : owns
 User "1" o-- "0..*" Goal : authors
 User "1" o-- "0..*" Notification : receives
+User "1" o-- "0..*" ReceiptScan : owns
 
 Transaction "0..*" --> "1" Category : categorized by
 Budget "0..*" --> "1" Category : limits
+ReceiptScan "0..1" --> "0..1" Transaction : creates
 
 @enduml

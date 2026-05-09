@@ -23,7 +23,7 @@
     {% csrf_token %}
 
     <div class="ocr-drop-zone" id="ocr-drop-zone">
-      <div class="ocr-drop-icon">🧾</div>
+      <div class="ocr-drop-icon"><i class="fa-solid fa-receipt"></i></div>
       <p class="ocr-drop-title">Drop your receipt here</p>
       <p class="ocr-drop-sub">JPG · PNG · WEBP · max 10 MB</p>
       <input type="file" id="receipt_image" name="receipt_image"
@@ -36,22 +36,24 @@
       <img id="ocr-preview-img" src="" alt="Receipt preview" class="ocr-preview-img">
       <div class="ocr-preview-meta">
         <span id="ocr-preview-name" class="ocr-preview-name"></span>
-        <button type="button" class="ocr-clear-btn" id="ocr-clear-btn">✕ Remove</button>
+        <button type="button" class="ocr-clear-btn" id="ocr-clear-btn">
+          <i class="fa-solid fa-xmark"></i> Remove
+        </button>
       </div>
     </div>
 
     <button type="submit" class="add-btn ocr-submit-btn" id="ocr-submit-btn" disabled>
-      <span class="ocr-submit-idle">✨ Scan Receipt</span>
-      <span class="ocr-submit-busy" style="display:none;">⏳ Scanning…</span>
+      <span class="ocr-submit-idle"><i class="fa-solid fa-wand-magic-sparkles"></i> Scan Receipt</span>
+      <span class="ocr-submit-busy" style="display:none;"><i class="fa-solid fa-spinner fa-spin"></i> Scanning…</span>
     </button>
   </form>
 
   <!-- Steps hint -->
   <div class="ocr-steps">
     <div class="ocr-step"><span class="ocr-step-num">1</span>Upload receipt</div>
-    <div class="ocr-step-arrow">→</div>
+    <div class="ocr-step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
     <div class="ocr-step"><span class="ocr-step-num">2</span>AI extracts data</div>
-    <div class="ocr-step-arrow">→</div>
+    <div class="ocr-step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
     <div class="ocr-step"><span class="ocr-step-num">3</span>Review &amp; save</div>
   </div>
 </div>
@@ -74,9 +76,9 @@
       </div>
       <div class="tx-row-actions">
         {% if scan.transaction %}
-          <a href="{% url 'transactions' %}" class="tx-action-btn">View Tx →</a>
+          <a href="{% url 'transactions' %}" class="tx-action-btn">View Tx <i class="fa-solid fa-arrow-right"></i></a>
         {% elif scan.status == 'done' %}
-          <a href="{% url 'confirm_receipt' scan.pk %}" class="tx-action-btn">Confirm →</a>
+          <a href="{% url 'confirm_receipt' scan.pk %}" class="tx-action-btn">Confirm <i class="fa-solid fa-arrow-right"></i></a>
         {% endif %}
       </div>
     </div>

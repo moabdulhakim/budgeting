@@ -5,7 +5,7 @@
   <h1 class="page-title">Confirm Receipt</h1>
   <p class="page-sub">Review and adjust the extracted details before saving</p>
 </div>
-<a href="{% url 'upload_receipt' %}" class="add-btn" style="background:var(--surface2);color:var(--text);border:1.5px solid var(--border);">← Back</a>
+<a href="{% url 'upload_receipt' %}" class="add-btn" style="background:var(--surface2);color:var(--text);border:1.5px solid var(--border);"><i class="fa-solid fa-arrow-left"></i> Back</a>
 {% endblock %}
 
 {% block content %}
@@ -51,7 +51,7 @@
         <input type="number" name="amount" class="form-input" step="0.01" min="0.01"
                value="{{ scan.total|default:'' }}" placeholder="0.00" required>
         {% if not scan.total %}
-          <p class="form-hint">⚠️ Couldn't auto-detect total — please enter manually.</p>
+          <p class="form-hint"><i class="fa-solid fa-triangle-exclamation"></i> Couldn't auto-detect total — please enter manually.</p>
         {% endif %}
       </div>
 
@@ -61,7 +61,7 @@
         <input type="date" name="date" class="form-input"
                value="{{ scan.receipt_date|date:'Y-m-d'|default:'' }}">
         {% if not scan.receipt_date %}
-          <p class="form-hint">⚠️ Couldn't auto-detect date — defaults to today.</p>
+          <p class="form-hint"><i class="fa-solid fa-triangle-exclamation"></i> Couldn't auto-detect date — defaults to today.</p>
         {% endif %}
       </div>
 
@@ -86,7 +86,7 @@
       </div>
 
       <button type="submit" class="add-btn" style="width:100%;margin-top:8px;">
-        ✅ Save Transaction
+        <i class="fa-solid fa-check"></i> Save Transaction
       </button>
     </form>
   </div>

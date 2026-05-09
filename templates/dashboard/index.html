@@ -5,7 +5,7 @@
 {% block page_header %}
 <div>
   <h1 class="page-title">Dashboard</h1>
-  <p class="page-sub">Welcome back, {{ user.first_name }} 👋</p>
+  <p class="page-sub">Welcome back, {{ user.first_name }} <i class="fa-solid fa-hand-wave" style="color:var(--accent)"></i></p>
 </div>
 {% endblock %}
 
@@ -17,7 +17,7 @@
 {% if top_subscription %}
   <div class="alert-banner alert-banner--insight js-timed-dashboard-alert" role="alert">
     <div class="alert-content">
-      <div class="alert-msg">💡 Smart Insight: We noticed a recurring payment for <strong>{{ top_subscription.name }}</strong> (${{ top_subscription.amount }}). Would you like to track it as a fixed subscription?</div>
+      <div class="alert-msg"><i class="fa-solid fa-lightbulb"></i> Smart Insight: We noticed a recurring payment for <strong>{{ top_subscription.name }}</strong> (${{ top_subscription.amount }}). Would you like to track it as a fixed subscription?</div>
     </div>
     <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
   </div>
@@ -26,12 +26,12 @@
 {% for a in dashboard_alerts %}
   {% if a.kind == 'budget' %}
   <div class="alert-banner alert-banner--critical js-timed-dashboard-alert" role="alert">
-    <div class="alert-content"><div class="alert-msg">⚠️ {{ a.category }} budget is 90% used</div></div>
+    <div class="alert-content"><div class="alert-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ a.category }} budget is 90% used</div></div>
     <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
   </div>
   {% else %}
   <div class="alert-banner alert-banner--upcoming js-timed-dashboard-alert" role="alert">
-    <div class="alert-content"><div class="alert-msg">📅 "{{ a.name }}" (${{ a.amount|floatformat:2 }}) due {{ a.due_display }}{% if a.days_until == 0 %} today{% elif a.days_until == 1 %} in 1 day{% else %} in {{ a.days_until }} days{% endif %}</div></div>
+    <div class="alert-content"><div class="alert-msg"><i class="fa-solid fa-calendar-day"></i> "{{ a.name }}" (${{ a.amount|floatformat:2 }}) due {{ a.due_display }}{% if a.days_until == 0 %} today{% elif a.days_until == 1 %} in 1 day{% else %} in {{ a.days_until }} days{% endif %}</div></div>
     <button type="button" class="alert-close" onclick="this.closest('.js-timed-dashboard-alert').remove()" aria-label="Dismiss">×</button>
   </div>
   {% endif %}
@@ -132,7 +132,7 @@
   <div class="chart-card">
     <div class="section-header">
       <div class="section-title">Recent Transactions</div>
-      <a href="{% url 'transactions' %}" class="see-all">See all →</a>
+      <a href="{% url 'transactions' %}" class="see-all">See all <i class="fa-solid fa-arrow-right"></i></a>
     </div>
     <div class="tx-list">
       {% for tx in recent_transactions %}
@@ -157,7 +157,7 @@
   <div class="chart-card">
     <div class="section-header">
       <div class="section-title">Budget Overview</div>
-      <a href="{% url 'budget' %}" class="see-all">See all →</a>
+      <a href="{% url 'budget' %}" class="see-all">See all <i class="fa-solid fa-arrow-right"></i></a>
     </div>
     <div class="budget-list">
       {% for item in budget_overview %}

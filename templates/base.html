@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spendo - Personal Finance</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'Spendo.css' %}">
@@ -25,7 +26,7 @@
         <div class="month-selector" id="current-date-display"></div>
         {% if request.resolver_match.url_name == 'dashboard' %}
         <a class="notif-btn" href="{% url 'notifications' %}" aria-label="Notifications">
-          🔔
+          <i class="fa-solid fa-bell"></i>
           {% if show_notification_badge %}<span class="notif-dot" aria-hidden="true"></span>{% endif %}
         </a>
         {% endif %}
@@ -69,14 +70,14 @@
 <!-- ===== Chatbot Widget ===== -->
 <div id="chatbot-widget">
   <button id="chatbot-fab" aria-label="Open assistant" title="Spendo Assistant">
-    <span id="chatbot-fab-icon">✨</span>
+    <span id="chatbot-fab-icon"><i class="fa-solid fa-robot"></i></span>
   </button>
   <div id="chatbot-panel" role="dialog" aria-label="Spendo Assistant">
 
     <!-- Header -->
     <div id="chatbot-header">
       <div id="chatbot-title-row">
-        <div id="chatbot-avatar">✨</div>
+        <div id="chatbot-avatar"><i class="fa-solid fa-robot"></i></div>
         <div>
           <div id="chatbot-title">Spendo Assistant</div>
           <div id="chatbot-subtitle">Your personal finance assistant</div>
@@ -90,11 +91,11 @@
 
     <!-- Quick chips -->
     <div id="chatbot-suggestions">
-      <button class="chat-chip" data-msg="What's my balance?">💰 Balance</button>
-      <button class="chat-chip" data-msg="How much did I spend this month?">📊 Spending</button>
-      <button class="chat-chip" data-msg="Show my savings goals">🎯 Goals</button>
-      <button class="chat-chip" data-msg="Any upcoming bills?">📅 Bills</button>
-      <button class="chat-chip" data-msg="Give me a saving tip">💡 Tips</button>
+      <button class="chat-chip" data-msg="What's my balance?"><i class="fa-solid fa-coins"></i> Balance</button>
+      <button class="chat-chip" data-msg="How much did I spend this month?"><i class="fa-solid fa-chart-pie"></i> Spending</button>
+      <button class="chat-chip" data-msg="Show my savings goals"><i class="fa-solid fa-bullseye"></i> Goals</button>
+      <button class="chat-chip" data-msg="Any upcoming bills?"><i class="fa-solid fa-calendar-day"></i> Bills</button>
+      <button class="chat-chip" data-msg="Give me a saving tip"><i class="fa-solid fa-lightbulb"></i> Tips</button>
     </div>
 
     <!-- Input -->

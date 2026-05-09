@@ -9,7 +9,7 @@
 </div>
 <div style="display:flex;gap:10px;align-items:center;">
   <button type="button" id="voice-mic-btn" class="voice-mic-btn" title="Add transaction by voice" aria-label="Voice input">
-    🎙️
+    <i class="fa-solid fa-microphone"></i>
   </button>
   <button type="button" class="add-btn" onclick="openNewTransactionModal()">Add Transaction</button>
 </div>
@@ -112,21 +112,21 @@
       if (data.ok) {
         const t = data.transaction;
         const sign = t.type === 'income' ? '+' : '-';
-        setStatus(`✅ Added: ${t.name} (${sign}$${t.amount})`, 'success');
+        setStatus(`Added: ${t.name} (${sign}$${t.amount})`, 'success');
         txDisplay.textContent = `Type: ${t.type}${t.category ? ' · ' + t.category : ''}`;
         setTimeout(() => { close(); location.reload(); }, 2000);
       } else {
-        setStatus('⚠️ ' + data.error, 'error');
+        setStatus('Error: ' + data.error, 'error');
         setTimeout(close, 2500);
       }
     } catch (err) {
-      setStatus('⚠️ Network error', 'error');
+      setStatus('Network error. Please try again.', 'error');
       setTimeout(close, 2000);
     }
   });
 
   recog.addEventListener('error', e => {
-    setStatus('⚠️ ' + (e.error === 'not-allowed' ? 'Mic permission denied' : e.error), 'error');
+    setStatus((e.error === 'not-allowed' ? 'Mic permission denied' : e.error), 'error');
     setTimeout(close, 2000);
   });
 })();

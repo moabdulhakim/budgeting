@@ -60,7 +60,7 @@
             {% if goal.image %}
             <img src="{{ goal.image.url }}" class="goal-img-preview" alt="{{ goal.name }}">
             {% else %}
-            <div class="goal-icon-placeholder">🎯</div>
+            <div class="goal-icon-placeholder"><i class="fa-solid fa-bullseye"></i></div>
             {% endif %}
             <span class="goal-name">{{ goal.name }}</span>
             {% if goal.completed %}
