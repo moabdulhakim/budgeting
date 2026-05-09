@@ -1,0 +1,290 @@
+' Spendo — Sequence diagrams aligned with codebase + reference table
+' Render: plantuml sequence_diagrams_spendo.plantuml (generates one PNG per @startuml block)
+
+@startuml seq_01_sign_up
+title (1) Sign Up — accounts/views.signup_view + User
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "signup_view" as V
+participant "User\n(Django)" as U
+
+C -> V : POST (username/email, password, name)
+activate V
+V -> U : objects.filter(username=email).exists()
+activate U
+U --> V : boolean
+deactivate U
+alt email already registered
+  V --> C : 400 / redirect + message
+else new user
+  V -> U : objects.create_user(username=email, password=password)
+  activate U
+  U --> V : user instance
+  deactivate U
+  V -> V : user.first_name, user.email = …
+  V -> U : save()
+  activate U
+  U --> V : ok
+  deactivate U
+  V --> C : 201 JsonResponse / redirect login
+end
+deactivate V
+@enduml
+
+
+@startuml seq_02_login
+title (2) Login — accounts/views.login_view (no separate AuthService in code)
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "login_view" as V
+participant "authenticate()\n(Django)" as A
+participant "login()\n(Django)" as L
+participant "User\n(DB)" as U
+
+C -> V : POST (username or email, password)
+activate V
+V -> A : authenticate(username=email, password)
+activate A
+A -> U : resolve credentials (backend query)
+activate U
+U --> A : User or None
+deactivate U
+A --> V : user | None
+deactivate A
+alt user is None
+  V --> C : 400 Invalid credentials / redirect
+else user ok
+  V -> L : login(request, user)
+  activate L
+  L --> V : session established
+  deactivate L
+  V --> C : 200 JsonResponse / redirect dashboard
+end
+deactivate V
+note right of V
+  Reference table may show **AuthService** + **Database.fetch** —
+  in Spendo this maps to **authenticate()** + User backend,
+  not a separate application class.
+end note
+@enduml
+
+
+@startuml seq_03_add_transaction
+title (3) Add Transaction — finances/views.add_transaction + signal
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "add_transaction\n(view)" as V
+participant "Category" as Cat
+participant "Transaction" as Tx
+participant "Notification" as N
+participant "checkBudgetAmount\n(post_save)" as Sig
+participant "Budget" as B
+
+C -> V : POST (name, amount, type, category, …)
+activate V
+V -> Cat : objects.get_or_create(name, user=user, …)
+activate Cat
+Cat --> V : category_obj
+deactivate Cat
+V -> Tx : objects.create(user, category, name, amount, type, …)
+activate Tx
+Tx -> Sig : post_save(sender=Transaction, created=True)
+activate Sig
+Sig -> B : objects.filter(user, category=instance.category).first()
+activate B
+B --> Sig : budget | None
+deactivate B
+alt budget row exists and instance.type == expense
+  Sig -> Tx : objects.filter(...).aggregate(Sum) in budget dates
+  activate Tx
+  Tx --> Sig : total_spent
+  deactivate Tx
+  alt spending_pct ≥ alert_threshold
+    Sig -> N : objects.create(budget alert message)
+    activate N
+    N --> Sig : ok
+    deactivate N
+  end
+end
+deactivate Sig
+Tx --> V : transaction instance
+deactivate Tx
+V -> N : objects.create(user, message="Transaction added: …")
+activate N
+N --> V : ok
+deactivate N
+
+V --> C : JsonResponse / redirect
+deactivate V
+@enduml
+
+
+@startuml seq_04_create_edit_budget
+title (4) Create / Edit Budget — set_budget + Category\n(code: finances/views.set_budget, add_category)
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "set_budget\n(view)" as V
+participant "Category" as Cat
+participant "Budget" as B
+participant "Transaction\n(read path on budget page)" as Tx
+
+== Set period budget row (JSON) ==
+C -> V : POST { category_id, amount, start_date, end_date }
+activate V
+V -> Cat : objects.get(id=category_id)
+activate Cat
+Cat --> V : category_obj
+deactivate Cat
+V -> B : objects.update_or_create(\n  user, category,\n  defaults={amount, start_date, end_date})
+activate B
+B --> V : (budget, created|updated)
+deactivate B
+V --> C : JsonResponse success
+deactivate V
+
+== Budget page spent totals (get_budget_page) ==
+note over C, Tx
+  **get_budget_page** uses **Category.objects.filter**(user)
+  and **Transaction.objects.filter**(expense, category,\ncurrent month).aggregate — same classes as table.
+end note
+
+== Custom category (add_category view) ==
+participant "add_category\n(view)" as AC
+participant "Notification" as N2
+C -> AC : POST name, budget, [category_id]
+activate AC
+alt update existing
+  AC -> Cat : get(id=category_id, user=user); save()
+  AC -> N2 : objects.create("Category updated: …")
+else new category
+  AC -> Cat : objects.get_or_create(user, name, defaults=…); save()
+  AC -> N2 : objects.create("Category added: …")
+end
+AC --> C : JsonResponse / redirect budget
+deactivate AC
+@enduml
+
+
+@startuml seq_05_budget_alert
+title (5) Budget Over-Limit / Threshold Alerts — two mechanisms in Spendo
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "add_transaction\n(or any Tx save)" as V
+participant "Transaction" as Tx
+participant "checkBudgetAmount\n(signal)" as Sig
+participant "Budget" as B
+participant "Notification" as N
+participant "getDashboard" as D
+participant "Category" as Cat
+
+== A) Alert after expense hits Budget row (signal) ==
+C -> V : POST add_transaction (expense)
+activate V
+V -> Tx : objects.create(...)
+activate Tx
+Tx -> Sig : post_save
+activate Sig
+Sig -> B : objects.filter(user, category).first()
+Sig -> Tx : filter + aggregate spent in budget window
+Sig -> N : objects.create(...) **if** threshold exceeded
+deactivate Sig
+Tx --> V : saved instance
+deactivate Tx
+deactivate V
+
+== B) Alert on dashboard load (Category.budgeted ≥ 90% spent) ==
+C -> D : GET dashboard
+activate D
+D -> Tx : objects.filter(user, type=expense/income, …)
+D -> Tx : aggregate Sum (charts, KPIs)
+D -> Cat : objects.filter(user)
+loop each category
+  D -> Tx : objects.filter(expense, category, current month).aggregate(Sum)
+end
+D -> D : _persist_dashboard_notifications(\nbudget_threshold_alerts, upcoming_rows)
+D -> N : objects.filter(reference_key).exists()\n(if new → **create**)
+activate N
+deactivate N
+D --> C : render dashboard
+deactivate D
+
+note bottom
+  Table lists **Transaction.create**, **Budget.filter**, **Notification.create**, **getDashboard GET()** —
+  (A) covers Tx create + Budget + Notification via signal;\n(B) covers GET dashboard + Tx/Cat queries + Notification persist.
+end note
+@enduml
+
+
+@startuml seq_06_goals
+title (6) Set and Track Goals — goals/views.add_goal + depositGoalAmount
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "add_goal\n(view)" as A
+participant "depositGoalAmount\n(view)" as Dep
+participant "Goal" as G
+participant "Notification" as N
+
+== Create or update goal (multipart POST) ==
+C -> A : POST name, target, saved, image, [goal_id]
+activate A
+alt goal_id present (edit)
+  A -> G : objects.get(id=goal_id, author=user)
+  A -> G : save() after field updates
+  A -> N : objects.create("Goal updated: …")
+else new goal
+  A -> G : objects.create(author, name, target, current, image)
+  A -> N : objects.create("Goal created: …")
+end
+deactivate A
+
+== Deposit amount (API) ==
+C -> Dep : POST/PUT JSON { goalId, amount }
+activate Dep
+Dep -> G : objects.get(id, author=user)
+Dep -> G : current += amount; save()
+note right of Dep
+  **No Notification** in code for deposit — only **Goal.save**.
+end note
+Dep --> C : JsonResponse success + celebrate flag
+deactivate Dep
+@enduml
+
+
+@startuml seq_07_dashboard_overview
+title (7) Dashboard Overview — getDashboard reads Tx/Cat; persists Notification
+skinparam monochrome true
+skinparam shadowing false
+
+actor "Client" as C
+participant "getDashboard" as D
+participant "Transaction" as Tx
+participant "Category" as Cat
+participant "Notification" as N
+
+C -> D : GET (dashboard index)
+activate D
+D -> Tx : objects.filter(user, type=income|expense)
+D -> Tx : aggregate Sum, monthly filters, charts
+D -> Tx : objects.filter(order by date)[:5] recent
+D -> Cat : objects.filter(user)
+D -> Tx : per-category expense Sum (month)
+D -> Tx : upcoming bills query (is_upcoming, due_date)
+D -> D : _persist_dashboard_notifications()
+D -> N : objects.filter(...).exists()\n→ objects.create(...) for new alerts
+activate N
+deactivate N
+D --> C : render(index.html, context)
+deactivate D
+@enduml

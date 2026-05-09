@@ -11,59 +11,107 @@ skinparam ClassBorderColor #333333
 
 ' ===================== View Layer (accounts app) =====================
 package "accounts (Auth Views)" as LayerAuth {
-    class signup_view {
+    class signup_view <<view>> {
         + GET(): render signup page
-        + POST(username, password, name): create User
+        + POST(): register user (JSON or form)
     }
-    class login_view {
+    class login_view <<view>> {
         + GET(): render login page
-        + POST(username, password): authenticate
+        + POST(): authenticate(); login(request, user)
     }
-    class logout_view {
-        + POST(): end session
+    class logout_view <<view>> {
+        + POST(): logout(request); redirect login
     }
 }
+
+note bottom of login_view
+  **Sequence diagrams** may show **AuthService**
+  (login / validateCredentials).
+  In Spendo this is implemented inside **login_view**
+  using Django **authenticate()** and **login()** —
+  there is no separate AuthService class.
+end note
+
+note right of signup_view
+  **POST** uses **User.objects.filter**(…)**.exists()**,
+  **User.objects.create_user**, **user.save**
+end note
 
 ' ===================== View Layer (dashboard app) =====================
 package "dashboard (Dashboard Views)" as LayerDashboard {
-    class getDashboard {
-        + GET(): aggregate stats & render
+    class getDashboard <<view>> {
+        + GET(): KPIs, charts, budget overview, alerts
     }
-    class getNotifications {
-        + GET(): list user notifications
+    class getNotifications <<view>> {
+        + GET(): list notifications for user
     }
 }
+
+note right of getDashboard
+  **Transaction.objects.filter** / aggregates,
+  **Category.objects.filter**,
+  **Notification.objects.filter** + **.create**
+  (deduped budget / upcoming alerts)
+end note
+
+note right of getNotifications
+  **Notification.objects.filter**(user)**.order_by**(…)
+end note
 
 ' ===================== View Layer (finances app) =====================
 package "finances (Finance Views)" as LayerFinances {
-    class CategoryViews {
-        + add_category(name, budget)
-        + delete_category(category_id)
+    class CategoryViews <<view module>> {
+        + add_category(request): POST
+        + delete_category(request, category_id): POST
     }
-    class BudgetViews {
-        + set_budget(category_id, amount, start_date, end_date)
-        + get_budget_page()
+    class BudgetViews <<view module>> {
+        + set_budget(request): POST (JSON)
+        + get_budget_page(request): GET
     }
-    class TransactionViews {
-        + add_transaction(name, amount, type, ...)
-        + update_transaction(transaction_id, ...)
-        + delete_transaction(transaction_id)
-        + get_transactions_page(filter)
+    class TransactionViews <<view module>> {
+        + add_transaction(request): POST
+        + update_transaction(request, transaction_id): POST
+        + delete_transaction(request, transaction_id): POST
+        + get_transactions_page(request): GET + filter
     }
-    class ReportViews {
-        + get_reports_page(period)
-        + dashboard_data()
+    class ReportViews <<view module>> {
+        + get_reports_page(request): GET + period
+        + dashboard_data(request): GET (JSON)
     }
 }
 
+note right of CategoryViews
+  **Category.objects.get_or_create**, **.save**,
+  **Notification.objects.create**
+end note
+
+note right of BudgetViews
+  **set_budget**: **Category.objects.get**,
+  **Budget.objects.update_or_create**
+  **get_budget_page**: **Category.objects.filter**,
+  **Transaction.objects.filter** + **Sum**
+end note
+
+note right of TransactionViews
+  **add_transaction**: **Category.get_or_create**,
+  **Transaction.objects.create**,
+  **Notification.objects.create**;
+  **post_save** → **checkBudgetAmount**
+end note
+
+note right of ReportViews
+  **Transaction** / **Category** queries and aggregates;
+  **dashboard_data** also reads **Goal**
+end note
+
 ' ===================== View Layer (goals app) =====================
 package "goals (Goal Views)" as LayerGoals {
-    class GoalFunctionViews {
-        + getGoals()
-        + getGoal(goalId)
-        + add_goal(name, target, saved, image)
-        + delete_goal(goal_id)
-        + depositGoalAmount(goalId, amount)
+    class GoalFunctionViews <<view module>> {
+        + getGoals(request): GET
+        + getGoal(request, goalId): GET
+        + add_goal(request): POST
+        + delete_goal(request, goal_id): POST
+        + depositGoalAmount(request): POST / PUT (JSON)
     }
     class GoalCreateView <<CreateView>> {
         + model: Goal
@@ -83,6 +131,12 @@ package "goals (Goal Views)" as LayerGoals {
     }
 }
 
+note right of GoalFunctionViews
+  **Goal.objects.create** / **.get** / **.save**;
+  **Notification.objects.create** on add/update/delete goal
+  (**depositGoalAmount** updates **current** only)
+end note
+
 ' ===================== Models (Entity Layer) =====================
 package "Models (Entity Layer)" as LayerModel {
 
@@ -93,26 +147,38 @@ package "Models (Entity Layer)" as LayerModel {
         - password: string
         - first_name: string
         - is_staff: bool
+        __manager (objects)__
+        + filter(**kwargs): QuerySet
+        + create_user(username, password, **extra): User
+        + save(): void
     }
 
-    class Category {
+    class Category <<Model>> {
         - id: int
         - name: string
         - budgeted: Decimal
         - spent: Decimal
         - icon: string
         - is_custom: bool
+        __manager__
+        + filter(**kwargs): QuerySet
+        + get(**kwargs): Category
+        + get_or_create(defaults, **kwargs): Category
+        + save(): void
     }
 
-    class Budget {
+    class Budget <<Model>> {
         - id: int
         - amount: Decimal
         - start_date: Date
         - end_date: Date
         - alert_threshold: int
+        __manager__
+        + filter(**kwargs): QuerySet
+        + update_or_create(defaults, **kwargs): Budget
     }
 
-    class Transaction {
+    class Transaction <<Model>> {
         - id: int
         - name: string
         - amount: Decimal
@@ -122,18 +188,25 @@ package "Models (Entity Layer)" as LayerModel {
         - description: string
         - is_upcoming: bool
         - due_date: Date
+        __manager__
+        + filter(**kwargs): QuerySet
+        + create(**kwargs): Transaction
+        + save(): void
     }
 
-    class Notification {
+    class Notification <<Model>> {
         - id: int
         - message: string
         - reference_key: string
         - alert_type: string <<general|budget|upcoming>>
         - is_read: bool
         - created_at: DateTime
+        __manager__
+        + filter(**kwargs): QuerySet
+        + create(**kwargs): Notification
     }
 
-    class Goal {
+    class Goal <<Model>> {
         - id: UUID
         - name: string
         - description: string
@@ -144,14 +217,24 @@ package "Models (Entity Layer)" as LayerModel {
         - createdAt: DateTime
         - updatedAt: DateTime
         + getProgress(): float
+        __manager__
+        + filter(**kwargs): QuerySet
+        + get(**kwargs): Goal
+        + create(**kwargs): Goal
+        + save(): void
     }
 
-    class checkBudgetAmount <<Signal: post_save>> {
-        + triggered on: Transaction save
-        + reads: Budget
-        + creates: Notification
+    class checkBudgetAmount <<signal receiver>> {
+        + handler(sender, instance, created, **kwargs): void
     }
 }
+
+note bottom of checkBudgetAmount
+  **@receiver(post_save, sender=Transaction)** — **finances/signals.py**
+  **Budget.objects.filter**(…)**.first()**,
+  **Transaction.objects.filter**(…)**.aggregate(Sum)**,
+  **Notification.objects.create**
+end note
 
 ' ===================== Layout hints =====================
 LayerAuth -[hidden]right-> LayerDashboard
@@ -164,18 +247,14 @@ LayerGoals -[hidden]down-> LayerModel
 
 ' ===================== View → Model Dependencies =====================
 
-' Auth
 signup_view ..> User
 login_view ..> User
 
-' Dashboard
 getDashboard ..> Transaction
 getDashboard ..> Category
 getDashboard ..> Notification
-getDashboard ..> Goal
 getNotifications ..> Notification
 
-' Finance
 CategoryViews ..> Category
 CategoryViews ..> Notification
 BudgetViews ..> Budget
@@ -188,16 +267,16 @@ ReportViews ..> Transaction
 ReportViews ..> Category
 ReportViews ..> Goal
 
-' Goals
 GoalFunctionViews ..> Goal
 GoalFunctionViews ..> Notification
 GoalCreateView ..> Goal
 GoalUpdateView ..> Goal
 
 ' ===================== Signal =====================
-checkBudgetAmount ..> Transaction : listens (post_save)
+checkBudgetAmount ..> Transaction : post_save
 checkBudgetAmount ..> Budget : reads
 checkBudgetAmount ..> Notification : creates
+TransactionViews ..> checkBudgetAmount : after save
 
 ' ===================== Model FK Associations =====================
 User "1" o-- "0..*" Transaction : owns
@@ -206,7 +285,8 @@ User "1" o-- "0..*" Budget : owns
 User "1" o-- "0..*" Goal : authors
 User "1" o-- "0..*" Notification : receives
 
-Transaction "0..*" --> "1" Category : categorized by
+Transaction "0..*" --> "0..1" Category : categorized by
 Budget "0..*" --> "1" Category : limits
+Budget "0..*" --> "1" User : owned by
 
 @enduml
