@@ -1,102 +1,195 @@
-import random
-from datetime import timedelta
-from django.utils import timezone
+from decimal import Decimal
+from random import randint, choice, uniform
 from django.contrib.auth.models import User
+from django.utils import timezone
+from finances.models import Transaction, Category, Budget
+from datetime import timedelta
+import random
 
-# استدعاء الموديلز (افترضت إن اسم الـ app هو finances زي ما اتفقنا)
-from finances.models import Category, Budget, Transaction, Notification
+user = User.objects.first()
 
-print("Starting to plant seeds... 🌱")
-
-# 1. البحث عن اليوزر اللي اسمه Mohammad أو إنشاؤه
-user = User.objects.filter(first_name="Mohammad").first()
-
-if not user:
-    print("User 'Mohammad' not found! Creating a new user...")
-    # هيعمل يوزر جديد كاحتياطي عشان الكود يكمل
-    user = User.objects.create_user(username="mohakim_test", first_name="Mohammad", password="password123")
-
-print(f"Seeding data for user: {user.first_name} (ID: {user.id})")
-
-# 2. تنظيف الداتا القديمة لليوزر ده (عشان لو رنيت الكود كذا مرة)
 Transaction.objects.filter(user=user).delete()
 Budget.objects.filter(user=user).delete()
-Category.objects.filter(user=user, is_custom=True).delete()
-Notification.objects.filter(user=user).delete()
 
-# 3. إنشاء الأقسام (Categories)
-categories_data = [
-    {'name': 'Salary', 'type': 'income', 'icon': '💰'},
-    {'name': 'Freelance', 'type': 'income', 'icon': '💻'},
-    {'name': 'Food & Dining', 'type': 'expense', 'icon': '🍔'},
-    {'name': 'Transportation', 'type': 'expense', 'icon': '🚗'},
-    {'name': 'Utilities', 'type': 'expense', 'icon': '⚡'},
-    {'name': 'Entertainment', 'type': 'expense', 'icon': '🎬'},
+category_names = [
+    "Salary",
+    "Freelance",
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Entertainment",
+    "Health",
+    "Education",
+    "Coffee",
+    "Subscriptions",
 ]
 
-category_objs = {}
-for data in categories_data:
-    # إنشاء الـ Category بناءً على موديل فاطمة
-    cat = Category.objects.create(user=user, name=data['name'], icon=data['icon'], is_custom=True)
-    category_objs[data['name']] = {'obj': cat, 'type': data['type']}
+categories = {}
 
-# 4. إنشاء 150 معاملة (Transactions) موزعة على آخر 6 شهور
-now = timezone.now()
-transaction_names = {
-    'Food & Dining': ['Groceries from Carrefour', 'Dinner with friends', 'Morning Coffee', 'Snacks'],
-    'Transportation': ['Uber ride', 'Gas Station', 'Metro Tickets'],
-    'Utilities': ['Electricity Bill', 'Internet Subscription', 'Water Bill'],
-    'Entertainment': ['Cinema Ticket', 'Netflix Subscription', 'Video Game'],
-    'Salary': ['Monthly Salary'],
-    'Freelance': ['Upwork Client', 'Website Design Project']
+for name in category_names:
+    cat, _ = Category.objects.get_or_create(
+        user=user,
+        name=name,
+        defaults={
+            "icon": "circle",
+            "is_custom": True,
+            "budgeted": Decimal("0.00"),
+            "spent": Decimal("0.00")
+        }
+    )
+    categories[name] = cat
+
+budget_map = {
+    "Food": 5000,
+    "Transport": 2000,
+    "Shopping": 4000,
+    "Bills": 3000,
+    "Entertainment": 2500,
+    "Health": 1500,
+    "Education": 2500,
+    "Coffee": 1200,
+    "Subscriptions": 1000,
 }
 
-for _ in range(150):
-    random_days = random.randint(0, 180)
-    random_date = now - timedelta(days=random_days)
-    
-    # اختيار قسم عشوائي
-    cat_name = random.choice(list(category_objs.keys()))
-    cat_info = category_objs[cat_name]
-    
-    # تحديد المبلغ بناءً على النوع (الدخل أكبر من المصاريف)
-    if cat_info['type'] == 'income':
-        amount = random.uniform(3000.0, 15000.0)
-    else:
-        amount = random.uniform(50.0, 1500.0)
-        
-    Transaction.objects.create(
-        user=user,
-        category=cat_info['obj'],
-        name=random.choice(transaction_names[cat_name]),
-        amount=round(amount, 2),
-        type=cat_info['type'],
-        date=random_date,
-        payment_method=random.choice(['Cash', 'Credit Card', 'InstaPay']),
-        description="Auto-generated seed transaction"
-    )
+today = timezone.now().date()
 
-# 5. إنشاء ميزانيات (Budgets) للشهر الحالي
-start_of_month = now.replace(day=1, hour=0, minute=0, second=0)
-# حساب آخر يوم في الشهر
-if now.month == 12:
-    end_of_month = start_of_month.replace(year=now.year + 1, month=1) - timedelta(seconds=1)
-else:
-    end_of_month = start_of_month.replace(month=now.month + 1) - timedelta(seconds=1)
-
-budget_cats = ['Food & Dining', 'Transportation', 'Entertainment']
-for cat_name in budget_cats:
+for cat_name, amount in budget_map.items():
     Budget.objects.create(
         user=user,
-        category=category_objs[cat_name]['obj'],
-        amount=random.choice([2000.00, 3000.00, 5000.00]),
-        start_date=start_of_month.date(),
-        end_date=end_of_month.date(),
+        category=categories[cat_name],
+        amount=Decimal(str(amount)),
+        start_date=today - timedelta(days=180),
+        end_date=today + timedelta(days=30),
         alert_threshold=80
     )
 
-# 6. إنشاء تنبيهات (Notifications)
-Notification.objects.create(user=user, message="Welcome to your new Budget Dashboard, Mohammad!")
-Notification.objects.create(user=user, message="Warning: You have used 85% of your Food & Dining budget this month.")
+start_date = timezone.now() - timedelta(days=180)
+current_day = start_date
 
-print("Done! 🌳 Database is fully seeded with realistic data. You can exit the shell now.")
+expense_names = {
+    "Food": ["McDonalds", "KFC", "Lunch", "Dinner", "Groceries"],
+    "Transport": ["Uber", "Metro", "Gas"],
+    "Shopping": ["Amazon", "Zara", "Electronics"],
+    "Bills": ["Electricity", "Water Bill", "Internet"],
+    "Entertainment": ["Cinema", "Netflix Night", "Gaming"],
+    "Health": ["Pharmacy", "Doctor"],
+    "Education": ["Course", "Books", "Udemy"],
+    "Coffee": ["Starbucks", "Cafe"],
+    "Subscriptions": ["Netflix", "Spotify", "ChatGPT Plus"],
+}
+
+payment_methods = [
+    "Cash",
+    "Visa",
+    "InstaPay",
+    "Vodafone Cash"
+]
+
+while current_day <= timezone.now():
+
+    if current_day.day in [1, 2]:
+
+        salary = randint(45000, 55000)
+
+        Transaction.objects.create(
+            user=user,
+            category=categories["Salary"],
+            name="Monthly Salary",
+            amount=Decimal(str(salary)),
+            type="income",
+            date=current_day,
+            payment_method="Bank Transfer",
+            description="Monthly company salary",
+        )
+
+        if random.random() > 0.4:
+
+            freelance = randint(4000, 12000)
+
+            Transaction.objects.create(
+                user=user,
+                category=categories["Freelance"],
+                name="Freelance Project",
+                amount=Decimal(str(freelance)),
+                type="income",
+                date=current_day + timedelta(days=10),
+                payment_method="InstaPay",
+                description="Freelance frontend project",
+            )
+
+    tx_count = randint(1, 4)
+
+    for _ in range(tx_count):
+
+        cat_name = choice([
+            "Food",
+            "Transport",
+            "Shopping",
+            "Bills",
+            "Entertainment",
+            "Health",
+            "Education",
+            "Coffee",
+            "Subscriptions",
+        ])
+
+        ranges = {
+            "Food": (80, 500),
+            "Transport": (20, 250),
+            "Shopping": (300, 3500),
+            "Bills": (400, 1800),
+            "Entertainment": (100, 1200),
+            "Health": (100, 1400),
+            "Education": (300, 2500),
+            "Coffee": (40, 180),
+            "Subscriptions": (100, 600),
+        }
+
+        low, high = ranges[cat_name]
+
+        amount = round(uniform(low, high), 2)
+
+        Transaction.objects.create(
+            user=user,
+            category=categories[cat_name],
+            name=choice(expense_names[cat_name]),
+            amount=Decimal(str(amount)),
+            type="expense",
+            date=current_day + timedelta(
+                hours=randint(8, 23),
+                minutes=randint(0, 59)
+            ),
+            payment_method=choice(payment_methods),
+            description="Auto generated transaction",
+        )
+
+    current_day += timedelta(days=1)
+
+for category in Category.objects.filter(user=user):
+
+    total_spent = Decimal("0.00")
+
+    expenses = Transaction.objects.filter(
+        user=user,
+        category=category,
+        type="expense"
+    )
+
+    for tx in expenses:
+        total_spent += tx.amount
+
+    category.spent = total_spent
+
+    budget = Budget.objects.filter(
+        user=user,
+        category=category
+    ).first()
+
+    if budget:
+        category.budgeted = budget.amount
+
+    category.save()
+
+print("DONE")
+print(Transaction.objects.filter(user=user).count())
