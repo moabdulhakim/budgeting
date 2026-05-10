@@ -2,12 +2,13 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from .models import Category, Notification, Transaction
+from .notifications import notifications_enabled
 
 
 def _in_upcoming_alert_window(user, today):
     """True if user has an upcoming expense within 10 days of due date (including due date)."""
     for t in Transaction.objects.filter(
-        user=user, type="expense", is_upcoming=True, due_date__isnull=False
+        user=user, type__iexact="expense", is_upcoming=True, due_date__isnull=False
     ):
         days_left = (t.due_date - today).days
         if 0 <= days_left <= 10:
@@ -23,6 +24,8 @@ def notification_badge(request):
     show = False
     user = getattr(request, "user", None)
     if not user or not user.is_authenticated:
+        return {"show_notification_badge": False}
+    if not notifications_enabled(user):
         return {"show_notification_badge": False}
 
     if Notification.objects.filter(user=user, is_read=False).exists():
@@ -43,7 +46,7 @@ def notification_badge(request):
                     Transaction.objects.filter(
                         user=user,
                         category=cat,
-                        type="expense",
+                        type__iexact="expense",
                         date__gte=start_of_month,
                         date__lte=now,
                     ).aggregate(total=Sum("amount"))["total"]
@@ -55,3 +58,19 @@ def notification_badge(request):
                     break
 
     return {"show_notification_badge": show}
+
+
+def transaction_category_options(request):
+    """
+    Provide category names for transaction forms across templates.
+    """
+    user = getattr(request, "user", None)
+    if not user or not user.is_authenticated:
+        return {"transaction_category_options": []}
+
+    names = list(
+        Category.objects.filter(user=user)
+        .order_by("name")
+        .values_list("name", flat=True)
+    )
+    return {"transaction_category_options": names}

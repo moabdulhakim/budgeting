@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal, InvalidOperation
 from django.contrib.auth.decorators import login_required
-from .models import Transaction, Category, Budget
+from .models import Transaction, Category, Budget, ReceiptScan
 from django.db.models import Sum
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -16,6 +16,8 @@ from django.contrib import messages
 from django.db.models import Sum
 from django.db.models.functions import TruncDate
 from .models import Notification
+from django.db import transaction
+from .notifications import create_user_notification
 
 
 def _wants_json(request):
@@ -45,8 +47,8 @@ def dashboard_data(request):
     """
     from goals.models import Goal
     user = request.user
-    income = Transaction.objects.filter(user=user, type='income').aggregate(Sum('amount'))['amount__sum'] or 0
-    expenses = Transaction.objects.filter(user=user, type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
+    income = Transaction.objects.filter(user=user, type__iexact='income').aggregate(Sum('amount'))['amount__sum'] or 0
+    expenses = Transaction.objects.filter(user=user, type__iexact='expense').aggregate(Sum('amount'))['amount__sum'] or 0
     goals = []
     # goals.Goal uses author/target/current (not target_amount/saved_amount)
     for g in Goal.objects.filter(author=user):
@@ -104,9 +106,7 @@ def add_category(request):
                     pass
                 cat.is_custom = True
                 cat.save()
-                Notification.objects.create(
-                    user=request.user, message=f"Category updated: {cat.name}"
-                )
+                create_user_notification(request.user, f"Category updated: {cat.name}")
                 msg_action = "updated"
             else:
                 cat, _ = Category.objects.get_or_create(
@@ -118,9 +118,7 @@ def add_category(request):
                     pass
                 cat.is_custom = True
                 cat.save()
-                Notification.objects.create(
-                    user=request.user, message=f"Category added: {cat.name}"
-                )
+                create_user_notification(request.user, f"Category added: {cat.name}")
                 msg_action = "added"
             if _wants_json(request):
                 return JsonResponse({"status": "success", "message": f"Category {msg_action} successfully!"})
@@ -135,13 +133,18 @@ def add_category(request):
 @login_required
 @require_http_methods(["POST"])
 def delete_category(request, category_id):
-    cat = get_object_or_404(Category, id=category_id, user=request.user)
-    name = cat.name
-    cat.delete()
-    Notification.objects.create(
-        user=request.user, message=f"Category deleted: {name}"
-    )
-    messages.success(request, "Budget category removed.")
+    try:
+        cat = get_object_or_404(Category, id=category_id, user=request.user)
+        name = cat.name
+        cat.delete()
+        create_user_notification(request.user, f"Category deleted: {name}")
+        if _wants_json(request):
+            return JsonResponse({"status": "success", "message": "Category deleted"})
+        messages.success(request, "Budget category removed.")
+    except Exception as exc:
+        if _wants_json(request):
+            return JsonResponse({"status": "error", "message": str(exc)}, status=400)
+        messages.error(request, "Couldn't delete category.")
     return redirect("budget")
 
 @csrf_exempt
@@ -207,7 +210,9 @@ def add_transaction(request):
             is_upcoming = str(raw_upcoming).lower() in ("1", "true", "on", "yes", "y")
             due_date = parse_date(data.get("due_date") or "")
             tx_date = parse_date(data.get("tx_date") or data.get("date") or "")
-            tx_type = (data.get("type") or "expense").strip() or "expense"
+            tx_type = ((data.get("type") or "expense").strip() or "expense").lower()
+            if tx_type not in ("income", "expense"):
+                tx_type = "expense"
             if is_upcoming and tx_type != "expense":
                 msg = "Upcoming alerts apply to expenses only. Change type to Expense or turn off Upcoming."
                 if _wants_json(request):
@@ -255,9 +260,9 @@ def add_transaction(request):
                 is_upcoming=is_upcoming,
                 due_date=due_date,
             )
-            Notification.objects.create(
-                user=request.user,
-                message=f"Transaction added: {t.name} (${float(t.amount):.2f})",
+            create_user_notification(
+                request.user,
+                f"Transaction added: {t.name} (${float(t.amount):.2f})",
             )
             if _wants_json(request):
                 return JsonResponse({
@@ -287,7 +292,9 @@ def update_transaction(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
     data = _parse_body(request)
 
-    new_type = (data.get("type") or transaction.type or "expense").strip()
+    new_type = ((data.get("type") or transaction.type or "expense").strip() or "expense").lower()
+    if new_type not in ("income", "expense"):
+        new_type = "expense"
     raw_upcoming = data.get("is_upcoming")
     is_upcoming = str(raw_upcoming).lower() in ("1", "true", "on", "yes", "y")
     due_date = parse_date(data.get("due_date") or "")
@@ -331,9 +338,7 @@ def update_transaction(request, transaction_id):
     transaction.due_date = due_date
     transaction.save()
 
-    Notification.objects.create(
-        user=request.user, message=f"Transaction updated: {transaction.name}"
-    )
+    create_user_notification(request.user, f"Transaction updated: {transaction.name}")
     if _wants_json(request):
         return JsonResponse({"status": "success", "message": "Transaction updated"})
     messages.success(request, "Transaction updated successfully.")
@@ -352,16 +357,39 @@ def delete_transaction(request, transaction_id):
     Returns:
         JsonResponse: Success status of the deletion.
     """
-    if request.method == "POST":
+    if request.method in ("POST", "DELETE"):
         transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
         name = transaction.name
         transaction.delete()
-        Notification.objects.create(user=request.user, message=f"Transaction deleted: {name}")
+        create_user_notification(request.user, f"Transaction deleted: {name}")
         if _wants_json(request):
             return JsonResponse({"status": "success", "message": "Transaction deleted"})
         messages.success(request, "Transaction deleted successfully.")
         return redirect("transactions")
     return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+
+@login_required
+@require_http_methods(["POST"])
+def reset_account_data(request):
+    """
+    Clear all user-owned finance data and leave account profile intact.
+    """
+    from goals.models import Goal
+
+    user = request.user
+    with transaction.atomic():
+        Goal.objects.filter(author=user).delete()
+        ReceiptScan.objects.filter(user=user).delete()
+        Transaction.objects.filter(user=user).delete()
+        Budget.objects.filter(user=user).delete()
+        Category.objects.filter(user=user).delete()
+        Notification.objects.filter(user=user).delete()
+
+    if _wants_json(request):
+        return JsonResponse({"status": "success", "message": "Account data reset successfully"})
+    messages.success(request, "All your data has been reset. Start adding your own records.")
+    return redirect("dashboard")
     
 
 @login_required 
@@ -370,9 +398,9 @@ def get_transactions_page(request):
     active_filter = request.GET.get("filter", "all")
     qs = Transaction.objects.filter(user=user).select_related("category").order_by("-date")
     if active_filter == "income":
-        qs = qs.filter(type="income")
+        qs = qs.filter(type__iexact="income")
     elif active_filter == "expenses":
-        qs = qs.filter(type="expense")
+        qs = qs.filter(type__iexact="expense")
 
     transactions = []
     for t in qs:
@@ -472,7 +500,7 @@ def get_reports_page(request):
 
     # Pie (expense breakdown in selected period)
     by_cat = (
-        tx.filter(type="expense")
+        tx.filter(type__iexact="expense")
         .values("category__name")
         .annotate(total=Sum("amount"))
         .order_by("-total")
@@ -484,7 +512,7 @@ def get_reports_page(request):
     # Weekly spending (bucket the selected range)
     weeks = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"]
     weekly_values = [0, 0, 0, 0, 0]
-    exp_tx = tx.filter(type="expense")
+    exp_tx = tx.filter(type__iexact="expense")
     # If range spans more than one month, bucket by 7-day windows from start
     for t in exp_tx:
         delta_days = (t.date.date() - start.date()).days
@@ -496,7 +524,7 @@ def get_reports_page(request):
     categories = Category.objects.filter(user=user).order_by("name")
     category_breakdown = []
     for c in categories:
-        spent = tx.filter(type="expense", category=c).aggregate(total=Sum("amount"))["total"] or 0
+        spent = tx.filter(type__iexact="expense", category=c).aggregate(total=Sum("amount"))["total"] or 0
         spent = float(spent)
         budgeted = float(c.budgeted or 0)
         remaining = budgeted - spent
@@ -539,7 +567,7 @@ def get_budget_page(request):
     for c in categories:
         budget = float(c.budgeted or 0)
         spent = (
-            Transaction.objects.filter(user=user, type="expense", category=c, date__gte=start)
+            Transaction.objects.filter(user=user, type__iexact="expense", category=c, date__gte=start)
             .aggregate(total=Sum("amount"))["total"]
             or 0
         )
@@ -632,11 +660,11 @@ def chatbot_reply(request):
 
     # ── Fetch user financial data ──────────────────────────────────────────────
     income_total = (
-        Transaction.objects.filter(user=user, type="income")
+        Transaction.objects.filter(user=user, type__iexact="income")
         .aggregate(Sum("amount"))["amount__sum"] or 0
     )
     expense_total = (
-        Transaction.objects.filter(user=user, type="expense")
+        Transaction.objects.filter(user=user, type__iexact="expense")
         .aggregate(Sum("amount"))["amount__sum"] or 0
     )
     balance = float(income_total) - float(expense_total)
@@ -644,11 +672,11 @@ def chatbot_reply(request):
     now = timezone.now()
     month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     monthly_income = (
-        Transaction.objects.filter(user=user, type="income", date__gte=month_start)
+        Transaction.objects.filter(user=user, type__iexact="income", date__gte=month_start)
         .aggregate(Sum("amount"))["amount__sum"] or 0
     )
     monthly_expense = (
-        Transaction.objects.filter(user=user, type="expense", date__gte=month_start)
+        Transaction.objects.filter(user=user, type__iexact="expense", date__gte=month_start)
         .aggregate(Sum("amount"))["amount__sum"] or 0
     )
 
@@ -657,7 +685,7 @@ def chatbot_reply(request):
 
     # Top spending category this month
     top_cat = (
-        Transaction.objects.filter(user=user, type="expense", date__gte=month_start)
+        Transaction.objects.filter(user=user, type__iexact="expense", date__gte=month_start)
         .values("category__name")
         .annotate(total=Sum("amount"))
         .order_by("-total")
@@ -722,7 +750,7 @@ def chatbot_reply(request):
         over_budget = []
         for cat in categories_qs:
             spent = (
-                Transaction.objects.filter(user=user, type="expense", category=cat, date__gte=month_start)
+                Transaction.objects.filter(user=user, type__iexact="expense", category=cat, date__gte=month_start)
                 .aggregate(Sum("amount"))["amount__sum"] or 0
             )
             if cat.budgeted and float(spent) > float(cat.budgeted):

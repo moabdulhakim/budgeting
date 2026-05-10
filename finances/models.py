@@ -99,6 +99,15 @@ class Notification(models.Model):
         return f"Notification for {self.user.username}"
 
 
+class NotificationPreference(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="notification_preference")
+    enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        state = "enabled" if self.enabled else "disabled"
+        return f"Notifications {state} for {self.user.username}"
+
+
 class ReceiptScan(models.Model):
     """
     Stores a receipt image uploaded by the user, the raw OCR text extracted
@@ -142,4 +151,4 @@ class ReceiptScan(models.Model):
     created_at   = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Receipt #{self.pk} by {self.user.username} [{self.status}]"
+        return f"Receipt #{self.pk} by {self.user.username} [{self.status}]"

@@ -27,6 +27,10 @@
             {% csrf_token %}
             <button type="submit" class="nav-item sidebar-logout">Log out</button>
         </form>
+        <form method="post" action="{% url 'reset_account_data' %}" class="sidebar-logout-form" onsubmit="return confirm('This will delete all your transactions, budgets, categories, goals, and notifications. Continue?');">
+            {% csrf_token %}
+            <button type="submit" class="nav-item sidebar-logout">Reset Account Data</button>
+        </form>
         <div class="theme-toggle">
             <span>Dark Mode</span>
             <button type="button" class="toggle-sw" id="theme-toggle" onclick="toggleTheme()"></button>

@@ -3,14 +3,13 @@ from django.db.models import Sum, Count, Max
 from django.db.models.functions import TruncMonth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods
 from datetime import timedelta
 import calendar
 import json
 
 from finances.models import Category, Notification, Transaction
-
-from .mock_data import ensure_user_mock_data
-
+from finances.notifications import create_user_notification, notifications_enabled
 
 def root_redirect(request):
     """Landing: unauthenticated users go to login; authenticated users go to dashboard."""
@@ -21,11 +20,13 @@ def root_redirect(request):
 
 def _persist_dashboard_notifications(user, today, budget_categories_90, upcoming_tx_rows):
     """Record one notification per budget alert per month; one per upcoming tx per day while active."""
+    if not notifications_enabled(user):
+        return
     for cat in budget_categories_90:
         ref = f"budget90:{user.id}:{cat}:{today.year}-{today.month:02d}"
         msg = f"Warning: 90% of {cat} budget used!"
         if not Notification.objects.filter(user=user, reference_key=ref).exists():
-            Notification.objects.create(
+            create_user_notification(
                 user=user,
                 message=msg,
                 reference_key=ref,
@@ -38,7 +39,7 @@ def _persist_dashboard_notifications(user, today, budget_categories_90, upcoming
         ref = f"upcoming:{user.id}:{t.id}:{today.isoformat()}"
         msg = row["notif_message"]
         if not Notification.objects.filter(user=user, reference_key=ref).exists():
-            Notification.objects.create(
+            create_user_notification(
                 user=user,
                 message=msg,
                 reference_key=ref,
@@ -49,14 +50,13 @@ def _persist_dashboard_notifications(user, today, budget_categories_90, upcoming
 
 @login_required
 def getDashboard(request):
-    ensure_user_mock_data(request.user)
     now = timezone.now()
     start_of_current_month = now.replace(day=1, hour=0, minute=0, second=0)
     start_of_previous_month = (start_of_current_month - timedelta(days=1)).replace(day=1)
     end_of_previous_month = start_of_current_month - timedelta(seconds=1)
 
-    incomes = Transaction.objects.filter(user=request.user, type="income")
-    expenses = Transaction.objects.filter(user=request.user, type="expense")
+    incomes = Transaction.objects.filter(user=request.user, type__iexact="income")
+    expenses = Transaction.objects.filter(user=request.user, type__iexact="expense")
 
 
     total_income = incomes.aggregate(total=Sum('amount'))['total'] or 0
@@ -150,7 +150,7 @@ def getDashboard(request):
             Transaction.objects.filter(
                 user=request.user,
                 category=cat,
-                type="expense",
+                type__iexact="expense",
                 date__gte=start_of_current_month,
                 date__lte=now,
             ).aggregate(total=Sum("amount"))["total"]
@@ -181,7 +181,7 @@ def getDashboard(request):
     upcoming_rows_for_notify = []
     for t in Transaction.objects.filter(
         user=request.user,
-        type="expense",
+        type__iexact="expense",
         is_upcoming=True,
         due_date__isnull=False,
     ).order_by("due_date"):
@@ -222,7 +222,7 @@ def getDashboard(request):
     # Only the single top result is needed for the one-line alert banner.
     top_row = (
         Transaction.objects
-        .filter(user=request.user, type="expense")
+        .filter(user=request.user, type__iexact="expense")
         .annotate(month=TruncMonth("date"))
         .values("name", "amount")
         .annotate(month_count=Count("month", distinct=True))
@@ -269,4 +269,24 @@ def getDashboard(request):
 @login_required
 def getNotifications(request):
     qs = Notification.objects.filter(user=request.user).order_by("-created_at")
-    return render(request, "notifications/index.html", {"notifications": qs})
+    return render(
+        request,
+        "notifications/index.html",
+        {
+            "notifications": qs,
+            "notifications_enabled": notifications_enabled(request.user),
+        },
+    )
+
+
+@login_required
+@require_http_methods(["POST"])
+def toggle_notifications(request):
+    pref = request.user.notification_preference if hasattr(request.user, "notification_preference") else None
+    if pref is None:
+        from finances.models import NotificationPreference
+
+        pref, _ = NotificationPreference.objects.get_or_create(user=request.user)
+    pref.enabled = not pref.enabled
+    pref.save(update_fields=["enabled"])
+    return redirect("notifications")

@@ -11,6 +11,15 @@
 
 {% block content %}
 <div class="chart-card">
+  <div class="section-header" style="margin-bottom:14px;">
+    <div class="section-title">Notification Settings</div>
+    <form method="post" action="{% url 'toggle_notifications' %}">
+      {% csrf_token %}
+      <button type="submit" class="tx-action-btn {% if notifications_enabled %}tx-action-danger{% endif %}">
+        {% if notifications_enabled %}Disable Notifications{% else %}Enable Notifications{% endif %}
+      </button>
+    </form>
+  </div>
   {% if notifications %}
     <div class="tx-list notification-list">
       {% for n in notifications %}

@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('dashboard/', views.getDashboard, name='dashboard'),
     path('notifications/', views.getNotifications, name='notifications'),
+    path('notifications/toggle/', views.toggle_notifications, name='toggle_notifications'),
 ]

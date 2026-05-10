@@ -147,8 +147,8 @@
         <div class="tx-name">{{ tx.name }}</div>
         <div class="tx-date">{{ tx.date }} · {{ tx.category }}{% if tx.is_upcoming and tx.due_date %} · Due {{ tx.due_date }}{% endif %}</div>
       </div>
-      <div class="tx-amount {% if tx.type == 'expense' %}expense{% else %}income{% endif %}">
-        {% if tx.type == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
+      <div class="tx-amount {% if tx.type|lower == 'expense' %}expense{% else %}income{% endif %}">
+        {% if tx.type|lower == 'expense' %}-{% else %}+{% endif %}${{ tx.amount }}
       </div>
       <div class="tx-row-actions">
         <button type="button" class="tx-action-btn" title="Edit" aria-label="Edit" data-tx-json="{{ tx.tx_json|escape }}"

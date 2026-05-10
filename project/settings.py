@@ -10,7 +10,12 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+
+try:
+    load_dotenv = __import__('dotenv', fromlist=['load_dotenv']).load_dotenv
+except ImportError:
+    def load_dotenv(*args, **kwargs):
+        return False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,6 +73,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'finances.context_processors.notification_badge',
+                'finances.context_processors.transaction_category_options',
             ],
         },
     },

@@ -1010,7 +1010,17 @@ function openEditTransactionModal(tx) {
     document.getElementById('tx-name').value = tx.name || '';
     document.getElementById('tx-amount').value = tx.amount ?? '';
     document.getElementById('tx-type').value = tx.type || 'expense';
-    document.getElementById('tx-category').value = tx.category || '';
+    const categorySelect = document.getElementById('tx-category');
+    if (categorySelect) {
+        const txCategory = tx.category || '';
+        if (txCategory && !Array.from(categorySelect.options).some(o => o.value === txCategory)) {
+            const dynamicOption = document.createElement('option');
+            dynamicOption.value = txCategory;
+            dynamicOption.textContent = txCategory;
+            categorySelect.appendChild(dynamicOption);
+        }
+        categorySelect.value = txCategory;
+    }
     document.getElementById('tx-date').value = tx.date_iso || '';
     document.getElementById('tx-upcoming').checked = !!tx.is_upcoming;
     document.getElementById('tx-due-date').value = tx.due_iso || '';

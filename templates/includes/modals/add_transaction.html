@@ -36,7 +36,14 @@
 
       <div class="form-group">
         <label for="tx-category">Category</label>
-        <input type="text" id="tx-category" name="category" placeholder="e.g. Food" required>
+        <select id="tx-category" name="category" style="width:100%;padding:12px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:inherit;outline:none;" required>
+          <option value="" selected disabled>Select category</option>
+          {% for cat_name in transaction_category_options %}
+          <option value="{{ cat_name }}">{{ cat_name }}</option>
+          {% empty %}
+          <option value="General">General</option>
+          {% endfor %}
+        </select>
       </div>
 
       <div class="form-group">

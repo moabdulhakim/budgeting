@@ -11,7 +11,7 @@ from .models import Goal
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib import messages
-from finances.models import Notification
+from finances.notifications import create_user_notification
 from django.views.decorators.http import require_http_methods
 
 
@@ -106,7 +106,7 @@ def add_goal(request):
             goal.image = image
         goal.save()
         messages.success(request, "Goal updated successfully.")
-        Notification.objects.create(user=request.user, message=f"Goal updated: {goal.name}")
+        create_user_notification(request.user, f"Goal updated: {goal.name}")
         completed = saved_val >= target_val and target_val > 0
     else:
         goal = Goal.objects.create(
@@ -117,7 +117,7 @@ def add_goal(request):
             image=image,
         )
         messages.success(request, "Goal created successfully.")
-        Notification.objects.create(user=request.user, message=f"Goal created: {goal.name}")
+        create_user_notification(request.user, f"Goal created: {goal.name}")
         completed = saved_val >= target_val and target_val > 0
     if completed:
         return redirect(f"{reverse('goals')}?celebrate=1")
@@ -130,7 +130,7 @@ def delete_goal(request, goal_id):
     goal = get_object_or_404(Goal, id=goal_id, author=request.user)
     name = goal.name
     goal.delete()
-    Notification.objects.create(user=request.user, message=f"Goal deleted: {name}")
+    create_user_notification(request.user, f"Goal deleted: {name}")
     messages.success(request, "Goal removed.")
     return redirect("goals")
 

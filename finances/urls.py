@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/transactions/add/', views.add_transaction, name='add_transaction'),
     path('api/transactions/update/<int:transaction_id>/', views.update_transaction, name='update_transaction'),
     path('api/transactions/delete/<int:transaction_id>/', views.delete_transaction, name='delete_transaction'),
+    path('api/account/reset/', views.reset_account_data, name='reset_account_data'),
 
     path('transactions/', views.get_transactions_page, name='transactions'),
     path('reports/', views.get_reports_page, name='reports'),
