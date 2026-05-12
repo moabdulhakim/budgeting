@@ -1,4 +1,4 @@
-let recurringPayments = []; // تعريف المتغير لمنع الخطأ
+let recurringPayments = [];
 
 // ===== CSRF =====
 function getCookie(name) {
@@ -145,8 +145,8 @@ function validateEmail(email) {
         .match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 }
 function launchApp(userData) {
-    document.getElementById('auth-screen').style.display = 'none'; // إخفاء اللوجين
-    document.getElementById('app').style.display = 'flex'; // إظهار التطبيق
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
     document.getElementById('user-email-sidebar').textContent = userData.email;
     initApp(); 
 }

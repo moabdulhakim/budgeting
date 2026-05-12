@@ -776,7 +776,7 @@ def chatbot_reply(request):
     # Upcoming / bills
     elif any(w in message for w in ("upcoming", "bill", "bills", "due", "payment", "scheduled")):
         if not upcoming:
-            reply = "You have no upcoming bills — you're all clear! ✅"
+            reply = "You have no upcoming bills — you're all clear! "
         else:
             lines = [f"• {u['name']} — {fmt(u['amount'])} due {u['due_date'].strftime('%b %d')}" for u in upcoming]
             reply = "Upcoming payments:\n" + "\n".join(lines)
@@ -809,7 +809,7 @@ def chatbot_reply(request):
         reply = (
             "I can help with: balance, income, spending, budgets, "
             "goals, upcoming bills, recent transactions, or saving tips. "
-            "What would you like to know? 😊"
+            "What would you like to know? "
         )
 
     return JsonResponse({"reply": reply})
@@ -832,6 +832,7 @@ def _ocr_parse(image_file):
     import re
     import pytesseract
     from PIL import Image
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
     img = Image.open(image_file)
     # Upscale small images for better accuracy
@@ -1002,7 +1003,7 @@ def confirm_receipt(request, scan_id):
     scan.transaction = tx
     scan.save()
 
-    messages.success(request, f'✅ Transaction "{name}" (${amount}) added from receipt!')
+    messages.success(request, f' Transaction "{name}" (${amount}) added from receipt!')
     return redirect("transactions")
 
 

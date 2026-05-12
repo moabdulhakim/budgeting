@@ -30,7 +30,7 @@ def checkBudgetAmount(sender, instance, created, **kwargs):
                 else:
                     notification_msg = f"Budget Exceeded — {budget.category.name}! You've exceeded your ${budget.amount} budget by ${total_spent-budget.amount}."
                 create_user_notification(
-                    user=instance.user,
-                    message=notification_msg
+                user = instance.user,
+                message = notification_msg
                 )
-            
+
